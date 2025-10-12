@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Commande{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-pencil"></i> Modifier la commande #{{ order.numeroCommande }}</h1>
+
+    <div class="card mb-3">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Informations de la commande</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Client:</strong> {{ order.user.fullName }}</p>
+                    <p><strong>Email:</strong> {{ order.user.email }}</p>
+                    <p><strong>Créée le:</strong> {{ order.createdAt|date('d/m/Y H:i') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Numéro:</strong> {{ order.numeroCommande }}</p>
+                    <p><strong>Statut actuel:</strong> 
+                        {% if order.statut == 'en_attente' %}
+                            <span class="badge bg-warning">En attente</span>
+                        {% elseif order.statut == 'validee' %}
+                            <span class="badge bg-info">Validée</span>
+                        {% elseif order.statut == 'en_preparation' %}
+                            <span class="badge bg-primary">En préparation</span>
+                        {% elseif order.statut == 'livree' %}
+                            <span class="badge bg-success">Livrée</span>
+                        {% elseif order.statut == 'annulee' %}
+                            <span class="badge bg-danger">Annulée</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Montant:</strong> {{ order.montantTotal|number_format(2, ',', ' ') }} €</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if order.orderItems|length > 0 %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5 class="mb-0">Articles de la commande</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.orderItems %}
+                        <tr>
+                            <td>{{ item.product.nom }}</td>
+                            <td>{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
+                            <td>{{ item.quantite }}</td>
+                            <td class="text-end">{{ item.total|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Modifier la commande</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.user) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.statut) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.montantTotal) }}
+                    </div>
+                </div>
+                {{ form_row(form.adresseLivraison) }}
+                {{ form_row(form.commentaire) }}
+                {{ form_widget(form.save) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a href="{{ path('app_admin_orders') }}" class="btn btn-link mt-3">← Retour aux commandes</a>
+</div>
+{% endblock %}

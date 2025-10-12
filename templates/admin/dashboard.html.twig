@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Administrateur{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="bi bi-speedometer2"></i> Dashboard Administrateur</h1>
+            <p class="lead">Bienvenue {{ app.user.fullName }}</p>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Utilisateurs</h6>
+                            <h2 class="mb-0">{{ stats.total_users }}</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Produits</h6>
+                            <h2 class="mb-0">{{ stats.total_products }}</h2>
+                            <small>{{ stats.available_products }} disponibles</small>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Commandes</h6>
+                            <h2 class="mb-0">{{ stats.total_orders }}</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-cart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Réservations</h6>
+                            <h2 class="mb-0">{{ stats.total_reservations }}</h2>
+                            <small>{{ stats.pending_reservations }} en attente</small>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenu total -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow">
+                <div class="card-body text-center">
+                    <h3 class="text-uppercase mb-2">Revenu Total</h3>
+                    <h1 class="display-3 mb-0">{{ stats.total_revenue|number_format(2, ',', ' ') }} €</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Admin -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="{{ path('app_admin_products') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-box-seam display-1 text-primary"></i>
+                        <h4 class="mt-3">Gérer les Produits</h4>
+                        <p class="text-muted">Ajouter, modifier ou supprimer des produits</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_admin_orders') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cart-check display-1 text-success"></i>
+                        <h4 class="mt-3">Gérer les Commandes</h4>
+                        <p class="text-muted">Voir et gérer toutes les commandes</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_admin_reservations') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-event display-1 text-warning"></i>
+                        <h4 class="mt-3">Gérer les Réservations</h4>
+                        <p class="text-muted">Confirmer ou annuler les réservations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dernières Commandes -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Dernières Commandes</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_orders is empty %}
+                        <p class="text-muted">Aucune commande récente</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for order in recent_orders %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>#{{ order.numeroCommande }}</strong>
+                                            <small class="text-muted d-block">{{ order.user.fullName }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <strong>{{ order.montantTotal|number_format(2, ',', ' ') }} €</strong>
+                                            <small class="text-muted d-block">{{ order.createdAt|date('d/m/Y H:i') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Dernières Réservations</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_reservations is empty %}
+                        <p class="text-muted">Aucune réservation récente</p>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for reservation in recent_reservations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>{{ reservation.user.fullName }}</strong>
+                                            <small class="text-muted d-block">{{ reservation.nombrePersonnes }} personne(s)</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-{{ reservation.statut == 'en_attente' ? 'warning' : (reservation.statut == 'confirmee' ? 'success' : 'secondary') }}">
+                                                {{ reservation.statutLabel }}
+                                            </span>
+                                            <small class="text-muted d-block">{{ reservation.dateReservation|date('d/m/Y H:i') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3) !important;
+    }
+</style>
+{% endblock %}

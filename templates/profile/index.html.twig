@@ -1,0 +1,228 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Dashboard{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="bi bi-speedometer2"></i> Mon Dashboard</h1>
+            <p class="lead">Bienvenue {{ user.fullName }}</p>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Mes Commandes</h6>
+                            <h2 class="mb-0">{{ stats.total_orders }}</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-cart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Mes Réservations</h6>
+                            <h2 class="mb-0">{{ stats.total_reservations }}</h2>
+                            <small>{{ stats.pending_reservations }} en attente</small>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Total Dépensé</h6>
+                            <h2 class="mb-0">{{ stats.total_spent|number_format(0, ',', ' ') }} €</h2>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Mon Profil</h6>
+                            <p class="mb-0 small">{{ user.email }}</p>
+                        </div>
+                        <div class="fs-1">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu rapide -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="{{ path('app_profile_edit') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-gear display-1 text-primary"></i>
+                        <h4 class="mt-3">Modifier mon Profil</h4>
+                        <p class="text-muted">Mettre à jour mes informations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_profile_reservations') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-event display-1 text-warning"></i>
+                        <h4 class="mt-3">Mes Réservations</h4>
+                        <p class="text-muted">Gérer mes réservations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ path('app_profile_orders') }}" class="text-decoration-none">
+                <div class="card shadow hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bag-check display-1 text-success"></i>
+                        <h4 class="mt-3">Mes Commandes</h4>
+                        <p class="text-muted">Suivre mes commandes</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Activité récente -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Dernières Commandes</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_orders is empty %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Vous n'avez pas encore passé de commande.
+                        </div>
+                        <div class="text-center">
+                            <p class="text-muted">Découvrez nos produits !</p>
+                            <a href="{{ path('app_product_index') }}" class="btn btn-info">
+                                <i class="bi bi-grid"></i> Voir les produits
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for order in recent_orders %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>#{{ order.numeroCommande }}</strong>
+                                            <small class="text-muted d-block">{{ order.createdAt|date('d/m/Y H:i') }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <strong>{{ order.montantTotal|number_format(2, ',', ' ') }} €</strong>
+                                            <br>
+                                            {% if order.statut == 'en_attente' %}
+                                                <span class="badge bg-warning">En attente</span>
+                                            {% elseif order.statut == 'validee' %}
+                                                <span class="badge bg-info">Validée</span>
+                                            {% elseif order.statut == 'en_preparation' %}
+                                                <span class="badge bg-primary">En préparation</span>
+                                            {% elseif order.statut == 'livree' %}
+                                                <span class="badge bg-success">Livrée</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_profile_orders') }}" class="btn btn-outline-info">Voir toutes mes commandes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Prochaines Réservations</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_reservations is empty %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Vous n'avez aucune réservation à venir.
+                        </div>
+                        <div class="text-center">
+                            <p class="text-muted">Vous souhaitez réserver une table ?</p>
+                            <a href="{{ path('app_home') }}" class="btn btn-warning">
+                                <i class="bi bi-calendar-plus"></i> Faire une réservation
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for reservation in upcoming_reservations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <i class="bi bi-people"></i> <strong>{{ reservation.nombrePersonnes }} personne(s)</strong>
+                                            <small class="text-muted d-block">{{ reservation.dateReservation|date('d/m/Y') }} à {{ reservation.heureReservation|date('H:i') }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            {% if reservation.statut == 'en_attente' %}
+                                                <span class="badge bg-warning">En attente</span>
+                                            {% elseif reservation.statut == 'confirmee' %}
+                                                <span class="badge bg-success">Confirmée</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_profile_reservations') }}" class="btn btn-outline-warning">Voir toutes mes réservations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3) !important;
+    }
+</style>
+{% endblock %}

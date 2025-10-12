@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4"><i class="bi bi-info-circle"></i> À propos de nous</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>Notre Histoire</h3>
+                <p>
+                    Bienvenue sur notre plateforme de réservation et de commande en ligne. 
+                    Nous sommes dédiés à offrir la meilleure expérience possible à nos clients.
+                </p>
+                <p>
+                    Notre mission est de simplifier le processus de réservation et de commande 
+                    tout en maintenant la qualité et la satisfaction de nos utilisateurs.
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>Nos Valeurs</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        <strong>Qualité :</strong> Nous garantissons des produits et services de haute qualité
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        <strong>Rapidité :</strong> Service rapide et efficace
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success"></i> 
+                        <strong>Satisfaction :</strong> Votre satisfaction est notre priorité
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-envelope"></i> Nous Contacter
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

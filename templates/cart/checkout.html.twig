@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Passer la commande{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-credit-card"></i> Finaliser ma commande
+    </h1>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Articles commandés</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Quantité</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for id, item in cart %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ item.product.nom }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ item.product.categorie }}</small>
+                                        </td>
+                                        <td>{{ item.product.prix|number_format(2, ',', ' ') }} €</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td class="text-end">
+                                            <strong>{{ (item.product.prix * item.quantity)|number_format(2, ',', ' ') }} €</strong>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Adresse de livraison</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_cart_place_order') }}" id="orderForm">
+                        <input type="hidden" name="_token" value="{{ csrf_token('place-order') }}">
+                        
+                        <div class="mb-3">
+                            <label for="adresse_livraison" class="form-label">Adresse complète</label>
+                            <textarea 
+                                class="form-control" 
+                                id="adresse_livraison" 
+                                name="adresse_livraison" 
+                                rows="3" 
+                                placeholder="Numéro, rue, code postal, ville"
+                                required></textarea>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> Cette adresse sera utilisée pour la livraison de votre commande.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Récapitulatif</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Sous-total :</span>
+                        <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Livraison :</span>
+                        <strong class="text-success">Gratuite</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5>Total :</h5>
+                        <h5 class="text-primary">{{ total|number_format(2, ',', ' ') }} €</h5>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" form="orderForm" class="btn btn-primary btn-lg">
+                            <i class="bi bi-credit-card"></i> Passer la commande
+                        </button>
+                        <a href="{{ path('app_cart_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour au panier
+                        </a>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3 mb-0">
+                        <small>
+                            <i class="bi bi-shield-check"></i> Paiement sécurisé<br>
+                            <i class="bi bi-truck"></i> Livraison gratuite
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

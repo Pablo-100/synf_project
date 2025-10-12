@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Réservations{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5"><i class="bi bi-calendar-event"></i> Gestion des Réservations</h1>
+        <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour au Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Toutes les Réservations ({{ reservations|length }})</h4>
+        </div>
+        <div class="card-body">
+            {% if reservations is empty %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Aucune réservation pour le moment.
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Contact</th>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Personnes</th>
+                                <th>Statut</th>
+                                <th>Commentaire</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    <td>{{ reservation.id }}</td>
+                                    <td>
+                                        <strong>{{ reservation.user.fullName }}</strong>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            <i class="bi bi-envelope"></i> {{ reservation.user.email }}<br>
+                                            {% if reservation.user.telephone %}
+                                                <i class="bi bi-telephone"></i> {{ reservation.user.telephone }}
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td>{{ reservation.dateReservation|date('d/m/Y') }}</td>
+                                    <td>{{ reservation.heureReservation|date('H:i') }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-people"></i> {{ reservation.nombrePersonnes }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if reservation.statut == 'en_attente' %}
+                                            <span class="badge bg-warning">{{ reservation.statutLabel }}</span>
+                                        {% elseif reservation.statut == 'confirmee' %}
+                                            <span class="badge bg-success">{{ reservation.statutLabel }}</span>
+                                        {% elseif reservation.statut == 'annulee' %}
+                                            <span class="badge bg-danger">{{ reservation.statutLabel }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ reservation.statutLabel }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>{{ reservation.commentaire|default('-') }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            {% if reservation.statut == 'en_attente' %}
+                                                <form method="post" action="{{ path('app_admin_reservation_status', {id: reservation.id, status: 'confirmee'}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('reservation_status_' ~ reservation.id) }}">
+                                                    <button type="submit" class="btn btn-outline-success" onclick="return confirm('Confirmer cette réservation ?')">
+                                                        <i class="bi bi-check"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            {% if reservation.statut != 'annulee' %}
+                                                <form method="post" action="{{ path('app_admin_reservation_status', {id: reservation.id, status: 'annulee'}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('reservation_status_' ~ reservation.id) }}">
+                                                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Annuler cette réservation ?')">
+                                                        <i class="bi bi-x"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

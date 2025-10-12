@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-box-arrow-in-right me-2"></i>Connexion</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Erreur !</strong> {{ error.messageKey|trans(error.messageData, 'security') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>
+                            <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-primary ms-2">Se déconnecter</a>
+                        </div>
+                    {% else %}
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="inputEmail" class="form-label">
+                                    <i class="bi bi-envelope me-1"></i>Email
+                                </label>
+                                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
+                                       class="form-control form-control-lg" autocomplete="email" required autofocus 
+                                       placeholder="votre@email.com">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="inputPassword" class="form-label">
+                                    <i class="bi bi-lock me-1"></i>Mot de passe
+                                </label>
+                                <input type="password" name="password" id="inputPassword" 
+                                       class="form-control form-control-lg" autocomplete="current-password" required
+                                       placeholder="••••••••">
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
+                                <label class="form-check-label" for="remember_me">
+                                    Se souvenir de moi
+                                </label>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-lg" type="submit">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                                </button>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <p class="text-muted">
+                                    Pas encore de compte ? 
+                                    <a href="{{ path('app_register') }}" class="text-decoration-none">
+                                        <i class="bi bi-person-plus me-1"></i>S'inscrire
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <strong><i class="bi bi-info-circle me-2"></i>Comptes de test :</strong><br>
+                                <small>
+                                    Admin : <code>admin@example.com</code> / <code>admin123</code><br>
+                                    User : <code>user@example.com</code> / <code>admin123</code>
+                                </small>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
