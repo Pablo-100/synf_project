@@ -1,246 +1,212 @@
-# 🎯 Projet Symfony - Site de Réservation
 
-## 📋 Cahier des charges
+# synf_project — Application Symfony de Réservation & Commande
 
-Projet conforme au cahier des charges PHP/Symfony/JS comprenant :
+## 🧩 Description
 
-### Fonctionnalités Utilisateur
-- ✅ **Inscription** : Création de compte utilisateur
-- ✅ **Connexion** : Authentification sécurisée
-- ✅ **Consultation du compte** : Profil et historique
-- ✅ **Réservations** : Système de réservation de tables
-- ✅ **Commandes** : Système de commande de produits/services
+**synf_project** est une application web développée avec **Symfony 7 (PHP)**.  
+Elle permet aux utilisateurs d’effectuer des **réservations** et de **passer des commandes** en ligne, tout en offrant une **interface d’administration complète** pour gérer les utilisateurs, les produits, les réservations et les commandes.
 
-### Fonctionnalités Administration
-- ✅ **Gestion des clients** : Liste et gestion des utilisateurs
-- ✅ **Gestion des produits/services** : CRUD complet avec upload d'images
-- ✅ **Gestion des réservations** : Validation, annulation
-- ✅ **Gestion des commandes** : Suivi et mise à jour du statut
-- ✅ **Statistiques** : Dashboard avec graphiques et KPIs
+### 🎯 Objectifs du projet
+- Offrir une plateforme simple et moderne pour la gestion de réservations et commandes.
+- Implémenter les bonnes pratiques de développement web avec Symfony.
+- Servir de base académique pour un projet d’ingénierie en développement web.
 
-## 🏗️ Architecture du Projet
+---
 
-### Entités Créées
-1. **User** - Gestion des utilisateurs (UserInterface + PasswordAuthenticatedUserInterface)
-2. **Product** - Produits/Services avec image, prix, stock
-3. **Reservation** - Réservations avec date, heure, nombre de personnes
-4. **Order** - Commandes avec numéro unique et statut
-5. **OrderItem** - Détails des articles commandés
-
-### Structure
-```
-synf_project/
-├── config/              # Configuration Symfony
-├── public/              # Point d'entrée web
-│   ├── uploads/         # Dossier pour les images uploadées
-│   └── index.php
-├── src/
-│   ├── Controller/      # Contrôleurs (à créer)
-│   ├── Entity/          # ✅ Entités Doctrine
-│   ├── Form/            # Formulaires (à créer)
-│   ├── Repository/      # ✅ Repositories Doctrine
-│   └── Kernel.php
-├── templates/           # Vues Twig
-├── tests/               # Tests
-├── .env                 # Configuration environnement
-└── composer.json
-```
-
-## 🚀 Installation
+## ⚙️ Installation
 
 ### Prérequis
-- PHP 8.1 ou supérieur
-- MySQL 8.0 ou supérieur (XAMPP)
-- Composer
-- Extension PHP : pdo_mysql, gd (pour les images)
+- **PHP ≥ 8.1**
+- **MySQL ≥ 8.0**
+- **Composer**
+- Extensions PHP requises : `pdo_mysql`, `gd`, `intl`
 
-### Étape 1 : Démarrer XAMPP
-```bash
-# Démarrer Apache et MySQL depuis XAMPP Control Panel
+### Étapes d’installation
+
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/Pablo-100/synf_project.git
+   cd synf_project
+````
+
+2. **Installer les dépendances**
+
+   ```bash
+   composer install
+   ```
+
+3. **Configurer la base de données**
+   Modifier la variable `DATABASE_URL` dans le fichier `.env` :
+
+   ```
+   DATABASE_URL="mysql://root:@127.0.0.1:3306/synf_project?serverVersion=8.0&charset=utf8mb4"
+   ```
+
+4. **Créer la base de données et exécuter les migrations**
+
+   ```bash
+   php bin/console doctrine:database:create
+   php bin/console doctrine:migrations:migrate
+   ```
+
+5. **(Optionnel)** Charger des données de test (fixtures)
+
+   ```bash
+   php bin/console doctrine:fixtures:load
+   ```
+
+6. **Créer un utilisateur administrateur**
+
+   ```bash
+   php bin/console make:user
+   ```
+
+7. **Démarrer le serveur local**
+
+   ```bash
+   symfony server:start
+   # ou
+   php -S localhost:8000 -t public
+   ```
+
+➡️ L’application sera accessible sur : [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 🧱 Structure du projet
+
+```
+synf_project/
+├── config/              # Configuration de Symfony
+├── public/              # Point d’entrée web (index.php)
+├── src/
+│   ├── Controller/      # Contrôleurs
+│   ├── Entity/          # Entités Doctrine
+│   ├── Form/            # Formulaires Symfony
+│   ├── Repository/      # Classes de gestion des entités
+│   └── Kernel.php
+├── templates/           # Vues Twig
+├── migrations/          # Fichiers de migration de la base
+├── .env                 # Configuration d’environnement
+└── composer.json        # Dépendances PHP
 ```
 
-### Étape 2 : Installer les dépendances
+---
+
+## 🔐 Sécurité
+
+* Mots de passe hashés avec **bcrypt / argon2**
+* Protection **CSRF** sur les formulaires
+* Gestion des rôles et permissions (**ROLE_USER**, **ROLE_ADMIN**)
+* Validation des données côté serveur
+
+---
+
+## 🧑‍💻 Développement
+
+### Générer un contrôleur
+
 ```bash
-cd c:\xampp\htdocs\synf_project
-composer install
+php bin/console make:controller NomController
 ```
 
-### Étape 3 : Configurer la base de données
-```powershell
-# Dans PowerShell, définir les variables d'environnement
-$env:DATABASE_URL="mysql://root:@127.0.0.1:3306/synf_project?serverVersion=8.0.32&charset=utf8mb4"
-$env:DEFAULT_URI="http://localhost"
+### Générer une entité
 
-# Créer la base de données
-php bin/console doctrine:database:create --if-not-exists
-
-# Générer et exécuter les migrations
+```bash
+php bin/console make:entity NomEntity
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
 ```
 
-### Étape 4 : Créer un utilisateur admin
-```powershell
-php bin/console make:user
-# Suivre les instructions pour créer un admin
-```
+### Lancer les tests
 
-### Étape 5 : Charger des données de test (optionnel)
-```powershell
-php bin/console doctrine:fixtures:load
-```
-
-### Étape 6 : Créer le dossier uploads
-```powershell
-New-Item -ItemType Directory -Path public/uploads -Force
-```
-
-### Étape 7 : Lancer le serveur
-```powershell
-php bin/console server:run
-# OU utiliser le serveur built-in PHP
-php -S localhost:8000 -t public
-```
-
-Accéder au site : http://localhost:8000
-
-## 📦 Dépendances Installées
-
-- **symfony/framework-bundle** : Core Symfony
-- **symfony/webapp-pack** : Pack complet (Twig, Security, Form, etc.)
-- **doctrine/orm** : ORM pour la base de données
-- **symfony/maker-bundle** : Générateur de code
-- **symfony/security-bundle** : Authentification et autorisation
-- **symfony/form** : Gestion des formulaires
-- **symfony/validator** : Validation des données
-- **symfony/asset** : Gestion des assets
-- **symfony/mailer** : Envoi d'emails
-- **monolog/monolog** : Logs
-- **twig/twig** : Moteur de templates
-
-## 🎨 Prochaines Étapes de Développement
-
-### 1. Créer les Contrôleurs
 ```bash
-php bin/console make:controller HomeController
-php bin/console make:controller ProductController
-php bin/console make:controller ReservationController
-php bin/console make:controller OrderController
-php bin/console make:controller Admin/DashboardController
-php bin/console make:controller Admin/ProductController
-php bin/console make:controller Admin/ReservationController
-php bin/console make:controller Admin/OrderController
+php bin/phpunit
 ```
-
-### 2. Créer les Formulaires
-```bash
-php bin/console make:form ProductType
-php bin/console make:form ReservationType
-php bin/console make:form OrderType
-php bin/console make:registration-form
-```
-
-### 3. Créer l'authentification
-```bash
-php bin/console make:auth
-```
-
-### 4. Créer les vues Twig
-- Layout de base (base.html.twig)
-- Pages utilisateur (home, products, profile, reservations, orders)
-- Pages admin (dashboard, CRUD products, manage reservations/orders)
-
-### 5. Ajouter JavaScript
-- Validation côté client
-- Interactions dynamiques (AJAX)
-- Graphiques pour les statistiques (Chart.js)
-
-### 6. Styliser avec Bootstrap 5
-- Intégration de Bootstrap via AssetMapper
-- Création d'un thème personnalisé
-
-## 📊 Fonctionnalités des Entités
-
-### User
-- Email (unique, utilisé pour login)
-- Nom et prénom
-- Téléphone et adresse
-- Rôles (ROLE_USER, ROLE_ADMIN)
-- Relations avec Reservations et Orders
-
-### Product
-- Nom, description, prix
-- Image (upload obligatoire)
-- Catégorie et stock
-- Disponibilité (actif/inactif)
-
-### Reservation
-- Date et heure
-- Nombre de personnes
-- Statut : en_attente, confirmee, annulee, terminee
-- Commentaire optionnel
-
-### Order
-- Numéro de commande unique auto-généré
-- Montant total calculé automatiquement
-- Statut : en_cours, validee, livree, annulee
-- Adresse de livraison
-- Items (OrderItem) avec quantité et prix unitaire
-
-## 🔐 Sécurité
-
-Le projet utilise le composant Security de Symfony :
-- Hashage des mots de passe (bcrypt/argon2)
-- Protection CSRF sur les formulaires
-- Contrôle d'accès par rôle (ROLE_USER, ROLE_ADMIN)
-- Validation des données côté serveur
-
-## 📚 Ressources
-
-- [Documentation Symfony](https://symfony.com/doc/current/index.html)
-- [Doctrine ORM](https://www.doctrine-project.org/projects/doctrine-orm/en/current/index.html)
-- [Twig](https://twig.symfony.com/)
-- [Bootstrap 5](https://getbootstrap.com/)
-
-## 🐛 Dépannage
-
-### Erreur de connexion à la base de données
-```powershell
-# Vérifier que MySQL est démarré dans XAMPP
-# Vérifier le .env :
-DATABASE_URL="mysql://root:@127.0.0.1:3306/synf_project?serverVersion=8.0.32&charset=utf8mb4"
-```
-
-### Cache
-```powershell
-# Vider le cache
-php bin/console cache:clear
-
-# OU manuellement
-Remove-Item -Path var\cache -Recurse -Force
-```
-
-### Permissions sur uploads/
-```powershell
-# S'assurer que le dossier est accessible en écriture
-icacls public\uploads /grant Everyone:F
-```
-
-## 👥 Équipe
-
-- Projet individuel ou en équipe (max 4 personnes)
-- Adaptable selon le cahier des charges
-
-## 📝 License
-
-Projet académique - Formation PHP/Symfony
 
 ---
 
-**Note** : Ce projet répond aux exigences du cahier des charges avec :
-- ✅ 4 entités principales (User, Product, Reservation, Order + OrderItem)
-- ✅ Système d'authentification
-- ✅ CRUD complet avec upload
-- ✅ Gestion des réservations et commandes
-- ✅ Base pour les statistiques dans l'admin
-- ✅ Structure professionnelle et extensible
+## 📊 Fonctionnalités principales
+
+### Utilisateurs
+
+* Inscription / connexion
+* Profil personnel
+* Historique des réservations et commandes
+
+### Réservations
+
+* Création, modification, annulation
+* Statuts : en attente, confirmée, annulée, terminée
+
+### Commandes
+
+* Ajout d’articles au panier
+* Validation de commande
+* Suivi du statut
+
+### Administration
+
+* CRUD complet : produits, utilisateurs, réservations, commandes
+* Tableau de bord avec statistiques
+
+---
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues !
+Pour contribuer :
+
+1. Forker le dépôt
+2. Créer une nouvelle branche :
+
+   ```bash
+   git checkout -b feature/ma-fonctionnalite
+   ```
+3. Effectuer vos modifications
+4. Soumettre une Pull Request pour révision
+
+---
+
+## 🪪 Licence
+
+Ce projet est distribué sous la **Licence MIT** :
+
+```
+MIT License
+
+Copyright (c) 2025 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+---
+
+## 👤 Auteur
+
+**Mustapha Amine TBINI**
+📍 Tunis, Tunisie
+📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
+🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
+
+```
+
+---
+
+تحب نولّدو كملف `README.md` جاهز للتحميل من عندي (باش تحطّو مباشرة في GitHub)؟
+```
