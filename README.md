@@ -27,7 +27,7 @@ Elle permet aux utilisateurs d’effectuer des **réservations** et de **passer 
    ```bash
    git clone https://github.com/Pablo-100/synf_project.git
    cd synf_project
-````
+
 
 2. **Installer les dépendances**
 
@@ -47,7 +47,7 @@ Elle permet aux utilisateurs d’effectuer des **réservations** et de **passer 
    ```bash
    php bin/console doctrine:database:create
    php bin/console doctrine:migrations:migrate
-   ```
+   
 
 5. **(Optionnel)** Charger des données de test (fixtures)
 
@@ -124,7 +124,6 @@ php bin/console doctrine:migrations:migrate
 php bin/phpunit
 ```
 
----
 
 ## 📊 Fonctionnalités principales
 
@@ -204,9 +203,4 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
 🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
 
-```
 
----
-
-تحب نولّدو كملف `README.md` جاهز للتحميل من عندي (باش تحطّو مباشرة في GitHub)؟
-```
