@@ -10,133 +10,628 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Satisfy&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
-            /* Variables pour Mode Clair */
+            /* Calm Light Palette */
             :root {
-                --primary-color: #2e7d32;
-                --primary-light: #4caf50;
-                --primary-dark: #1b5e20;
-                --secondary-color: #ff6f00;
-                --secondary-light: #ff9800;
-                --accent-color: #ffc107;
-                --background: #ffffff;
-                --background-alt: #f5f5f5;
-                --surface: #ffffff;
-                --text-primary: #212121;
-                --text-secondary: #757575;
-                --border-color: #e0e0e0;
-                --shadow: 0 2px 8px rgba(0,0,0,0.1);
-                --shadow-hover: 0 4px 16px rgba(0,0,0,0.15);
+                --primary-color: #3b82f6;      /* Blue 500 calm */
+                --primary-light: #93c5fd;      /* Blue 300 */
+                --primary-dark: #2563eb;       /* Blue 600 */
+                --background: #ffffff;         /* Pure white */
+                --background-alt: #f8fafc;     /* Subtle gray 50 */
+                --surface: #ffffff;            /* Cards/containers */
+                --text-primary: #0f172a;       /* Slate 900 */
+                --text-secondary: #475569;     /* Slate 600 */
+                --border-color: #e2e8f0;       /* Gray 200 */
+                --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+                --shadow-hover: 0 8px 24px rgba(0,0,0,0.10);
             }
-            
-            /* Variables pour Mode Sombre - Professional Dark Theme */
-            [data-theme="dark"] {
-                --primary-color: #64b5f6;
-                --primary-light: #90caf9;
-                --primary-dark: #42a5f5;
-                --secondary-color: #ffa726;
-                --secondary-light: #ffb74d;
-                --accent-color: #ffd54f;
-                --background: #0a0e27;
-                --background-alt: #151b3d;
-                --surface: #1a2332;
-                --text-primary: #e8eaf6;
-                --text-secondary: #9fa8da;
-                --border-color: #2c3e50;
-                --shadow: 0 4px 16px rgba(0,0,0,0.6);
-                --shadow-hover: 0 8px 32px rgba(0,0,0,0.8);
-            }
-            
+
             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
-                transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+                transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
             }
-            
+
             body {
-                font-family: 'Poppins', sans-serif;
+                font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
                 color: var(--text-primary);
                 background-color: var(--background);
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
                 line-height: 1.6;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
-            
+
             h1, h2, h3, h4, h5, h6 {
                 font-weight: 700;
                 color: var(--text-primary);
+                letter-spacing: -0.02em;
+            }
+
+            .brand-text { font-weight: 700; letter-spacing: -0.02em; }
+
+            main { flex: 1; }
+
+            /* (Dark mode removed intentionally) */
+            
+            /* ===== NAVIGATION PREMIUM ===== */
+            .navbar-premium {
+                background: rgba(255,255,255,0.95) !important;
+                backdrop-filter: saturate(180%) blur(20px);
+                -webkit-backdrop-filter: saturate(180%) blur(20px);
+                border-bottom: 1px solid var(--border-color);
+                padding: 1rem 0;
+                box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+                transition: all 0.3s ease;
+            }
+
+            .navbar-premium.scrolled {
+                padding: 0.5rem 0;
+                box-shadow: 0 4px 30px rgba(0,0,0,0.08);
             }
             
-            .font-satisfy {
-                font-family: 'Satisfy', cursive;
+            /* Brand Premium */
+            .navbar-brand-premium {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                text-decoration: none;
+                transition: all 0.3s ease;
             }
-            
-            main {
-                flex: 1;
+
+            .navbar-brand-premium:hover {
+                transform: translateY(-2px);
             }
-            
-            /* Bouton Toggle Mode Sombre/Clair */
-            .theme-toggle {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                z-index: 9999;
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-                color: white;
-                border: none;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                cursor: pointer;
+
+            .brand-icon-wrapper {
+                width: 45px;
+                height: 45px;
+                background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+                border-radius: 12px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color: white;
                 font-size: 1.5rem;
+                box-shadow: 0 4px 15px rgba(59,130,246,0.3);
                 transition: all 0.3s ease;
             }
-            
-            [data-theme="dark"] .theme-toggle {
-                background: linear-gradient(135deg, #64b5f6, #42a5f5);
-                box-shadow: 0 4px 30px rgba(100, 181, 246, 0.5);
+
+            .navbar-brand-premium:hover .brand-icon-wrapper {
+                transform: rotate(-5deg) scale(1.05);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+            }
+
+            .brand-name {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--text-primary);
+                letter-spacing: -0.02em;
+            }
+
+            .brand-highlight {
+                color: var(--primary-color);
+            }
+
+            /* Navbar Toggler Premium */
+            .navbar-toggler-premium {
+                border: none;
+                padding: 0;
+                width: 30px;
+                height: 24px;
+                position: relative;
+                background: transparent;
+                cursor: pointer;
+            }
+
+            .navbar-toggler-premium span {
+                display: block;
+                width: 100%;
+                height: 3px;
+                background: var(--primary-color);
+                border-radius: 3px;
+                transition: all 0.3s ease;
+                position: absolute;
+            }
+
+            .navbar-toggler-premium span:nth-child(1) { top: 0; }
+            .navbar-toggler-premium span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+            .navbar-toggler-premium span:nth-child(3) { bottom: 0; }
+
+            .navbar-toggler-premium:hover span {
+                background: var(--primary-dark);
+            }
+
+            /* Nav Links Premium */
+            .navbar-nav-premium {
+                display: flex;
+                gap: 0.5rem;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                align-items: center;
+            }
+
+            .nav-item-premium {
+                list-style: none;
+            }
+
+            .nav-link-premium {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.25rem;
+                color: var(--text-primary);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .nav-link-premium i {
+                font-size: 1.1rem;
+                transition: transform 0.3s ease;
+            }
+
+            .nav-link-premium:hover {
+                color: var(--primary-color);
+                background: rgba(59,130,246,0.08);
+            }
+
+            .nav-link-premium:hover i {
+                transform: scale(1.15);
+            }
+
+            .nav-link-premium.active {
+                color: white;
+                background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+                box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+            }
+
+            .nav-link-premium.active:hover {
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+            }
+
+            /* Nav Actions Premium */
+            .navbar-actions-premium {
+                display: flex;
+                gap: 1rem;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                align-items: center;
+            }
+
+            /* Search Form Premium */
+            .search-form-premium {
+                margin: 0;
+            }
+
+            .search-wrapper {
+                position: relative;
+                width: 250px;
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-secondary);
+                font-size: 1rem;
+                z-index: 1;
+            }
+
+            .search-input-premium {
+                width: 100%;
+                padding: 0.75rem 1rem 0.75rem 2.75rem;
+                border: 2px solid var(--border-color);
+                border-radius: 50px;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                background: var(--surface);
+                color: var(--text-primary);
+            }
+
+            .search-input-premium:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+                background: white;
+            }
+
+            .search-input-premium::placeholder {
+                color: var(--text-secondary);
+            }
+
+            /* Nav Buttons Premium */
+            .btn-nav-premium {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+            .btn-nav-cart {
+                position: relative;
+                padding: 0.75rem 1rem;
+                color: var(--primary-color);
+                border: 2px solid var(--primary-color);
+                background: transparent;
+            }
+
+            .btn-nav-cart:hover {
+                color: white;
+                background: var(--primary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.3);
+            }
+
+            .btn-nav-cart i {
+                font-size: 1.4rem;
+            }
+
+            .cart-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: linear-gradient(135deg, #ef4444, #dc2626);
+                color: white;
+                font-size: 0.7rem;
+                font-weight: 700;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid white;
+                box-shadow: 0 2px 8px rgba(239,68,68,0.4);
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+
+            .btn-nav-outline {
+                color: var(--primary-color);
+                border-color: var(--primary-color);
+                background: transparent;
+            }
+
+            .btn-nav-outline:hover {
+                color: white;
+                background: var(--primary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.3);
+            }
+
+            .btn-nav-solid {
+                color: white;
+                background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+                box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+            }
+
+            .btn-nav-solid:hover {
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+            }
+
+            /* ===== FOOTER PREMIUM ===== */
+            .footer-premium {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: #e2e8f0;
+                padding: 0;
+                margin-top: 6rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .footer-premium::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);
+            }
+
+            .footer-main {
+                padding: 4rem 0 3rem;
+                position: relative;
+            }
+
+            /* Footer Brand */
+            .footer-brand {
+                margin-bottom: 2rem;
+            }
+
+            .footer-logo {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .footer-logo-icon {
+                width: 45px;
+                height: 45px;
+                background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.5rem;
+                box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+            }
+
+            .footer-logo-text {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: white;
+                letter-spacing: -0.02em;
+            }
+
+            .footer-logo-text .highlight {
+                color: var(--primary-color);
+            }
+
+            .footer-description {
+                font-size: 0.95rem;
+                line-height: 1.7;
+                color: #94a3b8;
+                margin-bottom: 2rem;
+            }
+
+            /* Social Links */
+            .social-links-premium {
+                display: flex;
+                gap: 1rem;
+            }
+
+            .social-link {
+                width: 45px;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 12px;
+                color: #e2e8f0;
+                font-size: 1.2rem;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .social-link:hover {
+                background: var(--primary-color);
+                border-color: var(--primary-color);
+                color: white;
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+            }
+
+            /* Footer Titles */
+            .footer-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: white;
+                margin-bottom: 1.5rem;
+                position: relative;
+                padding-bottom: 0.75rem;
+            }
+
+            .footer-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 40px;
+                height: 3px;
+                background: linear-gradient(90deg, var(--primary-color), transparent);
+                border-radius: 2px;
+            }
+
+            /* Footer Links */
+            .footer-links {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .footer-links li {
+                margin-bottom: 0.75rem;
+            }
+
+            .footer-links a {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: #94a3b8;
+                text-decoration: none;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
+
+            .footer-links a i {
+                font-size: 0.75rem;
+                transition: transform 0.3s ease;
+            }
+
+            .footer-links a:hover {
+                color: var(--primary-color);
+                padding-left: 0.5rem;
+            }
+
+            .footer-links a:hover i {
+                transform: translateX(3px);
+            }
+
+            /* Footer Contact */
+            .footer-contact {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .footer-contact li {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .footer-contact i {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(59,130,246,0.1);
+                border-radius: 10px;
+                color: var(--primary-color);
+                font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+
+            .footer-contact div {
+                flex: 1;
+            }
+
+            .footer-contact strong {
+                display: block;
+                color: white;
+                font-size: 0.9rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .footer-contact span {
+                display: block;
+                color: #94a3b8;
+                font-size: 0.9rem;
+            }
+
+            /* Footer Bottom */
+            .footer-bottom {
+                padding: 2rem 0;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .footer-copyright {
+                color: #94a3b8;
+                font-size: 0.9rem;
+                margin: 0;
+            }
+
+            .footer-copyright strong {
+                color: white;
+            }
+
+            .footer-legal {
+                display: flex;
+                justify-content: center;
+                gap: 2rem;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .footer-legal a {
+                color: #94a3b8;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: color 0.3s ease;
+            }
+
+            .footer-legal a:hover {
+                color: var(--primary-color);
+            }
+
+            /* Responsive Nav */
+            @media (max-width: 991px) {
+                .navbar-nav-premium {
+                    flex-direction: column;
+                    width: 100%;
+                    padding: 1rem 0;
+                }
+
+                .nav-link-premium {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+
+                .navbar-actions-premium {
+                    flex-direction: column;
+                    width: 100%;
+                    padding: 1rem 0;
+                }
+
+                .search-wrapper {
+                    width: 100%;
+                }
+
+                .btn-nav-premium {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .footer-legal {
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    text-align: center;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .footer-main {
+                    padding: 3rem 0 2rem;
+                }
+
+                .footer-copyright {
+                    text-align: center;
+                    margin-bottom: 1rem;
+                }
             }
             
-            .theme-toggle:hover {
-                transform: scale(1.1) rotate(15deg);
-                box-shadow: 0 6px 30px rgba(0,0,0,0.4);
-            }
-            
-            [data-theme="dark"] .theme-toggle:hover {
-                box-shadow: 0 6px 40px rgba(100, 181, 246, 0.7);
-            }
-            
-            /* Navigation */
+            /* Navigation (old styles removed) */
             .navbar {
-                background: var(--surface) !important;
-                box-shadow: var(--shadow);
-                padding: 1rem 0;
-                border-bottom: 3px solid var(--primary-color);
-                backdrop-filter: blur(10px);
+                background: rgba(255,255,255,0.7) !important;
+                backdrop-filter: saturate(180%) blur(12px);
+                -webkit-backdrop-filter: saturate(180%) blur(12px);
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.75rem 0;
+                box-shadow: none;
             }
             
-            [data-theme="dark"] .navbar {
-                background: rgba(26, 35, 50, 0.95) !important;
-                border-bottom: 2px solid var(--primary-color);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            }
             
             .navbar-brand {
-                font-family: 'Satisfy', cursive;
-                font-size: 2rem;
-                color: var(--primary-color) !important;
+                font-size: 1.4rem;
+                color: var(--text-primary) !important;
                 font-weight: 700;
+                letter-spacing: -0.02em;
             }
             
             .navbar-brand i {
-                color: var(--secondary-color);
+                color: var(--primary-color);
                 margin-right: 8px;
             }
             
@@ -151,6 +646,10 @@
             
             .nav-link:hover, .nav-link.active {
                 color: var(--primary-color) !important;
+            }
+            
+            .nav-link.active::after {
+                width: 80%;
             }
             
             .nav-link::after {
@@ -201,29 +700,16 @@
                 height: 300px;
             }
             
-            .btn-primary {
-                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-                color: white;
-                box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
-            }
-            
-            [data-theme="dark"] .btn-primary {
-                background: linear-gradient(135deg, #64b5f6, #42a5f5);
-                box-shadow: 0 4px 20px rgba(100, 181, 246, 0.4);
-            }
+            .btn-primary { background: var(--primary-color); color: #fff; box-shadow: none; }
             
             .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
-                background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-            }
-            
-            [data-theme="dark"] .btn-primary:hover {
-                box-shadow: 0 6px 30px rgba(100, 181, 246, 0.6);
+                transform: translateY(-1px);
+                box-shadow: var(--shadow);
+                filter: brightness(0.98);
             }
             
             .btn-outline-primary {
-                border: 2px solid var(--primary-color);
+                border: 1.5px solid var(--primary-color);
                 color: var(--primary-color);
                 background: transparent;
             }
@@ -231,54 +717,29 @@
             .btn-outline-primary:hover {
                 background: var(--primary-color);
                 color: white;
-                transform: translateY(-2px);
+                transform: translateY(-1px);
             }
             
-            .btn-secondary {
-                background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
-                color: white;
-                box-shadow: 0 4px 12px rgba(255, 111, 0, 0.3);
-            }
-            
-            [data-theme="dark"] .btn-secondary {
-                background: linear-gradient(135deg, #ffa726, #ffb74d);
-                box-shadow: 0 4px 20px rgba(255, 167, 38, 0.4);
-            }
-            
-            .btn-secondary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(255, 111, 0, 0.4);
-            }
-            
-            [data-theme="dark"] .btn-secondary:hover {
-                box-shadow: 0 6px 30px rgba(255, 167, 38, 0.6);
-            }
+            .btn-secondary { background: var(--background-alt); color: var(--text-primary); border: 1px solid var(--border-color); }
+            .btn-secondary:hover { background: var(--surface); box-shadow: var(--shadow); }
             
             /* Cards */
             .card {
                 border: 1px solid var(--border-color);
-                border-radius: 15px;
+                border-radius: 14px;
                 overflow: hidden;
-                box-shadow: var(--shadow);
+                box-shadow: none;
                 transition: all 0.4s ease;
                 background: var(--surface);
             }
             
-            [data-theme="dark"] .card {
-                background: linear-gradient(145deg, #1a2332, #1f2937);
-                border: 1px solid rgba(100, 181, 246, 0.2);
-            }
             
             .card:hover {
-                transform: translateY(-8px);
+                transform: translateY(-4px);
                 box-shadow: var(--shadow-hover);
                 border-color: var(--primary-color);
             }
             
-            [data-theme="dark"] .card:hover {
-                box-shadow: 0 12px 40px rgba(100, 181, 246, 0.3);
-                border-color: var(--primary-color);
-            }
             
             .card-img-top {
                 transition: transform 0.4s ease;
@@ -311,50 +772,31 @@
                 letter-spacing: 0.5px;
             }
             
-            .badge.bg-primary {
-                background: var(--primary-color) !important;
-            }
-            
-            [data-theme="dark"] .badge.bg-primary {
-                background: linear-gradient(135deg, #64b5f6, #42a5f5) !important;
-                box-shadow: 0 0 20px rgba(100, 181, 246, 0.5);
-            }
-            
-            .badge.bg-success {
-                background: #4caf50 !important;
-            }
-            
-            [data-theme="dark"] .badge.bg-success {
-                background: linear-gradient(135deg, #66bb6a, #4caf50) !important;
-                box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
-            }
-            
-            .badge.bg-warning {
-                background: #ff9800 !important;
-            }
-            
-            [data-theme="dark"] .badge.bg-warning {
-                background: linear-gradient(135deg, #ffa726, #ffb74d) !important;
-                box-shadow: 0 0 20px rgba(255, 167, 38, 0.5);
-            }
-            
-            .badge.bg-danger {
-                background: #f44336 !important;
-            }
-            
-            [data-theme="dark"] .badge.bg-danger {
-                background: linear-gradient(135deg, #ef5350, #e53935) !important;
-                box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
-            }
+            .badge.bg-primary { background: var(--primary-color) !important; }
+            .badge.bg-success { background: #22c55e !important; }
+            .badge.bg-warning { background: #f59e0b !important; }
+            .badge.bg-danger { background: #ef4444 !important; }
+
+            /* Readability fixes */
+            .text-muted { color: var(--text-secondary) !important; }
+            .bg-secondary { background-color: var(--background-alt) !important; color: var(--text-primary) !important; }
+
+            /* Contact / cards general text */
+            .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 { color: var(--text-primary); }
+            .card p { color: var(--text-secondary); margin-bottom: 0.5rem; }
+
+            /* Form labels & placeholders */
+            .form-label { color: var(--text-primary); }
+            ::placeholder { color: var(--text-secondary); opacity: 1; }
             
             /* Footer */
             footer {
                 background: var(--surface);
                 color: var(--text-primary);
-                padding: 4rem 0 2rem;
-                margin-top: 5rem;
-                border-top: 3px solid var(--primary-color);
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                padding: 2rem 0;
+                margin-top: 3rem;
+                border-top: 1px solid var(--border-color);
+                box-shadow: none;
             }
             
             footer h5 {
@@ -430,24 +872,11 @@
                 color: var(--text-primary);
             }
             
-            [data-theme="dark"] .form-control,
-            [data-theme="dark"] .form-select {
-                background: rgba(26, 35, 50, 0.6);
-                border-color: rgba(100, 181, 246, 0.3);
-            }
-            
             .form-control:focus, .form-select:focus {
                 border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+                box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.15);
                 background: var(--surface);
                 color: var(--text-primary);
-            }
-            
-            [data-theme="dark"] .form-control:focus,
-            [data-theme="dark"] .form-select:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.3rem rgba(100, 181, 246, 0.2);
-                background: rgba(26, 35, 50, 0.8);
             }
             
             /* Dropdown */
@@ -482,8 +911,8 @@
             }
             
             .table thead {
-                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-                color: white;
+                background: #eef2ff; /* calm tint */
+                color: var(--text-primary);
             }
             
             .table tbody tr {
@@ -491,9 +920,34 @@
                 border-bottom: 1px solid var(--border-color);
             }
             
-            .table tbody tr:hover {
-                background: var(--background-alt);
+            .table tbody tr:hover { background: rgba(59,130,246,0.06); }
+
+            /* Normalize table borders */
+            .table, .table td, .table th { border-color: var(--border-color) !important; }
+
+            /* Normalize Bootstrap colored card-headers to neutral surface + colored border-left */
+            .card-header[class*="bg-"] {
+                background: var(--surface) !important;
+                color: var(--text-primary) !important;
+                border-bottom: 1px solid var(--border-color) !important;
+                position: relative;
+                padding-top: .9rem; padding-bottom: .9rem;
             }
+            .card-header.bg-primary { border-left: 4px solid var(--primary-color); }
+            .card-header.bg-success { border-left: 4px solid #22c55e; }
+            .card-header.bg-warning { border-left: 4px solid #f59e0b; }
+            .card-header.bg-info { border-left: 4px solid #0ea5e9; }
+            .card-header.bg-danger { border-left: 4px solid #ef4444; }
+
+            /* Badges */
+            .badge.bg-light { background: var(--background-alt) !important; color: var(--text-primary) !important; border: 1px solid var(--border-color); }
+
+            /* Buttons and links */
+            .btn-link { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+            .btn-link:hover { text-decoration: underline; }
+
+            /* Headings spacing */
+            .section-title { margin-bottom: 1rem; }
             
             /* Animations */
             @keyframes fadeInUp {
@@ -511,34 +965,11 @@
                 animation: fadeInUp 0.8s ease;
             }
             
-            /* Background Patterns */
-            .hero-pattern {
-                background-image: 
-                    linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-                position: relative;
-                overflow: hidden;
-            }
-            
-            [data-theme="dark"] .hero-pattern {
-                background-image: 
-                    linear-gradient(135deg, #0a0e27 0%, #1a2332 50%, #0f1419 100%);
-                box-shadow: inset 0 0 100px rgba(100, 181, 246, 0.1);
-            }
-            
-            .hero-pattern::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-image: 
-                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            }
-            
-            [data-theme="dark"] .hero-pattern::before {
-                background-image: 
-                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2364b5f6' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            /* Hero minimal */
+            .hero {
+                border-radius: 18px;
+                background: linear-gradient(180deg, var(--background-alt), var(--surface));
+                border: 1px solid var(--border-color);
             }
             
             /* Responsive */
@@ -552,13 +983,7 @@
                     font-size: 0.85rem;
                 }
                 
-                .theme-toggle {
-                    width: 50px;
-                    height: 50px;
-                    bottom: 20px;
-                    right: 20px;
-                    font-size: 1.2rem;
-                }
+                
             }
         </style>
     {% endblock %}
@@ -569,8 +994,8 @@
         {# Navigation pour utilisateurs connectés #}
         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
             <div class="container">
-                <a class="navbar-brand" href="{{ is_granted('ROLE_ADMIN') ? path('app_admin_dashboard') : path('app_profile') }}">
-                    <i class="bi bi-shop"></i> <span class="font-satisfy">FreshMarket</span>
+                <a class="navbar-brand brand-text" href="{{ is_granted('ROLE_ADMIN') ? path('app_admin_dashboard') : path('app_profile') }}">
+                    <i class="bi bi-bag-check-fill"></i> FreshMarket
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -616,58 +1041,73 @@
             </div>
         </nav>
     {% else %}
-        {# Navigation pour visiteurs #}
-        <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        {# Navigation pour visiteurs - PREMIUM #}
+        <nav class="navbar navbar-expand-lg navbar-premium sticky-top">
             <div class="container">
-                <a class="navbar-brand" href="{{ path('app_home') }}">
-                    <i class="bi bi-shop"></i> <span class="font-satisfy">FreshMarket</span>
+                <a class="navbar-brand-premium" href="{{ path('app_home') }}">
+                    <div class="brand-icon-wrapper">
+                        <i class="bi bi-bag-check-fill"></i>
+                    </div>
+                    <span class="brand-name">Fresh<span class="brand-highlight">Market</span></span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
+                <button class="navbar-toggler-premium" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{{ path('app_home') }}">
-                                <i class="bi bi-house-heart"></i> Accueil
+                    <ul class="navbar-nav-premium mx-auto">
+                        <li class="nav-item-premium">
+                            <a class="nav-link-premium {{ app.request.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+                                <i class="bi bi-house-heart-fill"></i>
+                                <span>Accueil</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_product_index') }}">
-                                <i class="bi bi-basket"></i> Boutique
+                        <li class="nav-item-premium">
+                            <a class="nav-link-premium {{ app.request.get('_route') starts with 'app_product' ? 'active' : '' }}" href="{{ path('app_product_index') }}">
+                                <i class="bi bi-basket-fill"></i>
+                                <span>Boutique</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_about') }}">
-                                <i class="bi bi-info-circle"></i> À propos
+                        <li class="nav-item-premium">
+                            <a class="nav-link-premium {{ app.request.get('_route') == 'app_about' ? 'active' : '' }}" href="{{ path('app_about') }}">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span>À propos</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_contact') }}">
-                                <i class="bi bi-envelope-heart"></i> Contact
+                        <li class="nav-item-premium">
+                            <a class="nav-link-premium {{ app.request.get('_route') == 'app_contact' ? 'active' : '' }}" href="{{ path('app_contact') }}">
+                                <i class="bi bi-envelope-heart-fill"></i>
+                                <span>Contact</span>
                             </a>
                         </li>
                     </ul>
                     
-                    <ul class="navbar-nav align-items-center">
-                        <li class="nav-item me-3">
-                            <form class="d-flex" action="{{ path('app_product_search') }}" method="get" style="min-width: 250px;">
-                                <div class="input-group">
-                                    <input class="form-control border-2" type="search" name="q" placeholder="Rechercher un produit..." aria-label="Search">
-                                    <button class="btn btn-outline-primary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
+                    <ul class="navbar-actions-premium">
+                        <li class="nav-item-premium">
+                            <form class="search-form-premium" action="{{ path('app_product_search') }}" method="get">
+                                <div class="search-wrapper">
+                                    <i class="bi bi-search search-icon"></i>
+                                    <input type="search" name="q" placeholder="Rechercher..." class="search-input-premium">
                                 </div>
                             </form>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-primary btn-sm me-2" href="{{ path('app_login') }}">
-                                <i class="bi bi-box-arrow-in-right"></i> Connexion
+                        <li class="nav-item-premium">
+                            <a class="btn-nav-premium btn-nav-cart" href="{{ path('app_cart_index') }}" title="Mon Panier">
+                                <i class="bi bi-cart3"></i>
+                                <span class="cart-badge">0</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-secondary btn-sm" href="{{ path('app_register') }}">
-                                <i class="bi bi-person-plus"></i> Inscription
+                        <li class="nav-item-premium">
+                            <a class="btn-nav-premium btn-nav-outline" href="{{ path('app_login') }}">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span>Connexion</span>
+                            </a>
+                        </li>
+                        <li class="nav-item-premium">
+                            <a class="btn-nav-premium btn-nav-solid" href="{{ path('app_register') }}">
+                                <i class="bi bi-person-plus-fill"></i>
+                                <span>Inscription</span>
                             </a>
                         </li>
                     </ul>
@@ -691,138 +1131,131 @@
         {% block body %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer>
+    <!-- Footer Premium -->
+    <footer class="footer-premium">
         <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <h5><i class="bi bi-shop"></i> <span class="font-satisfy">FreshMarket</span></h5>
-                    <p style="color: var(--text-secondary);">
-                        Votre épicerie en ligne pour des produits frais et de qualité. 
-                        Livraison rapide à domicile, tous les jours de la semaine.
-                    </p>
-                    <div class="social-links mt-4">
-                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="#" title="Instagram" class="mx-2"><i class="bi bi-instagram"></i></a>
-                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
-                        <a href="#" title="WhatsApp" class="mx-2"><i class="bi bi-whatsapp"></i></a>
+            <div class="footer-main">
+                <div class="row g-5">
+                    <!-- Brand Column -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <div class="footer-logo">
+                                <div class="footer-logo-icon">
+                                    <i class="bi bi-bag-check-fill"></i>
+                                </div>
+                                <span class="footer-logo-text">Fresh<span class="highlight">Market</span></span>
+                            </div>
+                            <p class="footer-description">
+                                Votre marketplace de confiance pour des produits frais et de qualité, livrés directement chez vous. Excellence et satisfaction garanties.
+                            </p>
+                            <div class="social-links-premium">
+                                <a href="#" class="social-link" aria-label="Facebook">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link" aria-label="Twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link" aria-label="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link" aria-label="LinkedIn">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Column -->
+                    <div class="col-lg-2 col-md-6">
+                        <h5 class="footer-title">Navigation</h5>
+                        <ul class="footer-links">
+                            <li><a href="{{ path('app_home') }}"><i class="bi bi-chevron-right"></i>Accueil</a></li>
+                            <li><a href="{{ path('app_product_index') }}"><i class="bi bi-chevron-right"></i>Boutique</a></li>
+                            <li><a href="{{ path('app_about') }}"><i class="bi bi-chevron-right"></i>À propos</a></li>
+                            <li><a href="{{ path('app_contact') }}"><i class="bi bi-chevron-right"></i>Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Catégories Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="footer-title">Catégories</h5>
+                        <ul class="footer-links">
+                            <li><a href="{{ path('app_product_category', {category: 'plat'}) }}"><i class="bi bi-chevron-right"></i>Plats</a></li>
+                            <li><a href="{{ path('app_product_category', {category: 'boisson'}) }}"><i class="bi bi-chevron-right"></i>Boissons</a></li>
+                            <li><a href="{{ path('app_product_category', {category: 'dessert'}) }}"><i class="bi bi-chevron-right"></i>Desserts</a></li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a href="{{ path('app_admin_dashboard') }}"><i class="bi bi-chevron-right"></i>Administration</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Contact Column -->
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="footer-title">Contact</h5>
+                        <ul class="footer-contact">
+                            <li>
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <div>
+                                    <strong>Adresse</strong>
+                                    <span>123 Rue Example, 75000 Paris</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="bi bi-telephone-fill"></i>
+                                <div>
+                                    <strong>Téléphone</strong>
+                                    <span>+33 1 23 45 67 89</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="bi bi-envelope-fill"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <span>contact@freshmarket.fr</span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6">
-                    <h5><i class="bi bi-basket"></i> Boutique</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ path('app_product_index') }}">Tous les Produits</a></li>
-                        <li class="mb-2"><a href="#">Fruits & Légumes</a></li>
-                        <li class="mb-2"><a href="#">Boulangerie</a></li>
-                        <li class="mb-2"><a href="#">Boissons</a></li>
-                        <li class="mb-2"><a href="#">Promotions</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h5><i class="bi bi-info-circle"></i> Informations</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ path('app_about') }}">À propos de nous</a></li>
-                        <li class="mb-2"><a href="{{ path('app_contact') }}">Nous contacter</a></li>
-                        <li class="mb-2"><a href="#">Livraison</a></li>
-                        <li class="mb-2"><a href="#">FAQ</a></li>
-                        <li class="mb-2"><a href="#">CGV</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <h5><i class="bi bi-envelope-heart"></i> Nous Contacter</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="bi bi-geo-alt-fill me-2" style="color: var(--primary-color);"></i>
-                            123 Avenue de la République, Paris
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-telephone-fill me-2" style="color: var(--primary-color);"></i>
-                            +33 (0)1 23 45 67 89
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-envelope-fill me-2" style="color: var(--primary-color);"></i>
-                            contact@freshmarket.fr
-                        </li>
-                        <li class="mt-3">
-                            <i class="bi bi-clock-fill me-2" style="color: var(--primary-color);"></i>
-                            Lun-Dim: 8h00 - 20h00
-                        </li>
-                    </ul>
-                </div>
             </div>
-            <hr style="border-color: var(--border-color); margin: 2.5rem 0 1.5rem;">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0" style="color: var(--text-secondary);">
-                        &copy; {{ 'now'|date('Y') }} FreshMarket. Tous droits réservés.
-                    </p>
-                </div>
-                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                    <i class="bi bi-credit-card fs-4 me-3" style="color: var(--primary-color);"></i>
-                    <i class="bi bi-paypal fs-4 me-3" style="color: var(--primary-color);"></i>
-                    <i class="bi bi-shield-check fs-4" style="color: var(--primary-color);"></i>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="footer-copyright">
+                            © {{ 'now'|date('Y') }} <strong>FreshMarket</strong>. Tous droits réservés.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="footer-legal">
+                            <li><a href="#">Conditions d'utilisation</a></li>
+                            <li><a href="#">Politique de confidentialité</a></li>
+                            <li><a href="#">Mentions légales</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bouton Toggle Mode Sombre/Clair -->
-    <button class="theme-toggle" id="themeToggle" title="Changer le thème">
-        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
-    </button>
-
     {% block javascripts %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
         <script>
-            // Gestion du Mode Sombre/Clair
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
-            const html = document.documentElement;
-            
-            // Charger le thème sauvegardé ou utiliser le thème système
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                html.setAttribute('data-theme', savedTheme);
-                updateThemeIcon(savedTheme);
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                html.setAttribute('data-theme', 'dark');
-                updateThemeIcon('dark');
-            }
-            
-            // Toggle entre mode clair et sombre
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
-                
-                // Animation du bouton
-                themeToggle.style.transform = 'rotate(360deg)';
-                setTimeout(() => {
-                    themeToggle.style.transform = 'rotate(0deg)';
-                }, 300);
-            });
-            
-            // Mettre à jour l'icône selon le thème
-            function updateThemeIcon(theme) {
-                if (theme === 'dark') {
-                    themeIcon.className = 'bi bi-sun-fill';
-                } else {
-                    themeIcon.className = 'bi bi-moon-stars-fill';
-                }
-            }
-            
-            // Détecter les changements de préférence système
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('theme')) {
-                    const newTheme = e.matches ? 'dark' : 'light';
-                    html.setAttribute('data-theme', newTheme);
-                    updateThemeIcon(newTheme);
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar-premium');
+                if (navbar) {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
                 }
             });
         </script>
+        
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </body>

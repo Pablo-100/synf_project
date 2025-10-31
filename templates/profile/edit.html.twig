@@ -3,96 +3,457 @@
 {% block title %}Modifier mon profil{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5"><i class="bi bi-person-gear"></i> Modifier mon profil</h1>
-        <a href="{{ path('app_profile') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Retour au Dashboard
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h3 class="mb-0"><i class="bi bi-pencil-square"></i> Mes Informations</h3>
+<div class="container-fluid px-4 py-4">
+    <!-- Header Premium avec Icône -->
+    <div class="page-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="header-icon-box bg-purple">
+                        <i class="bi bi-person-gear"></i>
+                    </div>
+                    <div>
+                        <h1 class="display-5 mb-1 fw-bold">Modifier mon Profil</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>Personnalisez vos informations
+                        </p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    {{ form_start(profileForm) }}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(profileForm.nom, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(profileForm.nom) }}
-                                {{ form_errors(profileForm.nom) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(profileForm.prenom, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(profileForm.prenom) }}
-                                {{ form_errors(profileForm.prenom) }}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(profileForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(profileForm.email) }}
-                            {{ form_errors(profileForm.email) }}
-                            <small class="form-text text-muted">L'email ne peut pas être modifié</small>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(profileForm.telephone, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(profileForm.telephone) }}
-                            {{ form_errors(profileForm.telephone) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(profileForm.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(profileForm.adresse) }}
-                            {{ form_errors(profileForm.adresse) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(profileForm.avatarFile, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {% if user.avatar %}
-                                <div class="mb-2">
-                                    <img src="{{ asset('uploads/' ~ user.avatar) }}" alt="Avatar" class="img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
-                                    <p class="text-muted small mt-1">Photo actuelle</p>
-                                </div>
-                            {% endif %}
-                            {{ form_widget(profileForm.avatarFile) }}
-                            {{ form_errors(profileForm.avatarFile) }}
-                            <small class="form-text text-muted">Format accepté : JPEG, PNG, GIF, WebP. Taille max : 2 Mo</small>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h5 class="mb-3"><i class="bi bi-key"></i> Changer le mot de passe</h5>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(profileForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(profileForm.plainPassword.first) }}
-                                {{ form_errors(profileForm.plainPassword.first) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(profileForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(profileForm.plainPassword.second) }}
-                                {{ form_errors(profileForm.plainPassword.second) }}
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('app_profile') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Enregistrer les modifications
-                            </button>
-                        </div>
-                    {{ form_end(profileForm) }}
-                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Mon Dashboard
+                </a>
             </div>
         </div>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            {{ form_start(profileForm, {'attr': {'class': 'form-premium'}}) }}
+            
+            <!-- Informations Personnelles -->
+            <div class="form-section mb-4">
+                <div class="form-section-header">
+                    <div class="form-section-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div>
+                        <h3>Informations Personnelles</h3>
+                        <p>Vos coordonnées principales</p>
+                    </div>
+                </div>
+                <div class="form-section-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-person"></i>
+                                    {{ form_label(profileForm.nom) }}
+                                </label>
+                                {{ form_widget(profileForm.nom, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.nom) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-person-badge"></i>
+                                    {{ form_label(profileForm.prenom) }}
+                                </label>
+                                {{ form_widget(profileForm.prenom, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.prenom) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-1">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-envelope"></i>
+                                    {{ form_label(profileForm.email) }}
+                                </label>
+                                {{ form_widget(profileForm.email, {'attr': {'class': 'form-control-premium', 'readonly': true}}) }}
+                                {{ form_errors(profileForm.email) }}
+                                <small class="form-hint">
+                                    <i class="bi bi-info-circle"></i>
+                                    L'email ne peut pas être modifié
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-telephone"></i>
+                                    {{ form_label(profileForm.telephone) }}
+                                </label>
+                                {{ form_widget(profileForm.telephone, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.telephone) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="form-group-premium">
+                            <label class="form-label-premium">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ form_label(profileForm.adresse) }}
+                            </label>
+                            {{ form_widget(profileForm.adresse, {'attr': {'class': 'form-control-premium', 'rows': 3}}) }}
+                            {{ form_errors(profileForm.adresse) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo de Profil -->
+            <div class="form-section mb-4">
+                <div class="form-section-header">
+                    <div class="form-section-icon">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <div>
+                        <h3>Photo de Profil</h3>
+                        <p>Personnalisez votre avatar</p>
+                    </div>
+                </div>
+                <div class="form-section-body">
+                    <div class="avatar-upload-zone">
+                        {% if user.avatar %}
+                            <div class="current-avatar">
+                                <img src="{{ asset('uploads/' ~ user.avatar) }}" alt="Avatar actuel">
+                                <div class="current-avatar-label">
+                                    <i class="bi bi-check-circle"></i>
+                                    Photo actuelle
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="no-avatar">
+                                <i class="bi bi-person-circle"></i>
+                                <p>Aucune photo</p>
+                            </div>
+                        {% endif %}
+                        <div class="upload-instructions">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-cloud-upload"></i>
+                                    {{ form_label(profileForm.avatarFile) }}
+                                </label>
+                                {{ form_widget(profileForm.avatarFile, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.avatarFile) }}
+                                <small class="form-hint">
+                                    <i class="bi bi-info-circle"></i>
+                                    Format accepté : JPEG, PNG, GIF, WebP • Taille max : 2 Mo
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sécurité - Mot de passe -->
+            <div class="form-section mb-4">
+                <div class="form-section-header">
+                    <div class="form-section-icon bg-danger">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div>
+                        <h3>Changer le Mot de Passe</h3>
+                        <p>Laissez vide pour conserver le mot de passe actuel</p>
+                    </div>
+                </div>
+                <div class="form-section-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-key"></i>
+                                    {{ form_label(profileForm.plainPassword.first) }}
+                                </label>
+                                {{ form_widget(profileForm.plainPassword.first, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.plainPassword.first) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-key-fill"></i>
+                                    {{ form_label(profileForm.plainPassword.second) }}
+                                </label>
+                                {{ form_widget(profileForm.plainPassword.second, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(profileForm.plainPassword.second) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <a href="{{ path('app_profile') }}" class="btn-form-action btn-cancel">
+                    <i class="bi bi-x-circle"></i>
+                    Annuler
+                </a>
+                <button type="submit" class="btn-form-action btn-submit">
+                    <i class="bi bi-check-circle"></i>
+                    Enregistrer les modifications
+                </button>
+            </div>
+
+            {{ form_end(profileForm) }}
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Header Icon Box */
+    .header-icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .header-icon-box.bg-purple {
+        background: linear-gradient(135deg, #a855f7, #c084fc);
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+    }
+
+    .header-icon-box:hover {
+        transform: scale(1.05) rotate(-5deg);
+    }
+
+    /* Form Premium */
+    .form-premium {
+        width: 100%;
+    }
+
+    /* Form Section */
+    .form-section {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .form-section-header {
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 2px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .form-section-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #a855f7, #c084fc);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+    }
+
+    .form-section-icon.bg-danger {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .form-section-header h3 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .form-section-header p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0.25rem 0 0;
+    }
+
+    .form-section-body {
+        padding: 2rem;
+    }
+
+    /* Form Group Premium */
+    .form-group-premium {
+        margin-bottom: 0;
+    }
+
+    .form-label-premium {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .form-label-premium i {
+        color: #a855f7;
+        font-size: 1.1rem;
+    }
+
+    .form-control-premium {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-premium:focus {
+        outline: none;
+        border-color: #a855f7;
+        box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .form-control-premium:readonly {
+        background: #f8fafc;
+        cursor: not-allowed;
+    }
+
+    .form-hint {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .form-hint i {
+        color: #a855f7;
+    }
+
+    /* Avatar Upload Zone */
+    .avatar-upload-zone {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .current-avatar {
+        text-align: center;
+    }
+
+    .current-avatar img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border: 4px solid #f1f5f9;
+    }
+
+    .current-avatar-label {
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: #22c55e;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .no-avatar {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+    }
+
+    .no-avatar i {
+        font-size: 4rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-instructions {
+        flex: 1;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .btn-form-action {
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #475569;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #a855f7, #c084fc);
+        color: white;
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .avatar-upload-zone {
+            flex-direction: column;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-form-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 {% endblock %}

@@ -3,82 +3,264 @@
 {% block title %}Mes Commandes{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5"><i class="bi bi-bag-check"></i> Mes Commandes</h1>
-        <a href="{{ path('app_profile') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Retour au Dashboard
-        </a>
-    </div>
-
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0"><i class="bi bi-bag-check"></i> Toutes mes Commandes</h3>
-            <span class="badge bg-light text-dark">{{ orders|length }} commande(s)</span>
-        </div>
-                <div class="card-body">
-                    {% if orders is empty %}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i> Vous n'avez aucune commande pour le moment.
-                        </div>
-                    {% else %}
-                        {% for order in orders %}
-                            <div class="card mb-3">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Commande #{{ order.numeroCommande }}</strong>
-                                        <span class="text-muted ms-2">{{ order.createdAt|date('d/m/Y H:i') }}</span>
-                                    </div>
-                                    <div>
-                                        {% if order.statut == 'en_attente' %}
-                                            <span class="badge bg-warning">En attente</span>
-                                        {% elseif order.statut == 'validee' %}
-                                            <span class="badge bg-info">Validée</span>
-                                        {% elseif order.statut == 'en_preparation' %}
-                                            <span class="badge bg-primary">En préparation</span>
-                                        {% elseif order.statut == 'livree' %}
-                                            <span class="badge bg-success">Livrée</span>
-                                        {% elseif order.statut == 'annulee' %}
-                                            <span class="badge bg-danger">Annulée</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Produit</th>
-                                                    <th>Prix unitaire</th>
-                                                    <th>Quantité</th>
-                                                    <th class="text-end">Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for item in order.orderItems %}
-                                                    <tr>
-                                                        <td>{{ item.product.nom }}</td>
-                                                        <td>{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
-                                                        <td>{{ item.quantite }}</td>
-                                                        <td class="text-end">{{ item.total|number_format(2, ',', ' ') }} €</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                                <tr class="fw-bold">
-                                                    <td colspan="3" class="text-end">Total :</td>
-                                                    <td class="text-end">{{ order.montantTotal|number_format(2, ',', ' ') }} €</td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header Premium avec Icône -->
+    <div class="page-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="header-icon-box bg-primary">
+                        <i class="bi bi-bag-check-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="display-5 mb-1 fw-bold">Mes Commandes</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-receipt me-2"></i>{{ orders|length }} commande(s) au total
+                        </p>
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Mon Dashboard
+                </a>
             </div>
         </div>
     </div>
+
+    {% if orders is empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-cart-x"></i>
+            </div>
+            <h3>Aucune commande</h3>
+            <p class="text-muted">Vos commandes apparaîtront ici</p>
+            <a href="{{ path('app_product_index') }}" class="btn btn-primary mt-3">
+                <i class="bi bi-shop me-2"></i>Découvrir nos produits
+            </a>
+        </div>
+    {% else %}
+        <!-- Orders List -->
+        {% for order in orders %}
+            <div class="order-card mb-4">
+                <!-- Order Header -->
+                <div class="order-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="order-number">
+                                <i class="bi bi-hash"></i>{{ order.numeroCommande }}
+                            </div>
+                            <div class="order-date">
+                                <i class="bi bi-calendar3"></i>
+                                {{ order.createdAt|date('d/m/Y H:i') }}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="order-total">
+                                {{ order.montantTotal|number_format(2, ',', ' ') }} €
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if order.statut == 'en_attente' %}
+                                <span class="order-status status-waiting">
+                                    <i class="bi bi-clock-history"></i> En attente
+                                </span>
+                            {% elseif order.statut == 'validee' %}
+                                <span class="order-status status-validated">
+                                    <i class="bi bi-check-circle"></i> Validée
+                                </span>
+                            {% elseif order.statut == 'en_preparation' %}
+                                <span class="order-status status-preparing">
+                                    <i class="bi bi-truck"></i> En préparation
+                                </span>
+                            {% elseif order.statut == 'livree' %}
+                                <span class="order-status status-delivered">
+                                    <i class="bi bi-check-all"></i> Livrée
+                                </span>
+                            {% elseif order.statut == 'annulee' %}
+                                <span class="order-status status-cancelled">
+                                    <i class="bi bi-x-circle"></i> Annulée
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-body">
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th class="text-center">Prix unitaire</th>
+                                <th class="text-center">Quantité</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.orderItems %}
+                                <tr>
+                                    <td><strong>{{ item.product.nom }}</strong></td>
+                                    <td class="text-center">{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
+                                    <td class="text-center">
+                                        <span class="quantity-badge">{{ item.quantite }}</span>
+                                    </td>
+                                    <td class="text-end"><strong>{{ item.total|number_format(2, ',', ' ') }} €</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="3" class="text-end"><strong>Total de la commande :</strong></td>
+                                <td class="text-end"><strong class="total-amount">{{ order.montantTotal|number_format(2, ',', ' ') }} €</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 </div>
+
+<style>
+    /* Header Icon Box */
+    .header-icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .header-icon-box.bg-primary {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .header-icon-box:hover {
+        transform: scale(1.05) rotate(-5deg);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+
+    /* Order Card */
+    .order-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+    }
+
+    /* Order Header */
+    .order-header {
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .order-number {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #3b82f6;
+        margin-bottom: 0.25rem;
+    }
+
+    .order-date {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .order-total {
+        font-size: 1.75rem;
+        font-weight: 900;
+        color: #22c55e;
+    }
+
+    /* Order Status */
+    .order-status {
+        padding: 0.6rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-waiting { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; }
+    .status-validated { background: linear-gradient(135deg, #0ea5e9, #7dd3fc); color: white; }
+    .status-preparing { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+    .status-delivered { background: linear-gradient(135deg, #22c55e, #86efac); color: white; }
+    .status-cancelled { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
+
+    /* Order Body */
+    .order-body {
+        padding: 1.5rem 2rem;
+    }
+
+    .order-items-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .order-items-table thead th {
+        padding: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #64748b;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .order-items-table tbody td {
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .order-items-table tfoot td {
+        padding: 1.25rem 0.75rem;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    .quantity-badge {
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 0.25rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+    .total-row {
+        background: #f8fafc;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        color: #22c55e;
+    }
+</style>
 {% endblock %}

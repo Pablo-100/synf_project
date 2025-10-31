@@ -3,66 +3,439 @@
 {% block title %}Contact{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <h1 class="mb-4"><i class="bi bi-envelope"></i> Contactez-nous</h1>
-        
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="bi bi-geo-alt display-4 text-primary"></i>
-                        <h5 class="mt-3">Adresse</h5>
-                        <p>123 Rue Example<br>75000 Paris, France</p>
+<div class="contact-page-premium">
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="contact-header mb-6">
+            <div class="text-center">
+                <div class="header-badge mb-3">
+                    <i class="bi bi-envelope-fill me-2"></i>Restons en contact
+                </div>
+                <h1 class="contact-title mb-3">
+                    Contactez <span class="gradient-text">notre équipe</span>
+                </h1>
+                <p class="contact-subtitle">
+                    Une question ? Une suggestion ? Notre équipe est là pour vous aider !
+                </p>
+            </div>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="row g-4 mb-6">
+            <div class="col-lg-4 col-md-6">
+                <div class="contact-info-card">
+                    <div class="contact-icon blue">
+                        <i class="bi bi-geo-alt-fill"></i>
                     </div>
+                    <h5 class="contact-card-title">Notre Adresse</h5>
+                    <p class="contact-card-text mb-1">123 Rue Example</p>
+                    <p class="contact-card-text">75000 Paris, France</p>
+                    <a href="#" class="contact-link">
+                        Voir sur la carte <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="bi bi-telephone display-4 text-success"></i>
-                        <h5 class="mt-3">Téléphone</h5>
-                        <p>+33 1 23 45 67 89<br>Lun-Ven: 9h-18h</p>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="contact-info-card">
+                    <div class="contact-icon green">
+                        <i class="bi bi-telephone-fill"></i>
                     </div>
+                    <h5 class="contact-card-title">Appelez-nous</h5>
+                    <p class="contact-card-text mb-1">+33 1 23 45 67 89</p>
+                    <p class="contact-card-text">Lun-Ven: 9h-18h</p>
+                    <a href="tel:+33123456789" class="contact-link">
+                        Appeler maintenant <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="bi bi-envelope display-4 text-info"></i>
-                        <h5 class="mt-3">Email</h5>
-                        <p>contact@example.com<br>support@example.com</p>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="contact-info-card">
+                    <div class="contact-icon orange">
+                        <i class="bi bi-envelope-fill"></i>
                     </div>
+                    <h5 class="contact-card-title">Envoyez un Email</h5>
+                    <p class="contact-card-text mb-1">contact@example.com</p>
+                    <p class="contact-card-text">support@example.com</p>
+                    <a href="mailto:contact@example.com" class="contact-link">
+                        Envoyer un email <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
-        
-        <div class="card">
-            <div class="card-body">
-                <h3>Envoyez-nous un message</h3>
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nom complet</label>
-                        <input type="text" class="form-control" id="name" required>
+
+        <!-- Contact Form -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-form-card">
+                    <div class="form-header">
+                        <div class="form-icon-wrapper">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </div>
+                        <h3 class="form-title">Envoyez-nous un message</h3>
+                        <p class="form-subtitle">Remplissez le formulaire ci-dessous et nous vous répondrons rapidement</p>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
+
+                    <form id="contactForm">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-field-contact">
+                                    <label for="name" class="form-label-contact">
+                                        <i class="bi bi-person-fill me-2"></i>Nom complet
+                                    </label>
+                                    <input type="text" class="form-control-contact" id="name" placeholder="John Doe" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-field-contact">
+                                    <label for="email" class="form-label-contact">
+                                        <i class="bi bi-envelope-fill me-2"></i>Adresse email
+                                    </label>
+                                    <input type="email" class="form-control-contact" id="email" placeholder="john@example.com" required>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-field-contact">
+                                    <label for="subject" class="form-label-contact">
+                                        <i class="bi bi-tag-fill me-2"></i>Sujet
+                                    </label>
+                                    <input type="text" class="form-control-contact" id="subject" placeholder="Concernant..." required>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-field-contact">
+                                    <label for="message" class="form-label-contact">
+                                        <i class="bi bi-chat-left-text-fill me-2"></i>Votre message
+                                    </label>
+                                    <textarea class="form-control-contact" id="message" rows="6" placeholder="Écrivez votre message ici..." required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-contact w-100">
+                                    <i class="bi bi-send-fill me-2"></i>Envoyer le message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="additional-info mt-6">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="info-box">
+                        <div class="info-icon">⏰</div>
+                        <h4 class="info-title">Heures d'ouverture</h4>
+                        <div class="info-content">
+                            <div class="info-row">
+                                <span>Lundi - Vendredi</span>
+                                <strong>9h00 - 18h00</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Samedi</span>
+                                <strong>10h00 - 16h00</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Dimanche</span>
+                                <strong>Fermé</strong>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Sujet</label>
-                        <input type="text" class="form-control" id="subject" required>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="info-box">
+                        <div class="info-icon">❓</div>
+                        <h4 class="info-title">Questions Fréquentes</h4>
+                        <div class="info-content">
+                            <p class="mb-2">Vous avez une question ? Consultez d'abord notre FAQ, vous y trouverez peut-être la réponse !</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                                <i class="bi bi-question-circle me-1"></i>Voir la FAQ
+                            </a>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-send"></i> Envoyer
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .contact-page-premium {
+            background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(147,197,253,0.03) 100%);
+            min-height: 100vh;
+        }
+
+        .mb-6, .mt-6 {
+            margin-bottom: 5rem !important;
+            margin-top: 5rem !important;
+        }
+
+        /* Header */
+        .contact-header {
+            padding: 2rem 0;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            border-radius: 50px;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .contact-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Contact Info Cards */
+        .contact-info-card {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            border-color: var(--primary-color);
+        }
+
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon.blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .contact-icon.green { background: linear-gradient(135deg, #22c55e, #4ade80); }
+        .contact-icon.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+        .contact-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .contact-card-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateX(5px);
+            color: var(--primary-color);
+        }
+
+        /* Contact Form Card */
+        .contact-form-card {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(59,130,246,0.3);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        .form-field-contact {
+            margin-bottom: 0;
+        }
+
+        .form-label-contact {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label-contact i {
+            color: var(--primary-color);
+        }
+
+        .form-control-contact {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        .form-control-contact:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+        }
+
+        textarea.form-control-contact {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn-contact {
+            padding: 1.125rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59,130,246,0.3);
+        }
+
+        /* Additional Info */
+        .info-box {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            padding: 2.5rem;
+            height: 100%;
+        }
+
+        .info-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-content {
+            color: var(--text-secondary);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span {
+            color: var(--text-secondary);
+        }
+
+        .info-row strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .contact-title {
+                font-size: 2.5rem;
+            }
+            
+            .form-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-title {
+                font-size: 2rem;
+            }
+            
+            .contact-form-card {
+                padding: 2rem;
+            }
+            
+            .form-header {
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
 {% endblock %}

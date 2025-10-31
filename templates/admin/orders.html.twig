@@ -3,132 +3,338 @@
 {% block title %}Gestion des Commandes{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5"><i class="bi bi-cart-check"></i> Gestion des Commandes</h1>
-        <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Retour au Dashboard
-        </a>
+<div class="container-fluid px-4 py-4">
+    <!-- Header Premium avec Icône -->
+    <div class="page-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="header-icon-box bg-info">
+                        <i class="bi bi-cart-check-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="display-5 mb-1 fw-bold">Gestion des Commandes</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-receipt me-2"></i>{{ orders|length }} commandes au total
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ path('app_admin_dashboard') }}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left me-2"></i>Dashboard
+                </a>
+                <a href="{{ path('app_admin_order_new') }}" class="btn btn-info text-white">
+                    <i class="bi bi-plus-circle me-2"></i>Nouvelle commande
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="card shadow">
-        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Toutes les Commandes ({{ orders|length }})</h4>
-            <a href="{{ path('app_admin_order_new') }}" class="btn btn-light btn-sm">
-                <i class="bi bi-plus-circle"></i> Nouvelle commande
-            </a>
+    {% if orders is empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-cart-x"></i>
+            </div>
+            <h3>Aucune commande</h3>
+            <p class="text-muted">Les commandes apparaîtront ici</p>
         </div>
-        <div class="card-body">
-            {% if orders is empty %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> Aucune commande pour le moment.
-                </div>
-            {% else %}
-                {% for order in orders %}
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <div class="row align-items-center">
-                                <div class="col-md-3">
-                                    <strong>Commande #{{ order.numeroCommande }}</strong>
-                                </div>
-                                <div class="col-md-3">
-                                    <i class="bi bi-person"></i> {{ order.user.fullName }}
-                                    <br>
-                                    <small class="text-muted">{{ order.user.email }}</small>
-                                </div>
-                                <div class="col-md-2">
-                                    {{ order.createdAt|date('d/m/Y H:i') }}
-                                </div>
-                                <div class="col-md-2">
-                                    <strong class="text-success">{{ order.montantTotal|number_format(2, ',', ' ') }} €</strong>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    {% if order.statut == 'en_attente' %}
-                                        <span class="badge bg-warning">En attente</span>
-                                    {% elseif order.statut == 'validee' %}
-                                        <span class="badge bg-info">Validée</span>
-                                    {% elseif order.statut == 'en_preparation' %}
-                                        <span class="badge bg-primary">En préparation</span>
-                                    {% elseif order.statut == 'livree' %}
-                                        <span class="badge bg-success">Livrée</span>
-                                    {% elseif order.statut == 'annulee' %}
-                                        <span class="badge bg-danger">Annulée</span>
-                                    {% endif %}
+    {% else %}
+        <!-- Orders List -->
+        {% for order in orders %}
+            <div class="order-card mb-4">
+                <!-- Order Header -->
+                <div class="order-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <div class="order-number">
+                                <i class="bi bi-hash"></i>{{ order.numeroCommande }}
+                            </div>
+                            <div class="order-date">
+                                <i class="bi bi-calendar3"></i>
+                                {{ order.createdAt|date('d/m/Y H:i') }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="order-customer">
+                                <i class="bi bi-person-circle"></i>
+                                <div>
+                                    <strong>{{ order.user.fullName }}</strong>
+                                    <small class="d-block text-muted">{{ order.user.email }}</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Produit</th>
-                                            <th>Prix unitaire</th>
-                                            <th>Quantité</th>
-                                            <th class="text-end">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for item in order.orderItems %}
-                                            <tr>
-                                                <td>{{ item.product.nom }}</td>
-                                                <td>{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
-                                                <td>{{ item.quantite }}</td>
-                                                <td class="text-end">{{ item.total|number_format(2, ',', ' ') }} €</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                        <div class="col-md-2 text-center">
+                            <div class="order-total">
+                                {{ order.montantTotal|number_format(2, ',', ' ') }} €
                             </div>
-
-                            <div class="btn-group btn-group-sm mt-2" role="group">
-                                <a href="{{ path('app_admin_order_edit', {id: order.id}) }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
-                                {% if order.statut == 'en_attente' %}
-                                    <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'validee'}) }}" style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
-                                        <button type="submit" class="btn btn-outline-info" onclick="return confirm('Valider cette commande ?')">
-                                            <i class="bi bi-check"></i> Valider
-                                        </button>
-                                    </form>
-                                {% endif %}
-                                {% if order.statut in ['en_attente', 'validee'] %}
-                                    <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'en_preparation'}) }}" style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
-                                        <button type="submit" class="btn btn-outline-primary" onclick="return confirm('Mettre en préparation ?')">
-                                            <i class="bi bi-truck"></i> En préparation
-                                        </button>
-                                    </form>
-                                {% endif %}
-                                {% if order.statut in ['en_attente', 'validee', 'en_preparation'] %}
-                                    <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'livree'}) }}" style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
-                                        <button type="submit" class="btn btn-outline-success" onclick="return confirm('Marquer comme livrée ?')">
-                                            <i class="bi bi-check-all"></i> Livrer
-                                        </button>
-                                    </form>
-                                {% endif %}
-                                {% if order.statut != 'annulee' and order.statut != 'livree' %}
-                                    <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'annulee'}) }}" style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
-                                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Annuler cette commande ?')">
-                                            <i class="bi bi-x"></i> Annuler
-                                        </button>
-                                    </form>
-                                {% endif %}
-                                <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}" style="display: inline;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-order-' ~ order.id) }}">
-                                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('⚠️ ATTENTION : Supprimer définitivement cette commande ?')">
-                                        <i class="bi bi-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            {% if order.statut == 'en_attente' %}
+                                <span class="order-status status-waiting">En attente</span>
+                            {% elseif order.statut == 'validee' %}
+                                <span class="order-status status-validated">Validée</span>
+                            {% elseif order.statut == 'en_preparation' %}
+                                <span class="order-status status-preparing">En préparation</span>
+                            {% elseif order.statut == 'livree' %}
+                                <span class="order-status status-delivered">Livrée</span>
+                            {% elseif order.statut == 'annulee' %}
+                                <span class="order-status status-cancelled">Annulée</span>
+                            {% endif %}
                         </div>
                     </div>
-                {% endfor %}
-            {% endif %}
-        </div>
-    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-body">
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th class="text-center">Prix unitaire</th>
+                                <th class="text-center">Quantité</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.orderItems %}
+                                <tr>
+                                    <td><strong>{{ item.product.nom }}</strong></td>
+                                    <td class="text-center">{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
+                                    <td class="text-center">
+                                        <span class="quantity-badge">{{ item.quantite }}</span>
+                                    </td>
+                                    <td class="text-end"><strong>{{ item.total|number_format(2, ',', ' ') }} €</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Order Actions -->
+                <div class="order-actions">
+                    <a href="{{ path('app_admin_order_edit', {id: order.id}) }}" class="btn-order-action btn-edit">
+                        <i class="bi bi-pencil-square"></i> Modifier
+                    </a>
+                    {% if order.statut == 'en_attente' %}
+                        <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'validee'}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
+                            <button type="submit" class="btn-order-action btn-validate" onclick="return confirm('Valider cette commande ?')">
+                                <i class="bi bi-check-circle"></i> Valider
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if order.statut in ['en_attente', 'validee'] %}
+                        <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'en_preparation'}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
+                            <button type="submit" class="btn-order-action btn-prepare" onclick="return confirm('Mettre en préparation ?')">
+                                <i class="bi bi-truck"></i> Préparer
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if order.statut in ['en_attente', 'validee', 'en_preparation'] %}
+                        <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'livree'}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
+                            <button type="submit" class="btn-order-action btn-deliver" onclick="return confirm('Marquer comme livrée ?')">
+                                <i class="bi bi-check-all"></i> Livrer
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if order.statut != 'annulee' and order.statut != 'livree' %}
+                        <form method="post" action="{{ path('app_admin_order_status', {id: order.id, status: 'annulee'}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('order_status_' ~ order.id) }}">
+                            <button type="submit" class="btn-order-action btn-cancel" onclick="return confirm('Annuler cette commande ?')">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </button>
+                        </form>
+                    {% endif %}
+                    <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-order-' ~ order.id) }}">
+                        <button type="submit" class="btn-order-action btn-delete" onclick="return confirm('⚠️ ATTENTION : Supprimer définitivement cette commande ?')">
+                            <i class="bi bi-trash3"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 </div>
+
+<style>
+    /* Header Icon Box */
+    .header-icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .header-icon-box.bg-info {
+        background: linear-gradient(135deg, #0ea5e9, #7dd3fc);
+        box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
+    }
+
+    .header-icon-box:hover {
+        transform: scale(1.05) rotate(-5deg);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+
+    /* Order Card */
+    .order-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+    }
+
+    /* Order Header */
+    .order-header {
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .order-number {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0ea5e9;
+        margin-bottom: 0.25rem;
+    }
+
+    .order-date {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .order-customer {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .order-customer i {
+        font-size: 2rem;
+        color: #0ea5e9;
+    }
+
+    .order-total {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #22c55e;
+    }
+
+    /* Order Status */
+    .order-status {
+        padding: 0.5rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .status-waiting { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; }
+    .status-validated { background: linear-gradient(135deg, #0ea5e9, #7dd3fc); color: white; }
+    .status-preparing { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
+    .status-delivered { background: linear-gradient(135deg, #22c55e, #86efac); color: white; }
+    .status-cancelled { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
+
+    /* Order Body */
+    .order-body {
+        padding: 1.5rem 2rem;
+    }
+
+    .order-items-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .order-items-table thead th {
+        padding: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: #64748b;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .order-items-table tbody td {
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .quantity-badge {
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 0.25rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+    /* Order Actions */
+    .order-actions {
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 2px solid #e2e8f0;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-order-action {
+        padding: 0.6rem 1.25rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-edit { background: #dbeafe; color: #1e40af; }
+    .btn-edit:hover { background: #3b82f6; color: white; transform: translateY(-2px); }
+
+    .btn-validate { background: #bfdbfe; color: #1e3a8a; }
+    .btn-validate:hover { background: #0ea5e9; color: white; transform: translateY(-2px); }
+
+    .btn-prepare { background: #c7d2fe; color: #3730a3; }
+    .btn-prepare:hover { background: #3b82f6; color: white; transform: translateY(-2px); }
+
+    .btn-deliver { background: #d1fae5; color: #065f46; }
+    .btn-deliver:hover { background: #22c55e; color: white; transform: translateY(-2px); }
+
+    .btn-cancel { background: #fef3c7; color: #78350f; }
+    .btn-cancel:hover { background: #f59e0b; color: white; transform: translateY(-2px); }
+
+    .btn-delete { background: #fee2e2; color: #991b1b; }
+    .btn-delete:hover { background: #ef4444; color: white; transform: translateY(-2px); }
+</style>
 {% endblock %}

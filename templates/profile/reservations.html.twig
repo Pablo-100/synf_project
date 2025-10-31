@@ -3,63 +3,317 @@
 {% block title %}Mes Réservations{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5"><i class="bi bi-calendar-check"></i> Mes Réservations</h1>
-        <a href="{{ path('app_profile') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Retour au Dashboard
-        </a>
-    </div>
-
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0"><i class="bi bi-calendar-check"></i> Toutes mes Réservations</h3>
-            <span class="badge bg-light text-dark">{{ reservations|length }} réservation(s)</span>
-        </div>
-                <div class="card-body">
-                    {% if reservations is empty %}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i> Vous n'avez aucune réservation pour le moment.
-                        </div>
-                    {% else %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Heure</th>
-                                        <th>Personnes</th>
-                                        <th>Statut</th>
-                                        <th>Commentaire</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for reservation in reservations %}
-                                        <tr>
-                                            <td>{{ reservation.dateReservation|date('d/m/Y') }}</td>
-                                            <td>{{ reservation.heureReservation|date('H:i') }}</td>
-                                            <td><i class="bi bi-people"></i> {{ reservation.nombrePersonnes }}</td>
-                                            <td>
-                                                {% if reservation.statut == 'en_attente' %}
-                                                    <span class="badge bg-warning">{{ reservation.statutLabel }}</span>
-                                                {% elseif reservation.statut == 'confirmee' %}
-                                                    <span class="badge bg-success">{{ reservation.statutLabel }}</span>
-                                                {% elseif reservation.statut == 'annulee' %}
-                                                    <span class="badge bg-danger">{{ reservation.statutLabel }}</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">{{ reservation.statutLabel }}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ reservation.commentaire ?? '-' }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header Premium avec Icône -->
+    <div class="page-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="header-icon-box bg-warning">
+                        <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <div>
+                        <h1 class="display-5 mb-1 fw-bold">Mes Réservations</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-calendar2-check me-2"></i>{{ reservations|length }} réservation(s) au total
+                        </p>
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Mon Dashboard
+                </a>
             </div>
         </div>
     </div>
+
+    {% if reservations is empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-calendar-x"></i>
+            </div>
+            <h3>Aucune réservation</h3>
+            <p class="text-muted">Vos réservations apparaîtront ici</p>
+            <a href="{{ path('app_contact') }}" class="btn btn-warning mt-3">
+                <i class="bi bi-calendar-plus me-2"></i>Faire une réservation
+            </a>
+        </div>
+    {% else %}
+        <!-- Reservations Cards -->
+        <div class="row g-4">
+            {% for reservation in reservations %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="reservation-card">
+                        <!-- Status Badge -->
+                        <div class="reservation-status-badge">
+                            {% if reservation.statut == 'en_attente' %}
+                                <span class="status-waiting">
+                                    <i class="bi bi-clock-history"></i>
+                                    {{ reservation.statutLabel }}
+                                </span>
+                            {% elseif reservation.statut == 'confirmee' %}
+                                <span class="status-confirmed">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    {{ reservation.statutLabel }}
+                                </span>
+                            {% elseif reservation.statut == 'annulee' %}
+                                <span class="status-cancelled">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    {{ reservation.statutLabel }}
+                                </span>
+                            {% else %}
+                                <span class="status-other">
+                                    {{ reservation.statutLabel }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="reservation-datetime">
+                            <div class="date-box">
+                                <div class="date-day">{{ reservation.dateReservation|date('d') }}</div>
+                                <div class="date-month">{{ reservation.dateReservation|date('M Y') }}</div>
+                            </div>
+                            <div class="time-box">
+                                <i class="bi bi-clock-fill"></i>
+                                <span>{{ reservation.heureReservation|date('H:i') }}</span>
+                            </div>
+                        </div>
+
+                        <!-- People Count -->
+                        <div class="reservation-people">
+                            <div class="people-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="people-text">
+                                <strong>{{ reservation.nombrePersonnes }}</strong>
+                                <span>{{ reservation.nombrePersonnes > 1 ? 'Personnes' : 'Personne' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Comment -->
+                        {% if reservation.commentaire %}
+                            <div class="reservation-comment">
+                                <i class="bi bi-chat-left-text"></i>
+                                <span>{{ reservation.commentaire }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
+
+<style>
+    /* Header Icon Box */
+    .header-icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .header-icon-box.bg-warning {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+    }
+
+    .header-icon-box:hover {
+        transform: scale(1.05) rotate(-5deg);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+
+    /* Reservation Card */
+    .reservation-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .reservation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .reservation-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+    }
+
+    /* Status Badge */
+    .reservation-status-badge {
+        margin-bottom: 1.5rem;
+    }
+
+    .reservation-status-badge span {
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-waiting {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: white;
+    }
+
+    .status-confirmed {
+        background: linear-gradient(135deg, #22c55e, #86efac);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+    }
+
+    .status-other {
+        background: linear-gradient(135deg, #6b7280, #9ca3af);
+        color: white;
+    }
+
+    /* Date & Time */
+    .reservation-datetime {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .date-box {
+        flex: 1;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-radius: 16px;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .date-day {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #78350f;
+        line-height: 1;
+    }
+
+    .date-month {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #92400e;
+        text-transform: uppercase;
+        margin-top: 0.25rem;
+    }
+
+    .time-box {
+        flex: 1;
+        background: linear-gradient(135deg, #fed7aa, #fdba74);
+        border-radius: 16px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .time-box i {
+        font-size: 2rem;
+        color: #78350f;
+    }
+
+    .time-box span {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #78350f;
+    }
+
+    /* People Count */
+    .reservation-people {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 16px;
+        margin-bottom: 1rem;
+    }
+
+    .people-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .people-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .people-text strong {
+        font-size: 1.5rem;
+        color: #1e293b;
+    }
+
+    .people-text span {
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    /* Comment */
+    .reservation-comment {
+        padding: 1rem;
+        background: #fef3c7;
+        border-radius: 12px;
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: #78350f;
+        font-style: italic;
+    }
+
+    .reservation-comment i {
+        flex-shrink: 0;
+        font-size: 1.2rem;
+        margin-top: 0.1rem;
+    }
+</style>
 {% endblock %}

@@ -3,83 +3,326 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-box-arrow-in-right me-2"></i>Connexion</h3>
+<div class="auth-page">
+    <div class="container py-5">
+        <div class="row justify-content-center align-items-center min-vh-75">
+            <div class="col-lg-5 col-md-7">
+                <!-- Header Premium -->
+                <div class="text-center mb-4">
+                    <div class="auth-icon-wrapper mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+                    <h1 class="display-5 fw-bold mb-2">Bon retour !</h1>
+                    <p class="text-muted">Connectez-vous pour continuer</p>
                 </div>
-                <div class="card-body p-4">
-                    {% if error %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <strong>Erreur !</strong> {{ error.messageKey|trans(error.messageData, 'security') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endif %}
 
-                    {% if app.user %}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>
-                            <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-primary ms-2">Se déconnecter</a>
-                        </div>
-                    {% else %}
-                        <form method="post">
-                            <div class="mb-3">
-                                <label for="inputEmail" class="form-label">
-                                    <i class="bi bi-envelope me-1"></i>Email
-                                </label>
-                                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
-                                       class="form-control form-control-lg" autocomplete="email" required autofocus 
-                                       placeholder="votre@email.com">
+                <!-- Card Premium -->
+                <div class="auth-card">
+                    <div class="auth-card-body">
+                        {% if error %}
+                            <div class="alert alert-danger alert-modern" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>
+                                    <strong>Erreur d'authentification</strong>
+                                    <p class="mb-0 small mt-1">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                                </div>
                             </div>
+                        {% endif %}
 
-                            <div class="mb-3">
-                                <label for="inputPassword" class="form-label">
-                                    <i class="bi bi-lock me-1"></i>Mot de passe
-                                </label>
-                                <input type="password" name="password" id="inputPassword" 
-                                       class="form-control form-control-lg" autocomplete="current-password" required
-                                       placeholder="••••••••">
+                        {% if app.user %}
+                            <div class="alert alert-info alert-modern">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <div>
+                                    <strong>Déjà connecté</strong>
+                                    <p class="mb-2 small mt-1">Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong></p>
+                                    <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                        <i class="bi bi-box-arrow-right me-1"></i>Se déconnecter
+                                    </a>
+                                </div>
                             </div>
+                        {% else %}
+                            <form method="post" id="loginForm">
+                                <div class="form-field-premium mb-4">
+                                    <label for="inputEmail" class="form-label-premium">
+                                        <i class="bi bi-envelope-fill me-2"></i>Adresse email
+                                    </label>
+                                    <div class="input-group input-group-premium-auth">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-at"></i>
+                                        </span>
+                                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
+                                               class="form-control form-control-premium-auth" autocomplete="email" required autofocus 
+                                               placeholder="votre@email.com">
+                                    </div>
+                                </div>
 
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                <div class="form-field-premium mb-4">
+                                    <label for="inputPassword" class="form-label-premium">
+                                        <i class="bi bi-lock-fill me-2"></i>Mot de passe
+                                    </label>
+                                    <div class="input-group input-group-premium-auth">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-shield-lock"></i>
+                                        </span>
+                                        <input type="password" name="password" id="inputPassword" 
+                                               class="form-control form-control-premium-auth" autocomplete="current-password" required
+                                               placeholder="••••••••">
+                                    </div>
+                                </div>
 
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
-                                <label class="form-check-label" for="remember_me">
-                                    Se souvenir de moi
-                                </label>
-                            </div>
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-lg" type="submit">
+                                <div class="form-check-premium mb-4">
+                                    <input type="checkbox" class="form-check-input-premium" id="remember_me" name="_remember_me">
+                                    <label class="form-check-label-premium" for="remember_me">
+                                        <i class="bi bi-bookmark-check me-1"></i>Se souvenir de moi
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-primary btn-premium w-100 mb-3" type="submit">
                                     <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
                                 </button>
-                            </div>
 
-                            <div class="text-center mt-3">
-                                <p class="text-muted">
-                                    Pas encore de compte ? 
-                                    <a href="{{ path('app_register') }}" class="text-decoration-none">
-                                        <i class="bi bi-person-plus me-1"></i>S'inscrire
-                                    </a>
-                                </p>
-                            </div>
+                                <div class="divider-premium">
+                                    <span>ou</span>
+                                </div>
 
-                            <div class="alert alert-info mt-3">
-                                <strong><i class="bi bi-info-circle me-2"></i>Comptes de test :</strong><br>
-                                <small>
-                                    Admin : <code>admin@example.com</code> / <code>admin123</code><br>
-                                    User : <code>user@example.com</code> / <code>admin123</code>
-                                </small>
-                            </div>
-                        </form>
-                    {% endif %}
+                                <a href="{{ path('app_register') }}" class="btn btn-outline-primary btn-premium w-100">
+                                    <i class="bi bi-person-plus me-2"></i>Créer un compte
+                                </a>
+
+                                <div class="alert alert-info alert-modern mt-4">
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    <div>
+                                        <strong>Comptes de test</strong>
+                                        <div class="mt-2 small">
+                                            <div class="mb-1">
+                                                <span class="badge bg-primary">Admin</span>
+                                                <code class="ms-2">admin@example.com</code> / <code>admin123</code>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-info">Client</span>
+                                                <code class="ms-2">user@example.com</code> / <code>admin123</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Footer Link -->
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_home') }}" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i>Retour à l'accueil
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Auth Page Styles */
+        .auth-page {
+            background: linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(147,197,253,0.05) 100%);
+            min-height: 100vh;
+        }
+
+        .min-vh-75 {
+            min-height: 75vh;
+        }
+
+        .auth-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(59,130,246,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .auth-card {
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .auth-card-body {
+            padding: 2.5rem;
+        }
+
+        .form-label-premium {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label-premium i {
+            color: var(--primary-color);
+        }
+
+        .form-field-premium {
+            position: relative;
+        }
+
+        .input-group-premium-auth {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .input-group-premium-auth .input-group-text {
+            background: var(--background-alt);
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+            border-right: none;
+            padding: 0.875rem 1rem;
+        }
+
+        .form-control-premium-auth {
+            border: 2px solid var(--border-color);
+            border-left: none;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        .form-control-premium-auth:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+            background: var(--surface);
+            outline: none;
+        }
+
+        .input-group-premium-auth:focus-within .input-group-text {
+            border-color: var(--primary-color);
+            background: rgba(59,130,246,0.05);
+        }
+
+        .form-check-premium {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--background-alt);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-check-input-premium {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-check-input-premium:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .form-check-label-premium {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .btn-premium {
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+        }
+
+        .btn-outline-primary.btn-premium {
+            border-color: var(--primary-color);
+        }
+
+        .divider-premium {
+            text-align: center;
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .divider-premium::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        .divider-premium span {
+            background: var(--surface);
+            padding: 0 1rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .alert-modern {
+            border-radius: 14px;
+            border: 2px solid;
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .alert-modern i {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .alert-danger.alert-modern {
+            background: rgba(239,68,68,0.08);
+            border-color: #ef4444;
+            color: var(--text-primary);
+        }
+
+        .alert-info.alert-modern {
+            background: rgba(59,130,246,0.08);
+            border-color: #3b82f6;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .auth-card-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}
 {% endblock %}

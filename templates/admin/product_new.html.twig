@@ -3,17 +3,602 @@
 {% block title %}Nouveau Produit{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="mb-4"><i class="bi bi-plus-circle"></i> Ajouter un produit</h1>
-
-    <div class="card">
-        <div class="card-body">
-            {{ form_start(form) }}
-                {{ form_widget(form) }}
-            {{ form_end(form) }}
+<div class="container-fluid px-4 py-4">
+    <!-- Header avec gradient -->
+    <div class="page-header mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-wrapper">
+                <i class="bi bi-plus-circle-fill"></i>
+            </div>
+            <div>
+                <h1 class="display-6 mb-0 fw-bold">Ajouter un produit</h1>
+                <p class="text-muted mb-0 small">Créez un nouveau produit pour votre catalogue</p>
+            </div>
         </div>
     </div>
 
-    <a href="{{ path('app_admin_products') }}" class="btn btn-link mt-3">← Retour</a>
+    <div class="card form-premium shadow-lg border-0">
+        <div class="card-body p-4 p-lg-5">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'productForm'}}) }}
+            <div class="row g-4">
+                <!-- Colonne Principale -->
+                <div class="col-lg-8">
+                    <!-- Nom du Produit -->
+                    <div class="form-field-group mb-4">
+                        <label class="form-label-premium">
+                            <i class="bi bi-tag-fill me-2"></i>{{ form.nom.vars.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control-premium', 'placeholder': 'Ex: Tomates Bio du Jardin'}}) }}
+                        {{ form_errors(form.nom) }}
+                        <small class="form-text text-muted">Le nom apparaîtra sur la fiche produit</small>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-field-group mb-4">
+                        <label class="form-label-premium">
+                            <i class="bi bi-text-paragraph me-2"></i>{{ form.description.vars.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control-premium', 'rows': 5, 'placeholder': 'Décrivez votre produit en détail: origine, qualités, utilisation...'}}) }}
+                        {{ form_errors(form.description) }}
+                        <small class="form-text text-muted">Une description détaillée aide vos clients à mieux connaître le produit</small>
+                    </div>
+
+                    <!-- Prix et Catégorie -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-field-group">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-currency-euro me-2"></i>{{ form.prix.vars.label }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-premium">
+                                    <span class="input-group-text border-0">
+                                        <i class="bi bi-cash-coin"></i>
+                                    </span>
+                                    {{ form_widget(form.prix, {'attr': {'class': 'form-control-premium border-start-0', 'placeholder': '0.00'}}) }}
+                                    <span class="input-group-text border-0 fw-bold">€</span>
+                                </div>
+                                {{ form_errors(form.prix) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-field-group">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-folder-fill me-2"></i>{{ form.categorie.vars.label }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                {{ form_widget(form.categorie, {'attr': {'class': 'form-control-premium', 'placeholder': 'Ex: Légumes', 'list': 'categoriesList'}}) }}
+                                <datalist id="categoriesList">
+                                    <option value="Légumes">
+                                    <option value="Fruits">
+                                    <option value="Épicerie">
+                                    <option value="Produits Laitiers">
+                                    <option value="Viandes">
+                                    <option value="Poissons">
+                                    <option value="Boulangerie">
+                                    <option value="Boissons">
+                                </datalist>
+                                {{ form_errors(form.categorie) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock et Disponibilité -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-field-group">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-boxes me-2"></i>{{ form.stock.vars.label }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-premium">
+                                    <span class="input-group-text border-0">
+                                        <i class="bi bi-123"></i>
+                                    </span>
+                                    {{ form_widget(form.stock, {'attr': {'class': 'form-control-premium border-start-0', 'placeholder': '0'}}) }}
+                                    <span class="input-group-text border-0 text-muted">unités</span>
+                                </div>
+                                {{ form_errors(form.stock) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-field-group">
+                                <label class="form-label-premium d-block mb-2">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Statut
+                                </label>
+                                <div class="availability-toggle">
+                                    {{ form_widget(form.disponible, {'attr': {'class': 'form-check-input-premium', 'id': 'availabilitySwitch'}}) }}
+                                    <label class="form-check-label-premium" for="availabilitySwitch">
+                                        <span class="badge-status" id="statusBadge">Disponible</span>
+                                    </label>
+                                </div>
+                                {{ form_errors(form.disponible) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne Upload Image -->
+                <div class="col-lg-4">
+                    <div class="upload-section">
+                        <label class="form-label-premium mb-3">
+                            <i class="bi bi-image-fill me-2"></i>{{ form.imageFile.vars.label }}
+                        </label>
+                        <div id="dropzone" class="upload-dropzone-premium">
+                            <div class="upload-content" id="uploadContent">
+                                <div class="dz-icon mb-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                                </div>
+                                <h5 class="mb-2">Glissez votre image ici</h5>
+                                <p class="text-muted mb-3">ou</p>
+                                <button type="button" class="btn btn-outline-primary rounded-pill px-4" id="browseBtn">
+                                    <i class="bi bi-folder2-open me-2"></i>Parcourir les fichiers
+                                </button>
+                                <div class="mt-3">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-info-circle me-1"></i>Formats: PNG, JPG, GIF, WebP
+                                    </small>
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-file-earmark-image me-1"></i>Taille max: 2 Mo
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="preview-wrapper" id="previewWrapper" style="display:none;">
+                                <img id="imagePreview" alt="Aperçu"/>
+                                <div class="preview-overlay">
+                                    <button type="button" class="btn btn-sm btn-danger rounded-circle" id="removeBtn" title="Supprimer">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                <div class="preview-info" id="previewInfo"></div>
+                            </div>
+                        </div>
+                        {{ form_widget(form.imageFile, {'attr': {'class': 'd-none', 'id': 'imageInput'}}) }}
+                        {{ form_errors(form.imageFile) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Sticky -->
+            <div class="form-actions-sticky">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_admin_products') }}" class="btn btn-light rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-2"></i>Retour
+                    </a>
+                    <div class="d-flex gap-2">
+                        <button type="reset" class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser
+                        </button>
+                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary btn-premium rounded-pill px-5'}}) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function(){
+            const dropzone = document.getElementById('dropzone');
+            const input = document.getElementById('imageInput');
+            const btn = document.getElementById('browseBtn');
+            const preview = document.getElementById('imagePreview');
+            const uploadContent = document.getElementById('uploadContent');
+            const previewWrapper = document.getElementById('previewWrapper');
+            const removeBtn = document.getElementById('removeBtn');
+            const previewInfo = document.getElementById('previewInfo');
+            const availSwitch = document.getElementById('availabilitySwitch');
+            const statusBadge = document.getElementById('statusBadge');
+
+            if(!dropzone || !input) return;
+
+            // Toggle disponibilité avec badge animé
+            if(availSwitch && statusBadge) {
+                const updateStatus = () => {
+                    if(availSwitch.checked) {
+                        statusBadge.textContent = 'Disponible';
+                        statusBadge.className = 'badge-status bg-success';
+                    } else {
+                        statusBadge.textContent = 'Indisponible';
+                        statusBadge.className = 'badge-status bg-secondary';
+                    }
+                };
+                availSwitch.addEventListener('change', updateStatus);
+                updateStatus();
+            }
+
+            const showPreview = file => {
+                // Validation taille
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                if(file.size > maxSize) {
+                    alert('⚠️ La taille du fichier dépasse 2 Mo. Veuillez choisir une image plus petite.');
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    uploadContent.style.display = 'none';
+                    previewWrapper.style.display = 'block';
+                    
+                    // Info fichier
+                    const sizeKB = (file.size / 1024).toFixed(1);
+                    previewInfo.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-truncate">${file.name}</span>
+                            <span class="badge bg-primary">${sizeKB} Ko</span>
+                        </div>
+                    `;
+                    
+                    // Animation
+                    previewWrapper.style.animation = 'fadeInScale 0.3s ease';
+                };
+                reader.readAsDataURL(file);
+            };
+
+            const resetUpload = () => {
+                input.value = '';
+                uploadContent.style.display = 'block';
+                previewWrapper.style.display = 'none';
+                preview.src = '';
+                previewInfo.innerHTML = '';
+            };
+
+            // Drag & Drop
+            dropzone.addEventListener('dragover', e => { 
+                e.preventDefault(); 
+                dropzone.classList.add('dragover'); 
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+            dropzone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                const file = e.dataTransfer.files && e.dataTransfer.files[0];
+                if(file && file.type.startsWith('image/')) { 
+                    input.files = e.dataTransfer.files; 
+                    showPreview(file); 
+                } else {
+                    alert('⚠️ Veuillez déposer un fichier image valide.');
+                }
+            });
+
+            // Browse button
+            btn && btn.addEventListener('click', () => input.click());
+
+            // File input change
+            input.addEventListener('change', e => {
+                const file = e.target.files && e.target.files[0];
+                if(file) showPreview(file);
+            });
+
+            // Remove button
+            removeBtn && removeBtn.addEventListener('click', resetUpload);
+
+            // Form validation UX
+            const form = document.getElementById('productForm');
+            if(form) {
+                form.addEventListener('submit', e => {
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let isValid = true;
+                    requiredFields.forEach(field => {
+                        if(!field.value.trim()) {
+                            field.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            field.classList.remove('is-invalid');
+                        }
+                    });
+                    
+                    if(!isValid) {
+                        e.preventDefault();
+                        alert('⚠️ Veuillez remplir tous les champs obligatoires (marqués *)');
+                    }
+                });
+            }
+        })();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Page Header Premium */
+        .page-header {
+            background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(147,197,253,0.08) 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 8px 16px rgba(59,130,246,0.25);
+        }
+
+        /* Card Premium */
+        .form-premium {
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .form-premium .card-body {
+            background: linear-gradient(to bottom, var(--surface) 0%, var(--background-alt) 100%);
+        }
+
+        /* Labels Premium */
+        .form-label-premium {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label-premium i {
+            color: var(--primary-color);
+        }
+
+        /* Form Fields Premium */
+        .form-field-group {
+            position: relative;
+        }
+
+        .form-control-premium {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        .form-control-premium:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control-premium::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* Input Group Premium */
+        .input-group-premium {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .input-group-premium .input-group-text {
+            background: var(--background-alt);
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+        }
+
+        .input-group-premium .form-control-premium {
+            border-radius: 0;
+        }
+
+        .input-group-premium:focus-within .input-group-text {
+            border-color: var(--primary-color);
+            background: rgba(59,130,246,0.05);
+        }
+
+        /* Availability Toggle Premium */
+        .availability-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--background-alt);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-check-input-premium {
+            width: 50px;
+            height: 26px;
+            cursor: pointer;
+            border: none;
+            background: #cbd5e1;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .form-check-input-premium:checked {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .form-check-input-premium:focus {
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.2);
+        }
+
+        .badge-status {
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        /* Upload Zone Premium */
+        .upload-section {
+            position: sticky;
+            top: 20px;
+        }
+
+        .upload-dropzone-premium {
+            border: 3px dashed var(--border-color);
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--surface) 0%, var(--background-alt) 100%);
+            padding: 2.5rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-dropzone-premium:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 32px rgba(59,130,246,0.15);
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(147,197,253,0.03) 100%);
+        }
+
+        .upload-dropzone-premium.dragover {
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,197,253,0.1) 100%);
+            border-color: var(--primary-color);
+            border-style: solid;
+            box-shadow: 0 0 0 8px rgba(59,130,246,0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-content {
+            text-align: center;
+            width: 100%;
+        }
+
+        .dz-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .upload-content h5 {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        /* Preview Premium */
+        .preview-wrapper {
+            width: 100%;
+            position: relative;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .preview-overlay .btn {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+        }
+
+        .preview-info {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        /* Actions Sticky */
+        .form-actions-sticky {
+            position: sticky;
+            bottom: 0;
+            margin: 2rem -2rem -2rem;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(to top, var(--surface) 0%, rgba(255,255,255,0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--border-color);
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+            z-index: 10;
+        }
+
+        .btn-premium {
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            padding: 0.875rem 2.5rem;
+            box-shadow: 0 4px 16px rgba(59,130,246,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59,130,246,0.4);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Form Text Helper */
+        .form-text {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Validation States */
+        .form-control-premium.is-invalid {
+            border-color: #ef4444;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .upload-section {
+                position: static;
+            }
+            .form-actions-sticky {
+                margin: 2rem -1rem -1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
 {% endblock %}

@@ -3,49 +3,516 @@
 {% block title %}À propos{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <h1 class="mb-4"><i class="bi bi-info-circle"></i> À propos de nous</h1>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h3>Notre Histoire</h3>
-                <p>
-                    Bienvenue sur notre plateforme de réservation et de commande en ligne. 
-                    Nous sommes dédiés à offrir la meilleure expérience possible à nos clients.
-                </p>
-                <p>
-                    Notre mission est de simplifier le processus de réservation et de commande 
-                    tout en maintenant la qualité et la satisfaction de nos utilisateurs.
-                </p>
+<div class="about-page-premium">
+    <div class="container py-5">
+        <!-- Hero About -->
+        <div class="about-hero mb-6">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="hero-badge mb-3">
+                        <i class="bi bi-info-circle-fill me-2"></i>Qui sommes-nous ?
+                    </div>
+                    <h1 class="about-title mb-4">
+                        L'histoire de <span class="gradient-text">FreshMarket</span>
+                    </h1>
+                    <p class="about-subtitle">
+                        Une plateforme moderne dédiée à vous offrir la meilleure expérience d'achat en ligne.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-illustration">
+                        <div class="illustration-icon">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h3>Nos Valeurs</h3>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <i class="bi bi-check-circle text-success"></i> 
-                        <strong>Qualité :</strong> Nous garantissons des produits et services de haute qualité
-                    </li>
-                    <li class="list-group-item">
-                        <i class="bi bi-check-circle text-success"></i> 
-                        <strong>Rapidité :</strong> Service rapide et efficace
-                    </li>
-                    <li class="list-group-item">
-                        <i class="bi bi-check-circle text-success"></i> 
-                        <strong>Satisfaction :</strong> Votre satisfaction est notre priorité
-                    </li>
-                </ul>
+
+        <!-- Story Section -->
+        <div class="story-section mb-6">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="story-card">
+                        <div class="story-icon-wrapper">
+                            <i class="bi bi-book-fill"></i>
+                        </div>
+                        <h2 class="story-title">Notre Histoire</h2>
+                        <div class="story-content">
+                            <p>
+                                Bienvenue sur <strong>FreshMarket</strong>, votre plateforme de réservation et de commande en ligne de confiance. 
+                                Fondée avec la vision de révolutionner l'expérience d'achat, nous nous engageons à offrir 
+                                <strong>la meilleure qualité de service</strong> à nos clients.
+                            </p>
+                            <p>
+                                Notre mission est simple mais ambitieuse : <strong>simplifier le processus de réservation et de commande</strong> 
+                                tout en maintenant des standards élevés de qualité et en garantissant la satisfaction totale de nos utilisateurs. 
+                                Chaque jour, nous travaillons pour vous offrir une expérience fluide, rapide et agréable.
+                            </p>
+                            <p class="mb-0">
+                                Avec une équipe passionnée et dédiée, nous évoluons constamment pour répondre à vos besoins 
+                                et anticiper vos attentes. <strong>Votre satisfaction est au cœur de tout ce que nous faisons.</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="text-center">
-            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg">
-                <i class="bi bi-envelope"></i> Nous Contacter
-            </a>
+
+        <!-- Values Section -->
+        <div class="values-section mb-6">
+            <div class="text-center mb-5">
+                <div class="section-badge mb-3">
+                    <i class="bi bi-star-fill me-2"></i>Nos Valeurs
+                </div>
+                <h2 class="section-title mb-3">Ce qui nous <span class="gradient-text">définit</span></h2>
+                <p class="section-subtitle">Les principes qui guident chacune de nos actions</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card">
+                        <div class="value-icon green">
+                            <i class="bi bi-shield-fill-check"></i>
+                        </div>
+                        <h3 class="value-title">Qualité Premium</h3>
+                        <p class="value-text">
+                            Nous garantissons des produits et services de la plus haute qualité. 
+                            Chaque article est soigneusement sélectionné pour répondre à nos standards d'excellence.
+                        </p>
+                        <div class="value-checkmark">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card">
+                        <div class="value-icon blue">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </div>
+                        <h3 class="value-title">Rapidité & Efficacité</h3>
+                        <p class="value-text">
+                            Un service rapide et efficace à chaque étape. 
+                            De la commande à la livraison, nous optimisons chaque processus pour votre confort.
+                        </p>
+                        <div class="value-checkmark">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card">
+                        <div class="value-icon orange">
+                            <i class="bi bi-emoji-smile-fill"></i>
+                        </div>
+                        <h3 class="value-title">Satisfaction Client</h3>
+                        <p class="value-text">
+                            Votre satisfaction est notre priorité absolue. 
+                            Nous sommes à votre écoute et travaillons sans relâche pour dépasser vos attentes.
+                        </p>
+                        <div class="value-checkmark">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="about-stats mb-6">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card-about">
+                        <div class="stat-icon-about">🎯</div>
+                        <div class="stat-value-about">98%</div>
+                        <div class="stat-label-about">Taux de satisfaction</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card-about">
+                        <div class="stat-icon-about">⚡</div>
+                        <div class="stat-value-about">24h</div>
+                        <div class="stat-label-about">Livraison garantie</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card-about">
+                        <div class="stat-icon-about">🌟</div>
+                        <div class="stat-value-about">15k+</div>
+                        <div class="stat-label-about">Clients heureux</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card-about">
+                        <div class="stat-icon-about">📦</div>
+                        <div class="stat-value-about">500+</div>
+                        <div class="stat-label-about">Produits disponibles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-about">
+            <div class="cta-decoration"></div>
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3 class="cta-title">Une question ? Contactez-nous !</h3>
+                    <p class="cta-text">Notre équipe est là pour vous aider et répondre à toutes vos questions.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{{ path('app_contact') }}" class="btn btn-light btn-cta">
+                        <i class="bi bi-envelope-fill me-2"></i>Nous contacter
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .about-page-premium {
+            background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(147,197,253,0.03) 100%);
+            min-height: 100vh;
+        }
+
+        .mb-6 {
+            margin-bottom: 5rem !important;
+        }
+
+        /* Hero About */
+        .about-hero {
+            padding: 2rem 0;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            border-radius: 50px;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .about-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .about-illustration {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 30px;
+            padding: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(59,130,246,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-illustration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .illustration-icon {
+            font-size: 8rem;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Story Section */
+        .story-card {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .story-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(59,130,246,0.3);
+        }
+
+        .story-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+
+        .story-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .story-content strong {
+            color: var(--text-primary);
+        }
+
+        /* Values Section */
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            border-radius: 50px;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .value-card {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            padding: 2.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            border-color: var(--primary-color);
+        }
+
+        .value-card:hover::before {
+            opacity: 1;
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .value-icon.green { background: linear-gradient(135deg, #22c55e, #4ade80); }
+        .value-icon.blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .value-icon.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .value-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .value-checkmark {
+            color: #22c55e;
+            font-size: 1.5rem;
+        }
+
+        /* Stats About */
+        .stat-card-about {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card-about:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .stat-icon-about {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value-about {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label-about {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* CTA About */
+        .cta-about {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-decoration {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-text {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+
+        .btn-cta {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .about-title {
+                font-size: 2.5rem;
+            }
+            
+            .story-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-title {
+                font-size: 2rem;
+            }
+            
+            .about-illustration {
+                padding: 3rem;
+                margin-top: 2rem;
+            }
+            
+            .illustration-icon {
+                font-size: 5rem;
+            }
+            
+            .story-card {
+                padding: 2rem;
+            }
+            
+            .cta-about {
+                padding: 2rem 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}
 {% endblock %}
