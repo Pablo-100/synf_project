@@ -179,15 +179,15 @@ synf_project/
 **Admin**
 
 ```
-Email: admin@freshmarket.com
+Email: admin@example.com
 Mot de passe: admin123
 ```
 
 **User**
 
 ```
-Email: user@freshmarket.com
-Mot de passe: user123
+Email: user@example.com
+Mot de passe: admin123
 ```
 
 ---
