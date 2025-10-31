@@ -2,8 +2,19 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # CSRF Protection activée globalement
+    csrf_protection: ~
+
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        # Secure session cookies
+        cookie_secure: auto
+        cookie_httponly: true
+        cookie_samesite: lax
+        handler_id: null
+        
+    # HTTP Method Override pour plus de sécurité
+    http_method_override: false
 
     #esi: true
     #fragments: true

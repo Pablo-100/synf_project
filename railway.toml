@@ -1,0 +1,15 @@
+# Configuration pour Railway.app
+# Ce fichier sera utilisé pour le déploiement automatique
+
+[build]
+  builder = "nixpacks"
+
+[deploy]
+  startCommand = "php -S 0.0.0.0:$PORT -t public"
+  restartPolicyType = "on-failure"
+  restartPolicyMaxRetries = 3
+
+[healthcheck]
+  path = "/"
+  timeout = 100
+  interval = 10

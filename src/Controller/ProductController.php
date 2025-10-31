@@ -40,7 +40,14 @@ class ProductController extends AbstractController
         $products = [];
         
         if ($query) {
-            $products = $productRepository->searchProducts($query);
+            // Nettoie et valide la requête de recherche
+            $query = strip_tags($query);
+            $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
+            $query = substr($query, 0, 100); // Limite la longueur
+            
+            if (strlen(trim($query)) > 0) {
+                $products = $productRepository->searchProducts($query);
+            }
         }
         
         return $this->render('product/search.html.twig', [
