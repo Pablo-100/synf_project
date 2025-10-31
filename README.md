@@ -1,494 +1,223 @@
-# 🍽️ FreshMarket - Application Web Symfony
+# 🍽️ **FreshMarket — Plateforme Web Symfony de Réservation & Commande**
 
-# synf_project — Application Symfony de Réservation & Commande
+> 🥦 *Marketplace gourmande & système intelligent de gestion de restaurant*  
+> Une application web moderne, responsive et sécurisée développée avec **Symfony 7 & PHP 8.2+**
 
-> Une application web moderne et sécurisée de gestion de restaurant avec marketplace de produits, réservations et commandes en ligne.
+---
 
-## 🧩 Description
+![Symfony](https://img.shields.io/badge/Symfony-7.x-black?style=for-the-badge&logo=symfony)
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-[![Symfony](https://img.shields.io/badge/Symfony-7.x-black?style=for-the-badge&logo=symfony)](https://symfony.com)
+---
 
-[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)](https://php.net)**synf_project** est une application web développée avec **Symfony 7 (PHP)**.  
+## 🎯 **Objectif du Projet**
 
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)Elle permet aux utilisateurs d’effectuer des **réservations** et de **passer des commandes** en ligne, tout en offrant une **interface d’administration complète** pour gérer les utilisateurs, les produits, les réservations et les commandes.
+Créer une **plateforme web intuitive** permettant :
+- Aux **clients** : de réserver une table, passer commande et suivre leurs achats.  
+- Aux **administrateurs** : de gérer les produits, utilisateurs, réservations et commandes via un **dashboard intelligent et sécurisé**.
 
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
+---
 
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)### 🎯 Objectifs du projet
+## ✨ **Fonctionnalités Principales**
 
-- Offrir une plateforme simple et moderne pour la gestion de réservations et commandes.
+### 👨‍🍳 Pour les Clients
+- 🛍️ **Boutique en ligne** avec filtres et recherche dynamique  
+- 🧺 **Panier interactif** (quantité, suppression, total en temps réel)  
+- 🍽️ **Réservation de tables** avec confirmation instantanée  
+- 📦 **Suivi de commande** et historique complet  
+- 👤 **Espace personnel** avec gestion du profil  
 
-## ✨ Fonctionnalités- Implémenter les bonnes pratiques de développement web avec Symfony.
+### 🧑‍💼 Pour les Administrateurs
+- 📊 **Dashboard Premium** avec statistiques temps réel  
+- 🛒 CRUD complet : produits, utilisateurs, commandes, réservations  
+- 🧠 Gestion des rôles et permissions (`ROLE_USER`, `ROLE_ADMIN`)  
+- 📷 Upload d’images produit avec validation et compression automatique  
+- 🔒 Sécurité renforcée (XSS, CSRF, SQL Injection, headers HTTPS)
 
-- Servir de base académique pour un projet d’ingénierie en développement web.
+---
 
-### 🛒 Pour les Clients
+## 💎 **Design & Expérience Utilisateur**
 
-- **Boutique en ligne** avec recherche et filtres par catégorie---
+🎨 **Interface Premium** basée sur :
+- 🧊 *Glassmorphism & Gradients*  
+- 🌈 Palette de couleurs cohérente  
+- ⚡ *Micro-interactions & transitions fluides*  
+- 📱 *Responsive Design* (Mobile-First)  
+- ♿ *Accessibilité renforcée*
 
-- **Panier d'achats** avec gestion des quantités
+---
 
-- **Système de commandes** avec suivi de statut## ⚙️ Installation
+## ⚙️ **Installation & Démarrage**
 
-- **Réservations de tables** avec confirmation
+### 🧰 Prérequis
+- PHP ≥ 8.2  
+- MySQL ≥ 8.0  
+- Composer 2.x  
+- Extensions PHP : `pdo_mysql`, `gd`, `intl`
 
-- **Profil utilisateur** avec historique complet### Prérequis
+---
 
-- **Interface responsive** adaptée mobile/tablette/desktop- **PHP ≥ 8.1**
+### 🚀 Étapes d’installation
 
-- **MySQL ≥ 8.0**
-
-### 👨‍💼 Pour les Administrateurs- **Composer**
-
-- **Dashboard premium** avec statistiques en temps réel- Extensions PHP requises : `pdo_mysql`, `gd`, `intl`
-
-- **Gestion des produits** (CRUD complet avec images)
-
-- **Gestion des commandes** (validation, préparation, livraison)### Étapes d’installation
-
-- **Gestion des réservations** (confirmation, annulation)
-
-- **Gestion des utilisateurs** avec rôles et permissions1. **Cloner le dépôt**
-
-   ```bash
-
-### 🔒 Sécurité (Production Ready)   git clone https://github.com/Pablo-100/synf_project.git
-
-- ✅ **Protection XSS** (Cross-Site Scripting)   cd synf_project
-
-- ✅ **Protection SQL Injection** avec paramètres bindés
-
-- ✅ **Protection CSRF** (Cross-Site Request Forgery)
-
-- ✅ **Headers de sécurité HTTP** (7 headers actifs)2. **Installer les dépendances**
-
-- ✅ **Sessions sécurisées** (httpOnly, sameSite, secure)
-
-- ✅ **Validation et sanitization** des données   ```bash
-
-- ✅ **Mots de passe hashés** (Argon2i/bcrypt)   composer install
-
-   ```
-
-## 🎨 Interface Utilisateur
-
-3. **Configurer la base de données**
-
-### Design Premium   Modifier la variable `DATABASE_URL` dans le fichier `.env` :
-
-- 🎨 Interface moderne avec **glassmorphism** et **gradients**
-
-- ✨ Animations fluides et **micro-interactions**   ```
-
-- 🌈 Palette de couleurs cohérente et professionnelle   DATABASE_URL="mysql://root:@127.0.0.1:3306/synf_project?serverVersion=8.0&charset=utf8mb4"
-
-- 📱 **100% Responsive** (mobile-first)   ```
-
-- ♿ Accessible et intuitif
-
-4. **Créer la base de données et exécuter les migrations**
-
-### Pages Principales
-
-- Page d'accueil dynamique avec produits vedettes   ```bash
-
-- Catalogue complet avec filtres et recherche   php bin/console doctrine:database:create
-
-- Dashboards admin et utilisateur ultra-premium   php bin/console doctrine:migrations:migrate
-
-- Formulaires optimisés avec validation en temps réel   
-
-- Navigation avec hamburger menu personnalisé
-
-5. **(Optionnel)** Charger des données de test (fixtures)
-
-## 🚀 Installation Rapide
-
-   ```bash
-
-### Prérequis   php bin/console doctrine:fixtures:load
-
-- PHP 8.2 ou supérieur   ```
-
-- MySQL 8.0 ou supérieur
-
-- Composer 2.x6. **Créer un utilisateur administrateur**
-
-- Apache/Nginx (optionnel pour développement)
-
-   ```bash
-
-### 1. Cloner le projet   php bin/console make:user
-
-```bash   ```
-
+```bash
+# 1️⃣ Cloner le projet
 git clone https://github.com/Pablo-100/synf_project.git
+cd synf_project
 
-cd synf_project7. **Démarrer le serveur local**
+# 2️⃣ Installer les dépendances
+composer install
+
+# 3️⃣ Configurer la base de données
+cp .env .env.local
+# Modifier DATABASE_URL="mysql://root:@127.0.0.1:3306/synf_project"
+
+# 4️⃣ Créer la base et lancer les migrations
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+
+# 5️⃣ (Optionnel) Charger les données de test
+php bin/console doctrine:fixtures:load
+
+# 6️⃣ Lancer le serveur
+symfony server:start
+# ou
+php -S localhost:8000 -t public
+````
+
+> 🖥️ Accès local : [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 🧱 **Structure du Projet**
 
 ```
-
-   ```bash
-
-### 2. Installer les dépendances   symfony server:start
-
-```bash   # ou
-
-composer install   php -S localhost:8000 -t public
-
-```   ```
-
-
-
-### 3. Configurer l'environnement➡️ L’application sera accessible sur : [http://localhost:8000](http://localhost:8000)
-
-```bash
-
-# Copier le fichier .env---
-
-cp .env .env.local
-
-## 🧱 Structure du projet
-
-# Éditer .env.local avec vos paramètres
-
-# DATABASE_URL="mysql://user:password@127.0.0.1:3306/synf_project"```
-
-```synf_project/
-
-├── config/              # Configuration de Symfony
-
-### 4. Créer la base de données├── public/              # Point d’entrée web (index.php)
-
-```bash├── src/
-
-php bin/console doctrine:database:create│   ├── Controller/      # Contrôleurs
-
-php bin/console doctrine:migrations:migrate│   ├── Entity/          # Entités Doctrine
-
-```│   ├── Form/            # Formulaires Symfony
-
-│   ├── Repository/      # Classes de gestion des entités
-
-### 5. (Optionnel) Charger les données de test│   └── Kernel.php
-
-```bash├── templates/           # Vues Twig
-
-php bin/console doctrine:fixtures:load├── migrations/          # Fichiers de migration de la base
-
-```├── .env                 # Configuration d’environnement
-
+synf_project/
+├── config/              # Configuration Symfony
+├── public/              # Point d'entrée web (index.php)
+├── src/
+│   ├── Controller/      # Contrôleurs MVC
+│   ├── Entity/          # Entités Doctrine ORM
+│   ├── Form/            # Gestion des formulaires
+│   ├── Repository/      # Requêtes personnalisées
+│   └── Service/         # Logique métier
+├── templates/           # Templates Twig (admin, user, shop)
+├── migrations/          # Migrations SQL
 └── composer.json        # Dépendances PHP
-
-### 6. Démarrer le serveur```
-
-```bash
-
-# Avec Symfony CLI (recommandé)---
-
-symfony server:start
-
-## 🔐 Sécurité
-
-# Ou avec PHP intégré
-
-php -S localhost:8000 -t public* Mots de passe hashés avec **bcrypt / argon2**
-
-* Protection **CSRF** sur les formulaires
-
-# Ou avec le script PowerShell (Windows)* Gestion des rôles et permissions (**ROLE_USER**, **ROLE_ADMIN**)
-
-.\start.ps1* Validation des données côté serveur
-
 ```
 
 ---
 
-🌐 **Accédez à l'application** : http://localhost:8000
+## 🔐 **Sécurité & Fiabilité**
 
-## 🧑‍💻 Développement
+| Protection           | Description                        |
+| -------------------- | ---------------------------------- |
+| 🧱 CSRF              | Jetons sur tous les formulaires    |
+| 🧩 XSS               | Filtrage & échappement Twig        |
+| 🕵️‍♂️ SQL Injection | Paramètres préparés Doctrine       |
+| 🔑 Mots de passe     | Hashage Argon2i / bcrypt           |
+| 🧭 Sessions          | `httpOnly`, `SameSite`, `secure`   |
+| 🧱 Headers           | 7 headers HTTP de sécurité activés |
 
-## 📚 Documentation
+---
 
-### Générer un contrôleur
+## 🧪 **Tests de Sécurité Rapides**
 
-- 📖 [Guide de sécurité complet](SECURITY.md)
+### XSS
 
-- 🚀 [Guide de déploiement](DEPLOYMENT.md)```bash
-
-- 📊 [Résumé de sécurité](SECURITY_SUMMARY.md)php bin/console make:controller NomController
-
-```
-
-## 🔐 Comptes de Test
-
-### Générer une entité
-
-### Administrateur
-
-``````bash
-
-Email: admin@freshmarket.comphp bin/console make:entity NomEntity
-
-Mot de passe: admin123php bin/console make:migration
-
-```php bin/console doctrine:migrations:migrate
-
-```
-
-### Client
-
-```### Lancer les tests
-
-Email: user@freshmarket.com
-
-Mot de passe: user123```bash
-
-```php bin/phpunit
-
-```
-
-## 🛠️ Stack Technique
-
-
-
-### Backend## 📊 Fonctionnalités principales
-
-- **Framework**: Symfony 7.x
-
-- **ORM**: Doctrine### Utilisateurs
-
-- **Sécurité**: Security Bundle + Custom Guards
-
-- **Base de données**: MySQL 8.0* Inscription / connexion
-
-- **Validation**: Symfony Validator* Profil personnel
-
-* Historique des réservations et commandes
-
-### Frontend
-
-- **Framework CSS**: Bootstrap 5.3### Réservations
-
-- **Icons**: Bootstrap Icons
-
-- **Template Engine**: Twig* Création, modification, annulation
-
-- **JavaScript**: Vanilla JS (pas de framework lourd)* Statuts : en attente, confirmée, annulée, terminée
-
-
-
-### DevOps### Commandes
-
-- **Versionning**: Git
-
-- **Dependency Manager**: Composer* Ajout d’articles au panier
-
-- **Deployment**: Railway, Heroku, VPS ready* Validation de commande
-
-* Suivi du statut
-
-## 📁 Structure du Projet
-
-### Administration
-
-```
-
-synf_project/* CRUD complet : produits, utilisateurs, réservations, commandes
-
-├── config/               # Configuration Symfony* Tableau de bord avec statistiques
-
-│   ├── packages/        # Config des bundles
-
-│   └── routes/          # Définition des routes---
-
-├── public/              # Point d'entrée web
-
-│   ├── uploads/         # Images uploadées## 🤝 Contribution
-
-│   └── .htaccess       # Config Apache
-
-├── src/Les contributions sont les bienvenues !
-
-│   ├── Controller/      # ContrôleursPour contribuer :
-
-│   ├── Entity/          # Entités Doctrine
-
-│   ├── EventSubscriber/ # Subscribers (sécurité)1. Forker le dépôt
-
-│   ├── Form/            # Types de formulaires2. Créer une nouvelle branche :
-
-│   ├── Repository/      # Repositories Doctrine
-
-│   └── Service/         # Services métier   ```bash
-
-├── templates/           # Templates Twig   git checkout -b feature/ma-fonctionnalite
-
-│   ├── admin/          # Interface admin   ```
-
-│   ├── profile/        # Espace utilisateur3. Effectuer vos modifications
-
-│   ├── product/        # Boutique4. Soumettre une Pull Request pour révision
-
-│   └── cart/           # Panier
-
-├── migrations/          # Migrations de base---
-
-├── .env                 # Config environnement
-
-└── composer.json        # Dépendances PHP## 🪪 Licence
-
-```
-
-Ce projet est distribué sous la **Licence MIT** :
-
-## 🌐 Déploiement
-
-```
-
-### Options d'hébergement gratuitMIT License
-
-
-
-1. **Railway.app** ⭐ (Recommandé)Copyright (c) 2025 
-
-   - Déploiement Git automatique
-
-   - MySQL inclusPermission is hereby granted, free of charge, to any person obtaining a copy
-
-   - HTTPS automatiqueof this software and associated documentation files (the “Software”), to deal
-
-   - [Guide de déploiement](DEPLOYMENT.md#option-1--railwayapp)in the Software without restriction, including without limitation the rights
-
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-
-2. **Heroku**copies of the Software, and to permit persons to whom the Software is
-
-   - Support Symfony natiffurnished to do so, subject to the following conditions:
-
-   - PostgreSQL/MySQL add-ons
-
-   - [Guide de déploiement](DEPLOYMENT.md#option-2--heroku)The above copyright notice and this permission notice shall be included in all
-
-copies or substantial portions of the Software.
-
-3. **InfinityFree**
-
-   - Hosting PHP traditionnel gratuitTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-
-   - MySQL illimitéIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-
-   - [Guide de déploiement](DEPLOYMENT.md#option-3--infinityfree)FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-
-### Déploiement rapideDAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-```bash```
-
-# 1. Configurer .env.prod
-
-cp .env.prod .env.local---
-
-# Éditer avec vos vraies informations
-
-## 👤 Auteur
-
-# 2. Exécuter le script de déploiement
-
-php deploy.php**Mustapha Amine TBINI**
-
-📍 Tunis, Tunisie
-
-# 3. Push vers votre hébergeur📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
-
-git push production main🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
-
-```
-
-
-
-Voir [DEPLOYMENT.md](DEPLOYMENT.md) pour les instructions détaillées.
-
-## 🧪 Tests de Sécurité
-
-### Test XSS
 ```html
-<!-- Essayez de soumettre ceci dans un formulaire -->
 <script>alert('XSS')</script>
-<img src=x onerror=alert('XSS')>
-
-<!-- Résultat attendu: Rejeté ou échappé -->
 ```
 
-### Test SQL Injection
+➡️ Résultat : contenu échappé ✅
+
+### SQL Injection
+
 ```sql
--- Dans la barre de recherche
-' OR '1'='1
-'; DROP TABLE products; --
-
--- Résultat attendu: Recherche normale sans erreur SQL
+' OR '1'='1 --
 ```
 
-### Test Headers de Sécurité
+➡️ Résultat : requête bloquée ✅
+
+### Headers
+
 ```bash
 curl -I http://localhost:8000
-# Vérifiez la présence de:
-# X-XSS-Protection
-# X-Frame-Options
-# Content-Security-Policy
 ```
 
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Forkez le projet
-2. Créez une branche (`git checkout -b feature/AmazingFeature`)
-3. Committez vos changements (`git commit -m 'Add AmazingFeature'`)
-4. Pushez vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
-
-## 📝 Changelog
-
-### Version 2.0 - Octobre 2025
-- ✨ Refonte complète de l'interface (design premium)
-- 🔒 Implémentation complète de la sécurité (XSS, SQL, CSRF)
-- 🛒 Page panier redesignée
-- 📱 Amélioration du responsive
-- 📄 Documentation complète
-- 🚀 Scripts de déploiement automatique
-
-### Version 1.0 - Initial Release
-- ✅ Système de gestion de produits
-- ✅ Système de commandes
-- ✅ Système de réservations
-- ✅ Authentification et autorisation
-- ✅ Interface d'administration
-
-## 📄 License
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 👤 Auteur
-
-**Pablo-100**
-- GitHub: [@Pablo-100](https://github.com/Pablo-100)
-- Projet: [synf_project](https://github.com/Pablo-100/synf_project)
-
-## 🙏 Remerciements
-
-- [Symfony](https://symfony.com) - Framework PHP
-- [Bootstrap](https://getbootstrap.com) - Framework CSS
-- [Doctrine](https://www.doctrine-project.org) - ORM
-- [Twig](https://twig.symfony.com) - Template Engine
+➡️ Résultat : `X-XSS-Protection`, `CSP`, `Frame-Options` présents ✅
 
 ---
 
-⭐ **Si vous aimez ce projet, n'hésitez pas à lui donner une étoile !**
+## 🧑‍💻 **Comptes de Test**
 
-🐛 **Trouvé un bug ?** [Ouvrez une issue](https://github.com/Pablo-100/synf_project/issues)
+| Rôle      | Email                   | Mot de passe |
+| --------- | ----------------------- | ------------ |
+| 👑 Admin  | `admin@freshmarket.com` | `admin123`   |
+| 👤 Client | `user@freshmarket.com`  | `user123`    |
 
-💬 **Des questions ?** [Démarrez une discussion](https://github.com/Pablo-100/synf_project/discussions)
+---
+
+## 🌍 **Déploiement**
+
+### 🔧 Hébergements compatibles
+
+* **Railway.app** (recommandé — Git Deploy + MySQL)
+* **Heroku** (PostgreSQL/MySQL add-ons)
+* **InfinityFree** (hébergement PHP gratuit)
+
+📄 Voir le [guide de déploiement complet](DEPLOYMENT.md)
+
+---
+
+## 🤝 **Contribution**
+
+💡 Les contributions sont toujours les bienvenues !
+
+```bash
+# 1. Fork du dépôt
+# 2. Nouvelle branche
+git checkout -b feature/ma-fonctionnalite
+
+# 3. Commit + Push
+git commit -m "✨ Ajout d'une nouvelle fonctionnalité"
+git push origin feature/ma-fonctionnalite
+```
+
+🔁 Ouvrez ensuite une **Pull Request** pour validation.
+
+---
+
+## 🪪 **Licence**
+
+📜 Projet distribué sous licence [MIT](LICENSE)
+© 2025 **Mustapha Amine TBINI** – Tous droits réservés.
+
+---
+
+## 👤 **Auteur**
+
+**Mustapha Amine TBINI**
+📍 Tunis, Tunisie
+📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
+🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
+
+---
+
+## 🧠 **Remerciements**
+
+* 🧰 [Symfony](https://symfony.com) – Framework PHP
+* 🎨 [Bootstrap](https://getbootstrap.com) – Framework CSS
+* 🗄️ [Doctrine](https://www.doctrine-project.org) – ORM
+* 🧩 [Twig](https://twig.symfony.com) – Template Engine
+
+---
+
+⭐ **Si ce projet t’a plu, n’hésite pas à lui mettre une étoile sur GitHub !**
+🐛 *Tu as trouvé un bug ?* → [Ouvre une issue](https://github.com/Pablo-100/synf_project/issues)
+💬 *Des questions ?* → [Rejoins la discussion](https://github.com/Pablo-100/synf_project/discussions)
+
+```
+
