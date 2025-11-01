@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test CSRF</title>
+</head>
+<body>
+    <h1>Test CSRF - Tentative de connexion sans token</h1>
+    
+    <p>Ce formulaire essaie de se connecter SANS token CSRF.</p>
+    <p><strong>Résultat attendu :</strong> Erreur 400/403 (Invalid CSRF token)</p>
+    
+    <form action="http://localhost:8000/login" method="POST">
+        <input type="email" name="email" value="user@freshmarket.com">
+        <input type="password" name="password" value="user123">
+        <!-- PAS de token CSRF ici ! -->
+        <button type="submit">Tenter la connexion (DOIT ÉCHOUER)</button>
+    </form>
+    
+    <hr>
+    
+    <h2>Résultats :</h2>
+    <ul>
+        <li>✅ Si vous avez une erreur "Invalid CSRF token" → Protection OK</li>
+        <li>❌ Si la connexion fonctionne → PROBLÈME de sécurité</li>
+    </ul>
+</body>
+</html>

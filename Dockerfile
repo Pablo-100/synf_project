@@ -36,9 +36,17 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Créer un fichier .env par défaut s'il n'existe pas
+RUN if [ ! -f .env ]; then \
+        echo "APP_ENV=prod" > .env && \
+        echo "APP_DEBUG=0" >> .env && \
+        echo "APP_SECRET=CHANGE_ME_IN_PRODUCTION" >> .env && \
+        echo "DATABASE_URL=mysql://root:root@localhost:3306/synf_project?serverVersion=8.0&charset=utf8mb4" >> .env; \
+    fi
+
 # Créer les dossiers nécessaires avec permissions
 RUN mkdir -p public/uploads var/cache var/log \
-    && chmod -R 775 public/uploads var/cache var/log
+    && chmod -R 777 public/uploads var/cache var/log
 
 # Configurer Apache pour pointer vers public/
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
@@ -48,15 +56,25 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/var \
+    && chmod -R 777 /var/www/html/var \
     && chmod -R 755 /var/www/html
 
-# Vider le cache Symfony (en mode prod)
-RUN php bin/console cache:clear --env=prod --no-debug || true \
+# Configurer PHP pour afficher les erreurs (temporairement pour debug)
+RUN echo "display_errors = On" >> /usr/local/etc/php/php.ini-production \
+    && echo "display_startup_errors = On" >> /usr/local/etc/php/php.ini-production \
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini-production \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+# Warmup du cache Symfony
+RUN php bin/console cache:warmup --env=prod --no-debug || true \
     && chown -R www-data:www-data var/cache var/log
+
+# Copier le script d'entrée
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Exposer le port 80
 EXPOSE 80
 
-# Lancer Apache
-CMD ["apache2-foreground"]
+# Utiliser le script d'entrée
+ENTRYPOINT ["docker-entrypoint.sh"]
