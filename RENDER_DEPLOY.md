@@ -48,6 +48,9 @@ Ajoutez ces variables dans le Dashboard Render :
 | `APP_DEBUG` | `0` | Désactiver le mode debug |
 | `APP_SECRET` | `[généré automatiquement]` | Clé secrète Symfony |
 | `DATABASE_URL` | `mysql://user:pass@host:3306/dbname` | URL de connexion à la base |
+| `DEFAULT_URI` | `https://votre-app.onrender.com` | URL de votre application |
+| `MESSENGER_TRANSPORT_DSN` | `doctrine://default?auto_setup=0` | Configuration Messenger |
+| `MAILER_DSN` | `null://null` | Configuration mailer |
 
 ### Générer APP_SECRET
 
@@ -89,6 +92,9 @@ APP_ENV=prod
 APP_DEBUG=0
 APP_SECRET=32c8f8e9d5a7b2f1e4d3c2a1f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0
 DATABASE_URL=mysql://user:password@host.planetscale.com:3306/synf_project?serverVersion=8.0&charset=utf8mb4
+DEFAULT_URI=https://votre-app.onrender.com
+MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+MAILER_DSN=null://null
 ```
 
 ### 4. Déployer

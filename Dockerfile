@@ -41,7 +41,10 @@ RUN if [ ! -f .env ]; then \
         echo "APP_ENV=prod" > .env && \
         echo "APP_DEBUG=0" >> .env && \
         echo "APP_SECRET=CHANGE_ME_IN_PRODUCTION" >> .env && \
-        echo "DATABASE_URL=mysql://root:root@localhost:3306/synf_project?serverVersion=8.0&charset=utf8mb4" >> .env; \
+        echo "DATABASE_URL=mysql://root:root@localhost:3306/synf_project?serverVersion=8.0&charset=utf8mb4" >> .env && \
+        echo "DEFAULT_URI=http://localhost" >> .env && \
+        echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env && \
+        echo "MAILER_DSN=null://null" >> .env; \
     fi
 
 # Créer les dossiers nécessaires avec permissions
