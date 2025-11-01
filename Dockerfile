@@ -1,6 +1,11 @@
 # Utiliser une image PHP avec Apache
 FROM php:8.2-apache
 
+# Définir les variables d'environnement
+ENV APP_ENV=prod \
+    APP_DEBUG=0 \
+    COMPOSER_ALLOW_SUPERUSER=1
+
 # Installer les extensions nécessaires à Symfony
 RUN docker-php-ext-install pdo pdo_mysql
 
@@ -31,18 +36,24 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Créer le dossier uploads avec permissions
-RUN mkdir -p public/uploads && chmod -R 775 public/uploads
+# Créer les dossiers nécessaires avec permissions
+RUN mkdir -p public/uploads var/cache var/log \
+    && chmod -R 775 public/uploads var/cache var/log
 
 # Configurer Apache pour pointer vers public/
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
+# Configurer AllowOverride pour .htaccess
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/var \
     && chmod -R 755 /var/www/html
 
-# Vider le cache Symfony
-RUN php bin/console cache:clear --env=prod --no-debug || true
+# Vider le cache Symfony (en mode prod)
+RUN php bin/console cache:clear --env=prod --no-debug || true \
+    && chown -R www-data:www-data var/cache var/log
 
 # Exposer le port 80
 EXPOSE 80

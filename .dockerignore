@@ -5,6 +5,7 @@
 .env.*.local
 var/cache/*
 var/log/*
+var/sessions/*
 vendor/
 node_modules/
 .vscode/
@@ -16,5 +17,8 @@ DEPLOYMENT.md
 SECURITY_SUMMARY.md
 test_*.bat
 test_*.html
+test_*.txt
 start.ps1
 deploy.php
+.DS_Store
+Thumbs.db

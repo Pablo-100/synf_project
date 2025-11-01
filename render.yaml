@@ -10,7 +10,7 @@ services:
       - key: APP_ENV
         value: prod
       - key: APP_DEBUG
-        value: 0
+        value: "0"
       - key: APP_SECRET
         generateValue: true
       - key: DATABASE_URL
@@ -18,20 +18,7 @@ services:
           name: freshmarket-db
           property: connectionString
     healthCheckPath: /
-
-  # Base de données MySQL
-  - type: pserv
-    name: freshmarket-db
-    env: docker
-    region: frankfurt
-    plan: free
-    dockerCommand: mysqld
-    dockerfilePath: ./Dockerfile.mysql
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 1
-
+    
 databases:
   - name: freshmarket-db
     databaseName: synf_project
