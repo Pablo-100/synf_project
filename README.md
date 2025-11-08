@@ -8,6 +8,27 @@
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
+## 🌐 Déploiement Gratuit
+
+**🚀 Mettez votre projet en ligne GRATUITEMENT en 5 minutes !**
+
+[![Deploy on Railway](https://img.shields.io/badge/Deploy%20on-Railway-blueviolet?style=for-the-badge&logo=railway)](https://railway.app)
+[![Deploy on Render](https://img.shields.io/badge/Deploy%20on-Render-46E3B7?style=for-the-badge&logo=render)](https://render.com)
+
+### Guides de Déploiement
+- 🌟 **[Guide Complet : Domaine & Hébergement GRATUIT](FREE_DOMAIN_GUIDE.md)** ⭐ **NOUVEAU**
+- 📖 [DEPLOYMENT.md](DEPLOYMENT.md) - Options complètes
+- 🎯 [RENDER_DEPLOY.md](RENDER_DEPLOY.md) - Déploiement sur Render
+
+**Option la plus rapide (5 minutes avec Railway) :**
+```bash
+npm install -g @railway/cli
+railway login
+railway init
+railway up
+```
+✅ Votre app sera en ligne sur `https://votre-app.up.railway.app`
+
 ---
 
 ## 🎯 Objectifs du Projet
@@ -20,6 +41,7 @@
 
 ## 📋 Table des Matières
 
+- [Déploiement Gratuit](#-déploiement-gratuit) ⭐ **Nouveau**
 - [Aperçu](#-aperçu)
 - [Fonctionnalités](#-fonctionnalités)
 - [Sécurité](#-sécurité)
@@ -216,6 +238,34 @@ start test_csrf.html
 
 ## 🌐 Déploiement
 
+### 🎯 Guide Complet de Déploiement Gratuit
+
+**📘 [Consultez le Guide Complet : Domaine & Hébergement GRATUIT](FREE_DOMAIN_GUIDE.md)**
+
+Ce guide vous montre comment :
+- ✅ Déployer votre app en **5 minutes** avec un domaine gratuit
+- ✅ Obtenir un **sous-domaine gratuit** (`.up.railway.app`, `.onrender.com`)
+- ✅ Configurer un **domaine personnalisé gratuit** (`.tk`, `.ml`, `.ga`)
+- ✅ Héberger avec base de données MySQL **gratuitement**
+
+### Options de Déploiement Rapide
+
+#### 1. Railway.app ⭐ (Recommandé - Le plus simple)
+```bash
+npm install -g @railway/cli
+railway login
+railway init
+railway up
+```
+✅ URL gratuite : `https://votre-app.up.railway.app`
+
+#### 2. Render.com
+Voir : [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
+
+#### 3. Guides Détaillés
+- 📖 [DEPLOYMENT.md](DEPLOYMENT.md) - Guide complet de déploiement
+- 🌐 [FREE_DOMAIN_GUIDE.md](FREE_DOMAIN_GUIDE.md) - Domaines gratuits
+
 ### Mode Production
 
 ```env
@@ -225,22 +275,26 @@ APP_SECRET=[clé générée]
 DATABASE_URL="mysql://user:pass@host:3306/dbname?serverVersion=8.0"
 ```
 
-Script :
+Script de déploiement local :
 
 ```bash
 php deploy.php
 ```
 
-### Hébergement Gratuit
-
-* **Railway.app** (Recommandé)
-* **Heroku**
-* **InfinityFree**
-
 ---
 
 ## 📚 Documentation
 
+### 📘 Documentation du Projet
+* 🌟 **[FREE_DOMAIN_GUIDE.md](FREE_DOMAIN_GUIDE.md)** - Domaine & Hébergement Gratuit
+* 🚀 **[ONE_CLICK_DEPLOY.md](ONE_CLICK_DEPLOY.md)** - Déploiement en Un Clic
+* 📖 **[DEPLOYMENT.md](DEPLOYMENT.md)** - Guide de Déploiement Complet
+* 🎯 **[RENDER_DEPLOY.md](RENDER_DEPLOY.md)** - Déploiement sur Render
+* 📊 **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Récapitulatif du Projet
+* ⚡ **[QUICKSTART.md](QUICKSTART.md)** - Guide de Démarrage Rapide
+* 🔒 **[SECURITY.md](SECURITY.md)** - Guide de Sécurité
+
+### 🛠️ Documentation Technique
 * [Symfony Docs](https://symfony.com/doc/current/index.html)
 * [Doctrine ORM](https://www.doctrine-project.org/projects/doctrine-orm/en/current/index.html)
 * [Twig Templates](https://twig.symfony.com/doc/3.x/)
