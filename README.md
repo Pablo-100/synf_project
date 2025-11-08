@@ -17,10 +17,22 @@
 
 ### Guides de Déploiement
 - 🌟 **[Guide Complet : Domaine & Hébergement GRATUIT](FREE_DOMAIN_GUIDE.md)** ⭐ **NOUVEAU**
+- 🚀 **[Déploiement en Un Clic](ONE_CLICK_DEPLOY.md)** ⭐ **NOUVEAU**
 - 📖 [DEPLOYMENT.md](DEPLOYMENT.md) - Options complètes
 - 🎯 [RENDER_DEPLOY.md](RENDER_DEPLOY.md) - Déploiement sur Render
 
-**Option la plus rapide (5 minutes avec Railway) :**
+**Option la plus rapide (5 minutes) :**
+
+Utilisez le script automatique :
+```bash
+# Linux/macOS
+./quick-deploy.sh
+
+# Windows
+quick-deploy.bat
+```
+
+Ou manuellement avec Railway :
 ```bash
 npm install -g @railway/cli
 railway login
@@ -251,6 +263,17 @@ Ce guide vous montre comment :
 ### Options de Déploiement Rapide
 
 #### 1. Railway.app ⭐ (Recommandé - Le plus simple)
+
+**Option A : Script de Déploiement Automatique**
+```bash
+# Linux/macOS
+./quick-deploy.sh
+
+# Windows
+quick-deploy.bat
+```
+
+**Option B : Manuel**
 ```bash
 npm install -g @railway/cli
 railway login
@@ -263,8 +286,9 @@ railway up
 Voir : [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
 
 #### 3. Guides Détaillés
+- 🚀 **[ONE_CLICK_DEPLOY.md](ONE_CLICK_DEPLOY.md)** - Déploiement en un clic
+- 🌐 **[FREE_DOMAIN_GUIDE.md](FREE_DOMAIN_GUIDE.md)** - Domaines gratuits
 - 📖 [DEPLOYMENT.md](DEPLOYMENT.md) - Guide complet de déploiement
-- 🌐 [FREE_DOMAIN_GUIDE.md](FREE_DOMAIN_GUIDE.md) - Domaines gratuits
 
 ### Mode Production
 
