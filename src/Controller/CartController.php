@@ -53,6 +53,51 @@ class CartController extends AbstractController
         
         return $this->redirectToRoute('app_product_show', ['id' => $id]);
     }
+
+    #[Route('/add-ajax/{id}', name: 'app_cart_add_ajax', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function addAjax(int $id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
+    {
+        // Vérifier que c'est une requête AJAX
+        if (!$request->isXmlHttpRequest()) {
+            return $this->json(['success' => false, 'message' => 'Requête invalide'], 400);
+        }
+
+        $product = $productRepository->find($id);
+        
+        if (!$product) {
+            return $this->json(['success' => false, 'message' => 'Produit introuvable']);
+        }
+        
+        if ($product->getStock() <= 0) {
+            return $this->json(['success' => false, 'message' => 'Ce produit est en rupture de stock']);
+        }
+        
+        // Récupérer le panier de la session
+        $cart = $session->get('cart', []);
+        
+        // Ajouter le produit ou augmenter la quantité
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        } else {
+            $cart[$id] = [
+                'product' => $product,
+                'quantity' => 1
+            ];
+        }
+        
+        // Sauvegarder le panier dans la session
+        $session->set('cart', $cart);
+        
+        // Retourner le nombre de produits différents (pas la quantité totale)
+        $cartCount = count($cart);
+        
+        return $this->json([
+            'success' => true,
+            'message' => 'Produit ajouté au panier',
+            'cartCount' => $cartCount
+        ]);
+    }
     
     #[Route('/', name: 'app_cart_index')]
     #[IsGranted('ROLE_USER')]
@@ -138,6 +183,17 @@ class CartController extends AbstractController
             'cart' => $cart,
             'total' => $total,
         ]);
+    }
+
+    #[Route('/count', name: 'app_cart_count', methods: ['GET'])]
+    public function count(SessionInterface $session): Response
+    {
+        $cart = $session->get('cart', []);
+        
+        // Retourne le nombre de produits différents (pas la quantité totale)
+        $count = count($cart);
+        
+        return $this->json(['count' => $count]);
     }
 
     #[Route('/place-order', name: 'app_cart_place_order', methods: ['POST'])]

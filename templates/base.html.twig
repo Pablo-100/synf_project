@@ -296,7 +296,7 @@
                 width: 22px;
                 height: 22px;
                 border-radius: 50%;
-                display: flex;
+                display: flex !important;
                 align-items: center;
                 justify-content: center;
                 border: 2px solid white;
@@ -304,9 +304,42 @@
                 animation: pulse 2s infinite;
             }
 
+            /* Badge for logged-in users navbar */
+            #cart-count-mobile {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+                min-width: 1.5rem;
+                font-weight: 700;
+            }
+
+            /* Avatar initials for navbar */
+            .avatar-initials-small {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 700;
+                font-size: 0.875rem;
+                border: 2px solid var(--primary-color);
+                text-transform: uppercase;
+            }
+
             @keyframes pulse {
                 0%, 100% { transform: scale(1); }
                 50% { transform: scale(1.1); }
+            }
+
+            .animate-pulse {
+                animation: pulse-once 0.5s ease-in-out;
+            }
+
+            @keyframes pulse-once {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.3); }
             }
 
             .btn-nav-outline {
@@ -1004,17 +1037,24 @@
                     <ul class="navbar-nav ms-auto align-items-center">
                         {% if not is_granted('ROLE_ADMIN') %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_cart_index') }}">
-                                    <i class="bi bi-cart3"></i> Panier
+                                <a class="nav-link position-relative d-flex align-items-center" href="{{ path('app_cart_index') }}">
+                                    <i class="bi bi-cart3 fs-5 me-1"></i>
+                                    <span class="me-2">Panier</span>
+                                    {% set cartCount = cart_count() %}
+                                    <span class="badge bg-danger rounded-pill" id="cart-count-mobile">{{ cartCount }}</span>
                                 </a>
                             </li>
                         {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 {% if app.user.avatar %}
-                                    <img src="{{ asset('uploads/' ~ app.user.avatar) }}" class="rounded-circle me-2" style="width:35px;height:35px;object-fit:cover;border:2px solid var(--primary-color);">
+                                    {% if app.user.avatar starts with 'http' %}
+                                        <img src="{{ app.user.avatar }}" class="rounded-circle me-2" style="width:35px;height:35px;object-fit:cover;border:2px solid var(--primary-color);">
+                                    {% else %}
+                                        <img src="{{ asset('uploads/' ~ app.user.avatar) }}" class="rounded-circle me-2" style="width:35px;height:35px;object-fit:cover;border:2px solid var(--primary-color);">
+                                    {% endif %}
                                 {% else %}
-                                    <i class="bi bi-person-circle fs-4 me-2"></i>
+                                    <div class="avatar-initials-small me-2">{{ app.user.prenom|slice(0,1)|upper }}{{ app.user.nom|slice(0,1)|upper }}</div>
                                 {% endif %}
                                 <span>{{ app.user.fullName }}</span>
                             </a>
@@ -1095,7 +1135,8 @@
                         <li class="nav-item-premium">
                             <a class="btn-nav-premium btn-nav-cart" href="{{ path('app_cart_index') }}" title="Mon Panier">
                                 <i class="bi bi-cart3"></i>
-                                <span class="cart-badge">0</span>
+                                {% set cartCount = cart_count() %}
+                                <span class="cart-badge" id="cart-count">{{ cartCount }}</span>
                             </a>
                         </li>
                         <li class="nav-item-premium">
@@ -1254,6 +1295,39 @@
                     }
                 }
             });
+
+            // Update cart count after page load (for redirects after adding to cart)
+            document.addEventListener('DOMContentLoaded', function() {
+                // Check if we just added an item to cart (via flash message)
+                const successAlert = document.querySelector('.alert-success');
+                if (successAlert && successAlert.textContent.includes('ajouté au panier')) {
+                    updateCartBadge();
+                }
+            });
+
+            // Function to update cart badge count
+            function updateCartBadge() {
+                fetch('{{ path('app_cart_count') }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update desktop badge (navbar premium)
+                        const badge = document.getElementById('cart-count');
+                        if (badge) {
+                            badge.textContent = data.count;
+                            badge.classList.add('animate-pulse');
+                            setTimeout(() => badge.classList.remove('animate-pulse'), 500);
+                        }
+                        
+                        // Update mobile/logged-in badge
+                        const badgeMobile = document.getElementById('cart-count-mobile');
+                        if (badgeMobile) {
+                            badgeMobile.textContent = data.count;
+                            badgeMobile.classList.add('animate-pulse');
+                            setTimeout(() => badgeMobile.classList.remove('animate-pulse'), 500);
+                        }
+                    })
+                    .catch(error => console.error('Error updating cart count:', error));
+            }
         </script>
         
         {% block importmap %}{{ importmap('app') }}{% endblock %}

@@ -192,6 +192,16 @@
                             <span>ou</span>
                         </div>
 
+                        <a href="{{ path('connect_google_start') }}" class="btn btn-outline-danger btn-premium w-100 mb-3">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" class="me-2 align-text-bottom">
+                            Continuer avec Google
+                        </a>
+
+                        <a href="{{ path('connect_facebook_start') }}" class="btn btn-premium w-100 mb-3" style="background-color: #1877f2; border-color: #1877f2; color: white;">
+                            <i class="bi bi-facebook me-2"></i>
+                            Continuer avec Facebook
+                        </a>
+
                         <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-premium w-100">
                             <i class="bi bi-box-arrow-in-right me-2"></i>J'ai déjà un compte
                         </a>
@@ -358,6 +368,17 @@
             box-shadow: 0 8px 24px rgba(59,130,246,0.3);
         }
 
+        .btn-outline-danger.btn-premium {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-outline-danger.btn-premium:hover {
+            background-color: #dc3545;
+            color: white;
+            box-shadow: 0 8px 24px rgba(220,53,69,0.3);
+        }
+
         .divider-premium {
             text-align: center;
             position: relative;
@@ -381,6 +402,13 @@
             color: var(--text-secondary);
             font-weight: 600;
             font-size: 0.9rem;
+        }
+
+        /* Facebook button hover effect */
+        .btn-premium[style*="background-color: #1877f2"]:hover {
+            background-color: #145dbf !important;
+            border-color: #145dbf !important;
+            box-shadow: 0 8px 24px rgba(24,119,242,0.4);
         }
 
         @media (max-width: 768px) {

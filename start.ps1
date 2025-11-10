@@ -14,12 +14,30 @@ $env:DEFAULT_URI = "http://localhost"
 $env:MESSENGER_TRANSPORT_DSN = "doctrine://default?auto_setup=0"
 $env:MAILER_DSN = "null://null"
 
+# Variables OAuth - À configurer dans .env.local (ne pas commiter les secrets !)
+# $env:GOOGLE_CLIENT_ID = "VOTRE_GOOGLE_CLIENT_ID"
+# $env:GOOGLE_CLIENT_SECRET = "VOTRE_GOOGLE_CLIENT_SECRET"
+# $env:FACEBOOK_CLIENT_ID = "VOTRE_FACEBOOK_CLIENT_ID"
+# $env:FACEBOOK_CLIENT_SECRET = "VOTRE_FACEBOOK_CLIENT_SECRET"
+
+# Charger les variables depuis .env.local si le fichier existe
+if (Test-Path ".env.local") {
+    Get-Content .env.local | ForEach-Object {
+        if ($_ -match '^([^#].+?)=(.+)$') {
+            $name = $matches[1].Trim()
+            $value = $matches[2].Trim().Trim('"').Trim("'")
+            Set-Item -Path "env:$name" -Value $value
+        }
+    }
+    Write-Host "✅ Variables chargées depuis .env.local" -ForegroundColor Green
+}
+
 Write-Host "✅ Variables d'environnement définies" -ForegroundColor Green
 Write-Host ""
 
 # Vider le cache
 Write-Host "🗑️  Nettoyage du cache..." -ForegroundColor Yellow
-Remove-Item -Path var\cache -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path var\cache -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
 Write-Host "✅ Cache vidé" -ForegroundColor Green
 Write-Host ""
 

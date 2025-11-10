@@ -100,17 +100,39 @@ php -S localhost:8000 -t public
 
 ## ✨ Fonctionnalités
 
-### 👤 Espace Client
+### � Authentification OAuth 2.0 (NOUVEAU !)
+
+| Fonctionnalité              | Description                                    | Status |
+| --------------------------- | ---------------------------------------------- | ------ |
+| Connexion Google            | Authentification et création de compte Google  | ✅      |
+| Connexion Facebook          | Authentification et création de compte Facebook| ✅      |
+| Synchronisation avatars     | Import automatique des photos de profil        | ✅      |
+| Gestion intelligente emails | Système de fallback pour comptes sans email    | ✅      |
+
+### 🛍️ Panier Dynamique (NOUVEAU !)
+
+| Fonctionnalité         | Description                               | Status |
+| ---------------------- | ----------------------------------------- | ------ |
+| Compteur en temps réel | Badge mis à jour automatiquement via AJAX | ✅      |
+| Ajout sans rechargement| Mise à jour instantanée du panier         | ✅      |
+| Animation du badge     | Effet visuel pulse lors des ajouts        | ✅      |
+| Comptage intelligent   | Nombre de produits uniques (pas quantités)| ✅      |
+
+### �👤 Espace Client
 
 | Fonctionnalité          | Description                       | Status |
 | ----------------------- | --------------------------------- | ------ |
 | Inscription / Connexion | Authentification sécurisée        | ✅      |
+| OAuth Google & Facebook | Connexion avec réseaux sociaux    | ✅ NEW |
 | Boutique                | Catalogue produits avec images    | ✅      |
 | Recherche & Filtres     | Par nom ou catégorie              | ✅      |
 | Panier                  | Ajout / suppression / mise à jour | ✅      |
+| Panier AJAX             | Mise à jour en temps réel         | ✅ NEW |
 | Commandes               | Suivi des commandes               | ✅      |
 | Réservations            | Réservation de tables             | ✅      |
 | Profil                  | Gestion du profil et avatar       | ✅      |
+| Avatars par défaut      | Cercles avec initiales colorées   | ✅ NEW |
+| Badges de connexion     | Indicateurs Google/Facebook       | ✅ NEW |
 
 ### 👨‍💼 Espace Admin
 
@@ -141,20 +163,39 @@ php -S localhost:8000 -t public
 synf_project/
 ├── config/
 │   ├── packages/
-│   ├── routes/
-│   └── security.yaml
+│   │   ├── knpu_oauth2_client.yaml  # Config OAuth Google/Facebook
+│   │   └── security.yaml             # Authenticators OAuth
+│   └── routes/
 ├── public/
 │   ├── index.php
 │   └── uploads/
 ├── src/
 │   ├── Controller/
+│   │   ├── CartController.php          # Panier avec AJAX
+│   │   ├── GoogleOAuthController.php   # OAuth Google
+│   │   └── FacebookOAuthController.php # OAuth Facebook
 │   ├── Entity/
+│   │   └── User.php                    # google_id, facebook_id, avatar
 │   ├── Form/
 │   ├── Repository/
+│   ├── Security/
+│   │   ├── GoogleAuthenticator.php     # Authenticator Google
+│   │   └── FacebookAuthenticator.php   # Authenticator Facebook
 │   ├── Service/
+│   ├── Twig/
+│   │   └── CartExtension.php           # Fonction cart_count()
 │   └── EventSubscriber/
 ├── templates/
+│   ├── security/
+│   │   └── login.html.twig             # Boutons OAuth
+│   ├── registration/
+│   │   └── register.html.twig          # Boutons OAuth
+│   ├── profile/
+│   │   └── index.html.twig             # Avatars et badges
+│   └── base.html.twig                  # Badge panier animé
 ├── migrations/
+│   └── migrate_add_facebook_id.php     # Migration Facebook
+├── start.ps1                            # Script de démarrage
 ├── composer.json
 └── README.md
 ```
@@ -163,12 +204,30 @@ synf_project/
 
 ## ⚙️ Configuration
 
-| Variable     | Description   | Valeur                                     |
-| ------------ | ------------- | ------------------------------------------ |
-| APP_ENV      | Environnement | dev                                        |
-| APP_DEBUG    | Mode debug    | 1                                          |
-| APP_SECRET   | Clé Symfony   | Générée                                    |
-| DATABASE_URL | Connexion DB  | `mysql://root@127.0.0.1:3306/synf_project` |
+| Variable               | Description         | Valeur                                     |
+| ---------------------- | ------------------- | ------------------------------------------ |
+| APP_ENV                | Environnement       | dev                                        |
+| APP_DEBUG              | Mode debug          | 1                                          |
+| APP_SECRET             | Clé Symfony         | Générée                                    |
+| DATABASE_URL           | Connexion DB        | `mysql://root@127.0.0.1:3306/synf_project` |
+| GOOGLE_CLIENT_ID       | OAuth Google        | Configuré dans start.ps1                   |
+| GOOGLE_CLIENT_SECRET   | Secret Google       | Configuré dans start.ps1                   |
+| FACEBOOK_CLIENT_ID     | OAuth Facebook      | Configuré dans start.ps1                   |
+| FACEBOOK_CLIENT_SECRET | Secret Facebook     | Configuré dans start.ps1                   |
+
+### 🔑 Configuration OAuth
+
+#### Google OAuth
+1. Créer un projet sur [Google Cloud Console](https://console.cloud.google.com)
+2. Activer l'API Google+
+3. URI de redirection : `http://localhost:8000/connect/google/check`
+4. Les identifiants sont dans `start.ps1`
+
+#### Facebook OAuth
+1. Créer une app sur [Facebook Developers](https://developers.facebook.com)
+2. Ajouter "Facebook Login"
+3. URI de redirection : `http://localhost:8000/connect/facebook/check`
+4. Les identifiants sont dans `start.ps1`
 
 ---
 
@@ -248,12 +307,36 @@ php deploy.php
 
 ---
 
+## 🎯 Nouveautés de cette Version (Nov 2025)
+
+### 🔥 Ajouts Majeurs
+- ✅ **Authentification OAuth 2.0** avec Google et Facebook
+- ✅ **Panier dynamique AJAX** avec compteur en temps réel
+- ✅ **Avatars intelligents** : Photos de profil ou initiales par défaut
+- ✅ **Badges de connexion** : Indicateurs visuels des comptes sociaux
+- ✅ **UI améliorée** : Animations, design moderne, responsive
+
+### 🔧 Améliorations Techniques
+- Migration de base de données pour `google_id` et `facebook_id`
+- Extension Twig personnalisée pour le compteur de panier
+- Authenticators OAuth personnalisés
+- Gestion des emails avec système de fallback
+- API REST pour le panier (`/cart/add-ajax`, `/cart/count`)
+
+### 🎨 Design
+- Badge panier animé avec effet pulse
+- Cercles colorés avec initiales pour avatars par défaut
+- Support des URLs d'avatar depuis Google/Facebook
+- Interface responsive mobile et desktop
+
 ## 🧑‍💻 Auteur
 
 **Mustapha Amine TBINI**
 📍 Tunis, Tunisie
 📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
 🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
+
+**Développé par Pablo-100**
 
 ---
 
