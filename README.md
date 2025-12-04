@@ -336,7 +336,11 @@ php deploy.php
 📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
 🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
 
-**Développé par Pablo-100**
+**Rayen Ben MOHRA**
+📍 Tunis, Tunisie
+📧 [rayendali1919@gmail.com](mailto:rayendali1919@gmail.com)
+
+**Développé par Pablo-100 & Rayen**
 
 ---
 
