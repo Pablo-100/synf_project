@@ -347,7 +347,7 @@ php deploy.php
 ## 🪪 Licence
 
 Ce projet est sous licence **MIT**.
-© 2025 — Mustapha Amine TBINI
+© 2025 — Mustapha Amine TBINI & Rayen Ben MOHRA
 
 ---
 
