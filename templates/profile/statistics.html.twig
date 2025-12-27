@@ -1,0 +1,292 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Statistiques{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 mb-0">
+                <i class="fas fa-chart-bar me-2"></i>
+                Mes Statistiques
+            </h1>
+            <p class="text-muted">Vue d'ensemble de mon activité</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_profile') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour au profil
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiques des commandes -->
+    <div class="row mb-4">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Mes Commandes et Dépenses
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ordersChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques des réservations -->
+    <div class="row mb-4">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        Historique de mes Réservations
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reservationsChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Résumé global -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-shopping-bag fa-3x mb-3"></i>
+                    <h3 id="totalOrders" class="mb-0">-</h3>
+                    <p class="mb-0">Commandes totales</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-euro-sign fa-3x mb-3"></i>
+                    <h3 id="totalSpent" class="mb-0">-</h3>
+                    <p class="mb-0">Dépenses totales</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar fa-3x mb-3"></i>
+                    <h3 id="totalReservations" class="mb-0">-</h3>
+                    <p class="mb-0">Réservations totales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+        font-weight: 600;
+    }
+    
+    canvas {
+        max-height: 400px;
+    }
+    
+    .bg-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    .bg-success {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    }
+    
+    .bg-warning {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+
+    // Configuration commune
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            }
+        }
+    };
+
+    // 1. Graphique des Commandes et Dépenses
+    fetch('{{ path('app_profile_statistics_orders') }}')
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers.get('content-type'));
+            if (!response.ok) {
+                throw new Error('Vous devez être connecté pour voir vos statistiques');
+            }
+            if (!response.headers.get('content-type')?.includes('application/json')) {
+                throw new Error('Vous devez être connecté pour voir vos statistiques');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Orders data:', data);
+            const ctx = document.getElementById('ordersChart').getContext('2d');
+            
+            // Calculer les totaux
+            const totalOrders = data.counts && data.counts.length > 0 ? data.counts.reduce((a, b) => a + b, 0) : 0;
+            const totalSpent = data.totals && data.totals.length > 0 ? data.totals.reduce((a, b) => a + b, 0) : 0;
+            
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalSpent').textContent = totalSpent.toFixed(2) + ' €';
+            
+            // Si pas de données, afficher un message
+            if (!data.labels || data.labels.length === 0) {
+                ctx.canvas.parentElement.innerHTML = '<p class="text-center text-muted p-4">Aucune commande pour le moment</p>';
+                return;
+            }
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Nombre de commandes',
+                            data: data.counts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: 'Montant dépensé (€)',
+                            data: data.totals,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 3,
+                            type: 'line',
+                            yAxisID: 'y1',
+                            tension: 0.4,
+                            fill: true,
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Nombre de commandes'
+                            },
+                            beginAtZero: true
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Montant (€)'
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading orders:', error);
+            document.getElementById('ordersChart').parentElement.innerHTML = '<div class="text-center p-4"><p class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> ' + error.message + '</p><a href="{{ path("app_login") }}" class="btn btn-primary">Se connecter</a></div>';
+            document.getElementById('totalOrders').textContent = '0';
+            document.getElementById('totalSpent').textContent = '0.00 €';
+        });
+
+    // 2. Graphique des Réservations
+    fetch('{{ path('app_profile_statistics_reservations') }}')
+        .then(response => {
+            if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) {
+                throw new Error('Vous devez être connecté pour voir vos statistiques');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Reservations data:', data);
+            const ctx = document.getElementById('reservationsChart').getContext('2d');
+            
+            // Calculer le total
+            const totalReservations = data.counts && data.counts.length > 0 ? data.counts.reduce((a, b) => a + b, 0) : 0;
+            document.getElementById('totalReservations').textContent = totalReservations;
+            
+            // Si pas de données, afficher un message
+            if (!data.labels || data.labels.length === 0) {
+                ctx.canvas.parentElement.innerHTML = '<p class="text-center text-muted p-4">Aucune réservation pour le moment</p>';
+                return;
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Nombre de réservations',
+                        data: data.counts,
+                        backgroundColor: 'rgba(255, 159, 64, 0.3)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nombre de réservations'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading reservations:', error);
+            document.getElementById('reservationsChart').parentElement.innerHTML = '<div class="text-center p-4"><p class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> ' + error.message + '</p><a href="{{ path("app_login") }}" class="btn btn-primary">Se connecter</a></div>';
+            document.getElementById('totalReservations').textContent = '0';
+        });
+</script>
+{% endblock %}

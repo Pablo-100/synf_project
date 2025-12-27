@@ -56,4 +56,39 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getOrdersByMonth(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('YEAR(o.createdAt) as year, MONTH(o.createdAt) as month, COUNT(o.id) as count, SUM(o.montantTotal) as revenue')
+            ->groupBy('year, month')
+            ->orderBy('year', 'DESC')
+            ->addOrderBy('month', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOrdersByStatus(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.statut as statut, COUNT(o.id) as count')
+            ->groupBy('o.statut')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOrdersByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('YEAR(o.createdAt) as year, MONTH(o.createdAt) as month, COUNT(o.id) as count, SUM(o.montantTotal) as total')
+            ->andWhere('o.user = :userId')
+            ->setParameter('userId', $userId)
+            ->groupBy('year, month')
+            ->orderBy('year', 'DESC')
+            ->addOrderBy('month', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
 }

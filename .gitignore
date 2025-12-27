@@ -32,3 +32,6 @@
 *~
 .DS_Store
 ###< IDE ###
+
+client_secret_*.json
+googlenote.txt

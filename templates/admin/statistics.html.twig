@@ -1,0 +1,308 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques - Administration{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 mb-0">
+                <i class="fas fa-chart-line me-2"></i>
+                Statistiques et Analyses
+            </h1>
+            <p class="text-muted">Vue d'ensemble des performances et tendances</p>
+        </div>
+    </div>
+
+    <!-- Commandes -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Commandes et Revenus par Mois
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ordersMonthChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-pie-chart me-2"></i>
+                        Commandes par Statut
+                    </h5>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <canvas id="ordersStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Réservations -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Réservations par Mois
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reservationsMonthChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tasks me-2"></i>
+                        Réservations par Statut
+                    </h5>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <canvas id="reservationsStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Croissance utilisateurs -->
+    <div class="row mb-4">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-users me-2"></i>
+                        Croissance des Inscriptions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="usersGrowthChart" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+        border: none;
+    }
+    
+    canvas {
+        max-height: 400px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+
+    // Configuration commune pour les graphiques
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            }
+        }
+    };
+
+    // 1. Commandes et Revenus par Mois
+    // 1. Commandes et Revenus par Mois
+    fetch('{{ path('app_admin_statistics_orders_month') }}')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Orders by month:', data);
+            const ctx = document.getElementById('ordersMonthChart').getContext('2d');
+            
+            if (!data.labels || data.labels.length === 0) {
+                ctx.canvas.parentElement.innerHTML = '<p class="text-center text-muted p-4">Aucune donnée disponible</p>';
+                return;
+            }
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Nombre de commandes',
+                            data: data.counts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: 'Revenus (€)',
+                            data: data.revenues,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            type: 'line',
+                            yAxisID: 'y1',
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Nombre de commandes'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Revenus (€)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading orders by month:', error));
+
+    // 2. Commandes par Statut
+    fetch('{{ path('app_admin_statistics_orders_status') }}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('ordersStatusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.counts,
+                        backgroundColor: data.colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '60%'
+                }
+            });
+        });
+
+    // 3. Réservations par Mois
+    fetch('{{ path('app_admin_statistics_reservations_month') }}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('reservationsMonthChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Nombre de réservations',
+                        data: data.counts,
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nombre de réservations'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    // 4. Réservations par Statut
+    fetch('{{ path('app_admin_statistics_reservations_status') }}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('reservationsStatusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.counts,
+                        backgroundColor: data.colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: commonOptions
+            });
+        });
+
+    // 5. Croissance des Utilisateurs
+    fetch('{{ path('app_admin_statistics_users_growth') }}')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('usersGrowthChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Nouvelles inscriptions',
+                        data: data.counts,
+                        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nombre d\'inscriptions'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+</script>
+{% endblock %}

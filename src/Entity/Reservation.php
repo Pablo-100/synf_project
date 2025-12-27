@@ -16,8 +16,25 @@ class Reservation
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
+
+    #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Le téléphone est obligatoire')]
+    private ?string $telephone = null;
+
+    #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
+    #[Assert\Email(message: 'L\'email n\'est pas valide')]
+    private ?string $email = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: 'La date est obligatoire')]
@@ -60,6 +77,50 @@ class Reservation
     public function setUser(?User $user): static
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): static
+    {
+        $this->prenom = $prenom;
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): static
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
         return $this;
     }
 

@@ -28,6 +28,43 @@
         </div>
     </div>
 
+    <!-- Filtres Premium -->
+    <div class="filters-premium mb-4">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="search-box-premium">
+                    <i class="bi bi-search search-icon-premium"></i>
+                    <input type="text" id="searchReservations" class="form-control-premium" placeholder="Rechercher par nom, email, téléphone...">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <select id="filterStatus" class="form-select-premium">
+                    <option value="">Tous les statuts</option>
+                    <option value="en_attente">En attente</option>
+                    <option value="confirmee">Confirmée</option>
+                    <option value="annulee">Annulée</option>
+                    <option value="terminee">Terminée</option>
+                </select>
+            </div>
+            <div class="col-lg-3">
+                <select id="sortReservations" class="form-select-premium">
+                    <option value="date_desc">Plus récentes</option>
+                    <option value="date_asc">Plus anciennes</option>
+                    <option value="people_desc">Plus de personnes</option>
+                    <option value="people_asc">Moins de personnes</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <button id="resetFilters" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser
+                </button>
+            </div>
+        </div>
+        <div class="filter-results mt-3">
+            <span class="badge bg-primary" id="resultsCount">{{ reservations|length }} réservation(s)</span>
+        </div>
+    </div>
+
     {% if reservations is empty %}
         <div class="empty-state">
             <div class="empty-state-icon">
@@ -38,6 +75,7 @@
         </div>
     {% else %}
         <!-- Table Premium -->
+        <div id="reservationsContainer">
         <div class="card-premium">
             <div class="table-responsive">
                 <table class="table table-premium">
@@ -60,19 +98,26 @@
                                 <td>
                                     <div class="customer-info">
                                         <i class="bi bi-person-circle"></i>
-                                        <strong>{{ reservation.user.fullName }}</strong>
+                                        <strong>{{ reservation.user ? reservation.user.fullName : 'Utilisateur supprimé' }}</strong>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="contact-info">
-                                        <div class="contact-item">
-                                            <i class="bi bi-envelope-fill"></i>
-                                            <span>{{ reservation.user.email }}</span>
-                                        </div>
-                                        {% if reservation.user.telephone %}
+                                        {% if reservation.user %}
                                             <div class="contact-item">
-                                                <i class="bi bi-telephone-fill"></i>
-                                                <span>{{ reservation.user.telephone }}</span>
+                                                <i class="bi bi-envelope-fill"></i>
+                                                <span>{{ reservation.user.email }}</span>
+                                            </div>
+                                            {% if reservation.user.telephone %}
+                                                <div class="contact-item">
+                                                    <i class="bi bi-telephone-fill"></i>
+                                                    <span>{{ reservation.user.telephone }}</span>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="contact-item text-muted">
+                                                <i class="bi bi-person-x"></i>
+                                                <span>Utilisateur supprimé</span>
                                             </div>
                                         {% endif %}
                                     </div>
@@ -152,10 +197,80 @@
                 </table>
             </div>
         </div>
+        </div>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
 <style>
+    /* Filtres Premium */
+    .filters-premium {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #f1f5f9;
+    }
+    
+    .search-box-premium {
+        position: relative;
+    }
+    
+    .search-icon-premium {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .form-control-premium, .form-select-premium {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+    
+    .form-select-premium {
+        padding-left: 1rem;
+    }
+    
+    .form-control-premium:focus, .form-select-premium:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+    }
+    
+    .filter-results {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .filter-results .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .table-premium tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .table-premium tbody tr.hidden {
+        display: none;
+    }
+
     /* Header Icon Box */
     .header-icon-box {
         width: 80px;
@@ -387,4 +502,83 @@
         transform: scale(1.1);
     }
 </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchReservations');
+            const filterStatus = document.getElementById('filterStatus');
+            const sortSelect = document.getElementById('sortReservations');
+            const resetBtn = document.getElementById('resetFilters');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            let rows = Array.from(document.querySelectorAll('.table-premium tbody tr'));
+            
+            function filterAndSort() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusFilter = filterStatus.value;
+                let visibleCount = 0;
+                
+                // Filter reservations
+                rows.forEach(row => {
+                    const customerName = row.querySelector('.customer-info strong')?.textContent.toLowerCase() || '';
+                    const email = row.querySelector('.contact-info .contact-item span')?.textContent.toLowerCase() || '';
+                    const phone = row.querySelectorAll('.contact-info .contact-item span')[1]?.textContent.toLowerCase() || '';
+                    const status = row.querySelector('.reservation-status')?.className.match(/status-(\w+)/)?.[1] || '';
+                    
+                    const matchesSearch = !searchTerm || 
+                        customerName.includes(searchTerm) ||
+                        email.includes(searchTerm) ||
+                        phone.includes(searchTerm);
+                    
+                    const matchesStatus = !statusFilter || status === statusFilter;
+                    
+                    if (matchesSearch && matchesStatus) {
+                        row.classList.remove('hidden');
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.classList.add('hidden');
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Sort reservations
+                const sortValue = sortSelect.value;
+                rows.sort((a, b) => {
+                    if (sortValue === 'date_desc' || sortValue === 'date_asc') {
+                        const dateA = a.querySelector('.date-badge')?.textContent || '';
+                        const dateB = b.querySelector('.date-badge')?.textContent || '';
+                        return sortValue === 'date_desc' ? dateB.localeCompare(dateA) : dateA.localeCompare(dateB);
+                    } else if (sortValue === 'people_desc' || sortValue === 'people_asc') {
+                        const peopleA = parseInt(a.querySelector('.people-badge')?.textContent || 0);
+                        const peopleB = parseInt(b.querySelector('.people-badge')?.textContent || 0);
+                        return sortValue === 'people_desc' ? peopleB - peopleA : peopleA - peopleB;
+                    }
+                    return 0;
+                });
+                
+                // Re-append sorted rows
+                const tbody = document.querySelector('.table-premium tbody');
+                rows.forEach(row => tbody.appendChild(row));
+                
+                // Update count
+                resultsCount.textContent = `${visibleCount} réservation(s)`;
+            }
+            
+            // Event listeners
+            searchInput?.addEventListener('input', filterAndSort);
+            filterStatus?.addEventListener('change', filterAndSort);
+            sortSelect?.addEventListener('change', filterAndSort);
+            
+            resetBtn?.addEventListener('click', function() {
+                searchInput.value = '';
+                filterStatus.value = '';
+                sortSelect.value = 'date_desc';
+                filterAndSort();
+            });
+        });
+    </script>
 {% endblock %}

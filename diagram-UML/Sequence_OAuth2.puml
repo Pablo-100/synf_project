@@ -1,0 +1,67 @@
+@startuml OAuth2Sequence
+
+title Diagramme de Séquence - Authentification OAuth2 (Google/Facebook)
+
+actor "Utilisateur" as User
+participant "Browser" as UI
+participant "SecurityController" as Controller
+participant "OAuth2Client" as OAuth
+participant "Google/Facebook\nAPI" as Provider
+participant "UserProvider" as UserProvider
+participant "EntityManager" as EM
+database "MySQL" as DB
+
+== Initiation de la connexion ==
+User -> UI: Clique "Se connecter avec Google/Facebook"
+UI -> Controller: GET /connect/google ou /connect/facebook
+Controller -> OAuth: getClient('google'|'facebook')
+OAuth -> OAuth: generateAuthUrl()
+OAuth --> Controller: URL d'autorisation
+Controller --> UI: redirect vers Provider
+UI --> Provider: Redirection avec client_id, scope
+
+== Autorisation sur le provider ==
+Provider -> User: Affiche page d'autorisation
+User -> Provider: Autorise l'application
+Provider --> UI: Redirect /connect/google/check?code=xxx
+
+== Échange du code et récupération des données ==
+UI -> Controller: GET /connect/google/check?code=xxx
+Controller -> OAuth: fetchAccessToken(code)
+OAuth -> Provider: POST /oauth/token\n(code, client_secret)
+Provider --> OAuth: access_token
+OAuth --> Controller: AccessToken
+
+Controller -> OAuth: fetchUserFromToken(token)
+OAuth -> Provider: GET /userinfo\n(Authorization: Bearer token)
+Provider --> OAuth: user data (email, name, picture)
+OAuth --> Controller: ResourceOwner
+
+== Vérification et création/connexion utilisateur ==
+Controller -> UserProvider: loadUserByIdentifier(email)
+UserProvider -> DB: SELECT * FROM user WHERE email = ?
+alt Utilisateur existe
+    DB --> UserProvider: user trouvé
+    UserProvider -> UserProvider: updateOAuthData(googleId, avatar)
+    UserProvider -> EM: persist(user)
+    UserProvider -> EM: flush()
+else Nouvel utilisateur
+    UserProvider -> Entity: new User()
+    UserProvider -> Entity: setEmail(email)
+    UserProvider -> Entity: setNom(familyName)
+    UserProvider -> Entity: setPrenom(givenName)
+    UserProvider -> Entity: setGoogleId(id) ou setFacebookId(id)
+    UserProvider -> Entity: setAvatar(pictureUrl)
+    UserProvider -> Entity: setRoles(['ROLE_USER'])
+    UserProvider -> EM: persist(user)
+    UserProvider -> EM: flush()
+    EM -> DB: INSERT INTO user
+    DB --> EM: user créé
+end
+
+UserProvider --> Controller: User object
+Controller -> Controller: Authentifie l'utilisateur
+Controller --> UI: redirect /profile
+UI --> User: Connecté - Dashboard utilisateur
+
+@enduml

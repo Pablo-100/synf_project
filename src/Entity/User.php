@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 1024, nullable: true)]
     private ?string $avatar = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

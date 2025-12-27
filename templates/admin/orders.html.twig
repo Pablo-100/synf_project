@@ -31,6 +31,44 @@
         </div>
     </div>
 
+    <!-- Filtres Premium -->
+    <div class="filters-premium mb-4">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="search-box-premium">
+                    <i class="bi bi-search search-icon-premium"></i>
+                    <input type="text" id="searchOrders" class="form-control-premium" placeholder="Rechercher par numéro, client, email...">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <select id="filterStatus" class="form-select-premium">
+                    <option value="">Tous les statuts</option>
+                    <option value="en_attente">En attente</option>
+                    <option value="validee">Validée</option>
+                    <option value="en_preparation">En préparation</option>
+                    <option value="livree">Livrée</option>
+                    <option value="annulee">Annulée</option>
+                </select>
+            </div>
+            <div class="col-lg-3">
+                <select id="sortOrders" class="form-select-premium">
+                    <option value="date_desc">Plus récentes</option>
+                    <option value="date_asc">Plus anciennes</option>
+                    <option value="amount_desc">Montant (décroissant)</option>
+                    <option value="amount_asc">Montant (croissant)</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <button id="resetFilters" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser
+                </button>
+            </div>
+        </div>
+        <div class="filter-results mt-3">
+            <span class="badge bg-primary" id="resultsCount">{{ orders|length }} commande(s)</span>
+        </div>
+    </div>
+
     {% if orders is empty %}
         <div class="empty-state">
             <div class="empty-state-icon">
@@ -41,6 +79,7 @@
         </div>
     {% else %}
         <!-- Orders List -->
+        <div id="ordersContainer">
         {% for order in orders %}
             <div class="order-card mb-4">
                 <!-- Order Header -->
@@ -157,10 +196,80 @@
                 </div>
             </div>
         {% endfor %}
+        </div>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
 <style>
+    /* Filtres Premium */
+    .filters-premium {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #f1f5f9;
+    }
+    
+    .search-box-premium {
+        position: relative;
+    }
+    
+    .search-icon-premium {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .form-control-premium, .form-select-premium {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+    
+    .form-select-premium {
+        padding-left: 1rem;
+    }
+    
+    .form-control-premium:focus, .form-select-premium:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+    }
+    
+    .filter-results {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .filter-results .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .order-card {
+        transition: all 0.3s ease;
+    }
+    
+    .order-card.hidden {
+        display: none;
+    }
+
     /* Header Icon Box */
     .header-icon-box {
         width: 80px;
@@ -337,4 +446,91 @@
     .btn-delete { background: #fee2e2; color: #991b1b; }
     .btn-delete:hover { background: #ef4444; color: white; transform: translateY(-2px); }
 </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchOrders');
+            const filterStatus = document.getElementById('filterStatus');
+            const sortSelect = document.getElementById('sortOrders');
+            const resetBtn = document.getElementById('resetFilters');
+            const resultsCount = document.getElementById('resultsCount');
+            const ordersContainer = document.getElementById('ordersContainer');
+            
+            let orders = Array.from(document.querySelectorAll('.order-card'));
+            
+            function filterAndSort() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusFilter = filterStatus.value;
+                let visibleCount = 0;
+                
+                // Filter orders
+                orders.forEach(order => {
+                    const orderNumber = order.querySelector('.order-number')?.textContent.toLowerCase() || '';
+                    const customerName = order.querySelector('.order-customer strong')?.textContent.toLowerCase() || '';
+                    const customerEmail = order.querySelector('.order-customer small')?.textContent.toLowerCase() || '';
+                    const orderStatus = order.querySelector('.order-status')?.className.match(/status-(\w+)/)?.[1] || '';
+                    
+                    const matchesSearch = !searchTerm || 
+                        orderNumber.includes(searchTerm) ||
+                        customerName.includes(searchTerm) ||
+                        customerEmail.includes(searchTerm);
+                    
+                    const matchesStatus = !statusFilter || orderStatus === statusFilter.replace('status-', '');
+                    
+                    if (matchesSearch && matchesStatus) {
+                        order.classList.remove('hidden');
+                        order.style.display = '';
+                        visibleCount++;
+                    } else {
+                        order.classList.add('hidden');
+                        order.style.display = 'none';
+                    }
+                });
+                
+                // Sort orders
+                const sortValue = sortSelect.value;
+                orders.sort((a, b) => {
+                    if (sortValue === 'date_desc') {
+                        const dateA = new Date(a.querySelector('.order-date')?.textContent || 0);
+                        const dateB = new Date(b.querySelector('.order-date')?.textContent || 0);
+                        return dateB - dateA;
+                    } else if (sortValue === 'date_asc') {
+                        const dateA = new Date(a.querySelector('.order-date')?.textContent || 0);
+                        const dateB = new Date(b.querySelector('.order-date')?.textContent || 0);
+                        return dateA - dateB;
+                    } else if (sortValue === 'amount_desc') {
+                        const amountA = parseFloat(a.querySelector('.order-total')?.textContent.replace(/[^\d,]/g, '').replace(',', '.') || 0);
+                        const amountB = parseFloat(b.querySelector('.order-total')?.textContent.replace(/[^\d,]/g, '').replace(',', '.') || 0);
+                        return amountB - amountA;
+                    } else if (sortValue === 'amount_asc') {
+                        const amountA = parseFloat(a.querySelector('.order-total')?.textContent.replace(/[^\d,]/g, '').replace(',', '.') || 0);
+                        const amountB = parseFloat(b.querySelector('.order-total')?.textContent.replace(/[^\d,]/g, '').replace(',', '.') || 0);
+                        return amountA - amountB;
+                    }
+                    return 0;
+                });
+                
+                // Re-append sorted orders
+                orders.forEach(order => ordersContainer.appendChild(order));
+                
+                // Update count
+                resultsCount.textContent = `${visibleCount} commande(s)`;
+            }
+            
+            // Event listeners
+            searchInput?.addEventListener('input', filterAndSort);
+            filterStatus?.addEventListener('change', filterAndSort);
+            sortSelect?.addEventListener('change', filterAndSort);
+            
+            resetBtn?.addEventListener('click', function() {
+                searchInput.value = '';
+                filterStatus.value = '';
+                sortSelect.value = 'date_desc';
+                filterAndSort();
+            });
+        });
+    </script>
 {% endblock %}

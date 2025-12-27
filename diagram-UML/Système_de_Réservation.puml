@@ -1,0 +1,45 @@
+@startuml ReservationUseCase
+
+left to right direction
+
+actor "Client" as Client
+actor "Serveur" as Server
+
+rectangle "Gestion des Réservations" {
+  usecase "Réserver une table" as BookTable
+  usecase "Remplir formulaire" as FillForm <<include>>
+  usecase "Saisir infos contact\n(nom, prénom, tél, email)" as ContactInfo <<include>>
+  usecase "Choisir date/heure" as DateTime <<include>>
+  usecase "Indiquer nb personnes" as NumberPeople <<include>>
+  usecase "Ajouter commentaire" as AddComment
+  
+  usecase "Voir mes réservations" as ViewReservations
+  usecase "Annuler réservation" as CancelReservation
+  usecase "Confirmer réservation\n(Admin)" as ConfirmReservation
+  
+  usecase "Valider formulaire" as ValidateForm <<include>>
+  usecase "Enregistrer en base" as SaveDB <<include>>
+}
+
+BookTable .> FillForm : include
+FillForm .> ContactInfo : include
+FillForm .> DateTime : include
+FillForm .> NumberPeople : include
+BookTable .> ValidateForm : include
+BookTable .> SaveDB : include
+
+Client --> BookTable
+Client --> AddComment
+Client --> ViewReservations
+Client --> CancelReservation
+
+Server --> ConfirmReservation
+Server --> ViewReservations
+
+note right of BookTable
+  Les invités (non connectés) peuvent
+  aussi réserver en saisissant leurs
+  informations de contact
+end note
+
+@enduml

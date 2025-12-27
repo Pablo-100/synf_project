@@ -1,0 +1,94 @@
+@startuml
+top to bottom direction
+
+package "Authentification & Profil" {
+    actor "Visiteur" as V
+    actor "Client" as C
+
+    usecase "S'inscrire" as UC_Reg
+    usecase "Se connecter" as UC_Login
+    usecase "Connexion Google OAuth2" as UC_Google
+    usecase "Connexion Facebook OAuth2" as UC_Facebook
+    usecase "Modifier Profil" as UC_EditProfile
+    usecase "Changer avatar" as UC_Avatar
+    usecase "Modifier infos personnelles" as UC_Info
+    usecase "Mot de passe oublié" as UC_Pwd
+
+    V --> UC_Reg
+    V --> UC_Login
+    V --> UC_Google
+    V --> UC_Facebook
+    C --> UC_EditProfile
+    UC_EditProfile ..> UC_Avatar : <<include>>
+    UC_EditProfile ..> UC_Info : <<include>>
+    UC_Login ..> UC_Pwd : <<extend>>
+    
+    note right of UC_Google
+      KnpU OAuth2 Client Bundle
+      Récupère: email, nom, avatar
+    end note
+}
+
+package "Processus de Commande" {
+    actor "Client" as C2
+
+    usecase "Ajouter au panier" as UC_AddCart
+    usecase "Valider le panier" as UC_Checkout
+    usecase "Choisir adresse livraison" as UC_Address
+    usecase "Payer" as UC_Pay
+    usecase "Recevoir confirmation" as UC_Confirm
+
+    C2 --> UC_AddCart
+    C2 --> UC_Checkout
+    UC_Checkout ..> UC_Address : <<include>>
+    UC_Checkout ..> UC_Pay : <<include>>
+    UC_Pay ..> UC_Confirm : <<include>>
+}
+
+package "Gestion des Réservations" {
+    actor "Invité/Client" as C3
+    actor "Admin" as A
+
+    usecase "Réserver une table" as UC_Book
+    usecase "Saisir nom/prénom" as UC_Name
+    usecase "Saisir téléphone/email" as UC_Contact
+    usecase "Choisir date/heure/personnes" as UC_Details
+    usecase "Ajouter commentaire" as UC_Comment
+    usecase "Voir mes réservations" as UC_ViewRes
+    usecase "Confirmer réservation (Admin)" as UC_ValidateRes
+    usecase "Annuler réservation" as UC_CancelRes
+
+    C3 --> UC_Book
+    UC_Book ..> UC_Name : <<include>>
+    UC_Book ..> UC_Contact : <<include>>
+    UC_Book ..> UC_Details : <<include>>
+    UC_Book ..> UC_Comment : <<extend>>
+    C3 --> UC_ViewRes
+    A --> UC_ValidateRes
+    A --> UC_CancelRes
+    C3 --> UC_CancelRes
+    
+    note right of UC_Book
+      Accessible aux invités ET
+      aux utilisateurs connectés
+      Formulaire ReservationType
+      avec validation Symfony
+    end note
+}
+
+package "Administration" {
+    actor "Admin" as A2
+
+    usecase "Ajouter un produit" as UC_AddProd
+    usecase "Modifier un produit" as UC_EditProd
+    usecase "Supprimer un produit" as UC_DelProd
+    usecase "Uploader image produit" as UC_Upload
+
+    A2 --> UC_AddProd
+    A2 --> UC_EditProd
+    A2 --> UC_DelProd
+    UC_AddProd ..> UC_Upload : <<include>>
+    UC_EditProd ..> UC_Upload : <<include>>
+}
+
+@enduml

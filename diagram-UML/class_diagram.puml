@@ -1,0 +1,139 @@
+@startuml ClassDiagram
+
+!define ENTITY class
+!define ENUM enum
+
+ENTITY User {
+  - id: Integer
+  - email: String
+  - roles: JSON
+  - password: String
+  - nom: String
+  - prenom: String
+  - telephone: String
+  - adresse: Text
+  - avatar: String
+  - googleId: String
+  - facebookId: String
+  - createdAt: DateTime
+  + getEmail(): String
+  + getRoles(): Array
+  + getFullName(): String
+  + getReservations(): Collection
+  + getOrders(): Collection
+  + getUserIdentifier(): String
+}
+
+ENTITY Product {
+  - id: Integer
+  - nom: String
+  - description: Text
+  - prix: Decimal
+  - image: String
+  - categorie: String
+  - stock: Integer
+  - disponible: Boolean
+  - createdAt: DateTime
+  - updatedAt: DateTime
+  + getPrixFormatte(): String
+  + isAvailable(): Boolean
+  + decreaseStock(quantite: Integer): void
+  + getOrderItems(): Collection
+}
+
+ENTITY Reservation {
+  - id: Integer
+  - nom: String
+  - prenom: String
+  - telephone: String
+  - email: String
+  - dateReservation: Date
+  - heureReservation: Time
+  - nombrePersonnes: Integer
+  - statut: String
+  - commentaire: Text
+  - createdAt: DateTime
+  + getStatutLabel(): String
+  + isConfirmed(): Boolean
+  + isPending(): Boolean
+}
+
+ENTITY Order {
+  - id: Integer
+  - numeroCommande: String
+  - montantTotal: Decimal
+  - statut: String
+  - adresseLivraison: Text
+  - commentaire: Text
+  - createdAt: DateTime
+  - validatedAt: DateTime
+  + calculerTotal(): Decimal
+  + getStatutLabel(): String
+  + isValidated(): Boolean
+  + isPending(): Boolean
+}
+
+ENTITY OrderItem {
+  - id: Integer
+  - quantite: Integer
+  - prixUnitaire: Decimal
+  + getSousTotal(): Decimal
+  + getProduct(): Product
+  + getOrder(): Order
+}
+
+ENUM OrderStatus {
+  EN_COURS
+  VALIDEE
+  ANNULEE
+  LIVREE
+}
+
+ENUM ReservationStatus {
+  EN_ATTENTE
+  CONFIRMEE
+  ANNULEE
+}
+
+ENUM ProductCategory {
+  PLAT
+  BOISSON
+  DESSERT
+}
+
+' Relations
+User "1" -- "0..*" Reservation : fait >
+User "1" -- "0..*" Order : passe >
+Order "1" *-- "1..*" OrderItem : contient >
+OrderItem "*" --> "1" Product : référence >
+
+note right of User
+  OAuth2: Google & Facebook
+  Avatar uploadable
+  Roles: ROLE_USER, ROLE_ADMIN
+end note
+
+note right of Reservation
+  Peut être faite par un utilisateur
+  connecté ou un invité (user nullable)
+  Champs contact: nom, prenom, 
+  telephone, email obligatoires
+end note
+
+' Héritage des rôles
+class Admin {
+  + gererUtilisateurs(): void
+  + gererProduits(): void
+  + voirStatistiques(): void
+}
+
+class Client {
+  + faireReservation(): void
+  + passerCommande(): void
+  + voirHistorique(): void
+}
+
+User <|-- Admin
+User <|-- Client
+
+@enduml

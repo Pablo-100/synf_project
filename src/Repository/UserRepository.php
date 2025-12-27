@@ -38,4 +38,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
+    public function getUsersGrowthByMonth(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('YEAR(u.createdAt) as year, MONTH(u.createdAt) as month, COUNT(u.id) as count')
+            ->groupBy('year, month')
+            ->orderBy('year', 'DESC')
+            ->addOrderBy('month', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
 }

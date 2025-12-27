@@ -76,4 +76,39 @@ class ReservationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function getReservationsByMonth(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('YEAR(r.dateReservation) as year, MONTH(r.dateReservation) as month, COUNT(r.id) as count')
+            ->groupBy('year, month')
+            ->orderBy('year', 'DESC')
+            ->addOrderBy('month', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getReservationsByStatus(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.statut as statut, COUNT(r.id) as count')
+            ->groupBy('r.statut')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getReservationsByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('YEAR(r.dateReservation) as year, MONTH(r.dateReservation) as month, COUNT(r.id) as count')
+            ->andWhere('r.user = :userId')
+            ->setParameter('userId', $userId)
+            ->groupBy('year, month')
+            ->orderBy('year', 'DESC')
+            ->addOrderBy('month', 'DESC')
+            ->setMaxResults(12)
+            ->getQuery()
+            ->getResult();
+    }
 }

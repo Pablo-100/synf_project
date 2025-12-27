@@ -2,14 +2,14 @@
 
 namespace App\Twig;
 
-use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\CartService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class CartExtension extends AbstractExtension
 {
     public function __construct(
-        private RequestStack $requestStack
+        private CartService $cartService
     ) {
     }
 
@@ -22,10 +22,7 @@ class CartExtension extends AbstractExtension
 
     public function getCartCount(): int
     {
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
-        
-        // Retourne le nombre de produits différents (pas la quantité totale)
-        return count($cart);
+        // Utilise le service optimisé
+        return $this->cartService->getCount();
     }
 }

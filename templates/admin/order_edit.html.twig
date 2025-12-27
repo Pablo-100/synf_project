@@ -3,97 +3,438 @@
 {% block title %}Modifier Commande{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="mb-4"><i class="bi bi-pencil"></i> Modifier la commande #{{ order.numeroCommande }}</h1>
-
-    <div class="card mb-3">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Informations de la commande</h5>
+<div class="container-fluid px-4 py-4">
+    <!-- Header Premium -->
+    <div class="page-header-premium mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="header-icon-box bg-primary">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+                    <div>
+                        <h1 class="display-5 mb-1 fw-bold">Modifier Commande #{{ order.numeroCommande }}</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-person me-2"></i>{{ order.user.fullName }}
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-calendar-event me-2"></i>{{ order.createdAt|date('d/m/Y H:i') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ path('app_admin_orders') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Retour aux commandes
+                </a>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="row">
+    </div>
+
+    <!-- Order Info Card -->
+    <div class="info-card-premium mb-4">
+        <div class="info-card-header">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            Informations de la commande
+        </div>
+        <div class="info-card-body">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-person-circle me-2"></i>Client
+                        </div>
+                        <div class="info-value">{{ order.user.fullName }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-envelope me-2"></i>Email
+                        </div>
+                        <div class="info-value small">{{ order.user.email }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-hash me-2"></i>Numéro
+                        </div>
+                        <div class="info-value">{{ order.numeroCommande }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-circle-fill me-2"></i>Statut actuel
+                        </div>
+                        <div class="info-value">
+                            {% if order.statut == 'en_attente' %}
+                                <span class="badge bg-warning">En attente</span>
+                            {% elseif order.statut == 'validee' %}
+                                <span class="badge bg-info">Validée</span>
+                            {% elseif order.statut == 'en_preparation' %}
+                                <span class="badge bg-primary">En préparation</span>
+                            {% elseif order.statut == 'livree' %}
+                                <span class="badge bg-success">Livrée</span>
+                            {% elseif order.statut == 'annulee' %}
+                                <span class="badge bg-danger">Annulée</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 mt-2">
                 <div class="col-md-6">
-                    <p><strong>Client:</strong> {{ order.user.fullName }}</p>
-                    <p><strong>Email:</strong> {{ order.user.email }}</p>
-                    <p><strong>Créée le:</strong> {{ order.createdAt|date('d/m/Y H:i') }}</p>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-currency-euro me-2"></i>Montant Total
+                        </div>
+                        <div class="info-value text-primary" style="font-size: 1.5rem;">{{ order.montantTotal|number_format(2, ',', ' ') }} €</div>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Numéro:</strong> {{ order.numeroCommande }}</p>
-                    <p><strong>Statut actuel:</strong> 
-                        {% if order.statut == 'en_attente' %}
-                            <span class="badge bg-warning">En attente</span>
-                        {% elseif order.statut == 'validee' %}
-                            <span class="badge bg-info">Validée</span>
-                        {% elseif order.statut == 'en_preparation' %}
-                            <span class="badge bg-primary">En préparation</span>
-                        {% elseif order.statut == 'livree' %}
-                            <span class="badge bg-success">Livrée</span>
-                        {% elseif order.statut == 'annulee' %}
-                            <span class="badge bg-danger">Annulée</span>
-                        {% endif %}
-                    </p>
-                    <p><strong>Montant:</strong> {{ order.montantTotal|number_format(2, ',', ' ') }} €</p>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-clock me-2"></i>Date de création
+                        </div>
+                        <div class="info-value">{{ order.createdAt|date('d/m/Y H:i') }}</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     {% if order.orderItems|length > 0 %}
-    <div class="card mb-3">
-        <div class="card-header">
-            <h5 class="mb-0">Articles de la commande</h5>
+    <!-- Items Card -->
+    <div class="items-card-premium mb-4">
+        <div class="items-card-header">
+            <i class="bi bi-bag-check-fill me-2"></i>
+            Articles de la commande ({{ order.orderItems|length }})
         </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Produit</th>
-                        <th>Prix unitaire</th>
-                        <th>Quantité</th>
-                        <th class="text-end">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order.orderItems %}
+        <div class="items-card-body">
+            <div class="table-responsive">
+                <table class="table table-premium-edit">
+                    <thead>
                         <tr>
-                            <td>{{ item.product.nom }}</td>
-                            <td>{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
-                            <td>{{ item.quantite }}</td>
-                            <td class="text-end">{{ item.total|number_format(2, ',', ' ') }} €</td>
+                            <th>Produit</th>
+                            <th class="text-center">Prix unitaire</th>
+                            <th class="text-center">Quantité</th>
+                            <th class="text-end">Total</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in order.orderItems %}
+                            <tr>
+                                <td>
+                                    <div class="product-name-edit">{{ item.product.nom }}</div>
+                                </td>
+                                <td class="text-center">{{ item.prixUnitaire|number_format(2, ',', ' ') }} €</td>
+                                <td class="text-center">
+                                    <span class="quantity-badge-edit">{{ item.quantite }}</span>
+                                </td>
+                                <td class="text-end fw-bold text-primary">{{ item.total|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Modifier la commande</h5>
-        </div>
-        <div class="card-body">
+    <!-- Edit Form Card -->
+    <div class="card-premium">
+        <div class="card-premium-body">
+            <div class="section-header-premium mb-4">
+                <i class="bi bi-pencil-square me-2"></i>
+                <h3>Modifier les informations</h3>
+            </div>
             {{ form_start(form) }}
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.user) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.statut) }}
+                <div class="form-section-premium mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-person me-2"></i>{{ form_label(form.user) }}
+                                </label>
+                                {{ form_widget(form.user, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(form.user) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-circle-fill me-2"></i>{{ form_label(form.statut) }}
+                                </label>
+                                {{ form_widget(form.statut, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(form.statut) }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-cash me-2"></i>{{ form_label(form.montantTotal) }}
+                                </label>
+                                {{ form_widget(form.montantTotal, {'attr': {'class': 'form-control-premium'}}) }}
+                                {{ form_errors(form.montantTotal) }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-house me-2"></i>{{ form_label(form.adresseLivraison) }}
+                                </label>
+                                {{ form_widget(form.adresseLivraison, {'attr': {'class': 'form-control-premium', 'rows': 3}}) }}
+                                {{ form_errors(form.adresseLivraison) }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-chat-text me-2"></i>{{ form_label(form.commentaire) }}
+                                </label>
+                                {{ form_widget(form.commentaire, {'attr': {'class': 'form-control-premium', 'rows': 3}}) }}
+                                {{ form_errors(form.commentaire) }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.montantTotal) }}
-                    </div>
+
+                <div class="form-actions-premium">
+                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary btn-lg btn-premium-action'}}) }}
                 </div>
-                {{ form_row(form.adresseLivraison) }}
-                {{ form_row(form.commentaire) }}
-                {{ form_widget(form.save) }}
             {{ form_end(form) }}
         </div>
     </div>
-
-    <a href="{{ path('app_admin_orders') }}" class="btn btn-link mt-3">← Retour aux commandes</a>
 </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .page-header-premium {
+            background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(147,197,253,0.08));
+            padding: 2rem;
+            border-radius: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .header-icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .header-icon-box.bg-primary {
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+        }
+
+        /* Info Card */
+        .info-card-premium {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .info-card-header {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(125,211,252,0.1));
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .info-card-header i {
+            color: #0ea5e9;
+        }
+
+        .info-card-body {
+            padding: 2rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: var(--background-alt);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        /* Items Card */
+        .items-card-premium {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .items-card-header {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(134,239,172,0.1));
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .items-card-header i {
+            color: #22c55e;
+        }
+
+        .items-card-body {
+            padding: 2rem;
+        }
+
+        .table-premium-edit {
+            margin: 0;
+        }
+
+        .table-premium-edit thead {
+            background: var(--background-alt);
+        }
+
+        .table-premium-edit thead th {
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .table-premium-edit tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-premium-edit tbody tr:hover {
+            background: var(--background-alt);
+        }
+
+        .product-name-edit {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quantity-badge-edit {
+            display: inline-flex;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        /* Form Styles */
+        .card-premium {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .card-premium-body {
+            padding: 2.5rem;
+        }
+
+        .section-header-premium {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-header-premium i {
+            color: var(--primary-color);
+        }
+
+        .form-section-premium {
+            padding: 2rem;
+            background: var(--background-alt);
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-group-premium {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label-premium {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .form-label-premium i {
+            color: var(--primary-color);
+        }
+
+        .form-control-premium {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-control-premium:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+        }
+
+        .form-actions-premium {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-premium-action {
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .btn-premium-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(59,130,246,0.4);
+        }
+    </style>
 {% endblock %}

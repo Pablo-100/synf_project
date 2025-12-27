@@ -7,7 +7,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Définir les variables d'environnement
-$env:APP_ENV = "dev"
+$env:APP_ENV = "prod"
 $env:APP_SECRET = "ChangeThisSecretToken123456789abcdefghijklmnop"
 $env:DATABASE_URL = "mysql://root:@127.0.0.1:3306/synf_project?serverVersion=8.0.32&charset=utf8mb4"
 $env:DEFAULT_URI = "http://localhost"

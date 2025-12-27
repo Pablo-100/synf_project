@@ -17,6 +17,9 @@
 - ✅ **Gestion des réservations** : Repositories avec filtres par statut
 - ✅ **Gestion des commandes** : Suivi des commandes et statistiques
 - ✅ **Statistiques** : Repositories avec méthodes d'agrégation (CA, compteurs, top produits)
+- ✅ **Authentification OAuth 2.0** : Google & Facebook (Nouveau)
+- ✅ **Panier Optimisé** : Stockage par Token/Cookie (Nouveau)
+- ✅ **UI Dynamique** : Panier AJAX & Design Responsif Fluide (Nouveau)
 
 ## 📁 Structure du Projet
 
@@ -190,6 +193,10 @@ synf_project/
 - ✅ **Validation** : Contraintes sur entités
 - ✅ **CSRF Protection** : Intégré dans Symfony Forms
 - ✅ **Unique Constraints** : Email unique
+- ✅ **Security Headers** : CSP, HSTS, X-Frame-Options (SecurityHeadersSubscriber)
+- ✅ **OAuth 2.0 Auth** : Authentification réseau sociaux sécurisée
+- ✅ **Client-side Storage** : Panier par jetons (Token) encodés
+- ✅ **Fluid Responsive Design** : Protection contre les bris d'interface (clamp)
 
 ## 📊 Fonctionnalités Statistiques Disponibles
 

@@ -3,7 +3,7 @@
 {% block title %}Mon Panier{% endblock %}
 
 {% block body %}
-<div class="cart-premium">
+<div class="container cart-premium py-4">
     <!-- Header Premium avec Icon Box -->
     <div class="page-header-premium mb-5">
         <div class="header-content-premium">
@@ -161,7 +161,7 @@
             </div>
         </div>
     {% endif %}
-</div>
+</div><!-- /container -->
 
 {% block stylesheets %}
     {{ parent() }}
@@ -180,7 +180,8 @@
         }
 
         .cart-premium {
-            padding: 2rem 0;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* Header Premium */

@@ -6,11 +6,11 @@ use App\Entity\Product;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Repository\ProductRepository;
+use App\Service\CartService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -19,7 +19,7 @@ class CartController extends AbstractController
 {
     #[Route('/add/{id}', name: 'app_cart_add', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function add(int $id, ProductRepository $productRepository, SessionInterface $session): Response
+    public function add(int $id, ProductRepository $productRepository, CartService $cartService): Response
     {
         $product = $productRepository->find($id);
         
@@ -33,21 +33,8 @@ class CartController extends AbstractController
             return $this->redirectToRoute('app_product_show', ['id' => $id]);
         }
         
-        // Récupérer le panier de la session
-        $cart = $session->get('cart', []);
-        
-        // Ajouter le produit ou augmenter la quantité
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                'product' => $product,
-                'quantity' => 1
-            ];
-        }
-        
-        // Sauvegarder le panier dans la session
-        $session->set('cart', $cart);
+        // Ajouter le produit au panier (stockage optimisé: ID seulement)
+        $cartService->addProduct($id);
         
         $this->addFlash('success', 'Produit ajouté au panier avec succès !');
         
@@ -56,7 +43,7 @@ class CartController extends AbstractController
 
     #[Route('/add-ajax/{id}', name: 'app_cart_add_ajax', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function addAjax(int $id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
+    public function addAjax(int $id, ProductRepository $productRepository, CartService $cartService, Request $request): Response
     {
         // Vérifier que c'est une requête AJAX
         if (!$request->isXmlHttpRequest()) {
@@ -73,24 +60,11 @@ class CartController extends AbstractController
             return $this->json(['success' => false, 'message' => 'Ce produit est en rupture de stock']);
         }
         
-        // Récupérer le panier de la session
-        $cart = $session->get('cart', []);
+        // Ajouter le produit au panier (stockage optimisé)
+        $cartService->addProduct($id);
         
-        // Ajouter le produit ou augmenter la quantité
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                'product' => $product,
-                'quantity' => 1
-            ];
-        }
-        
-        // Sauvegarder le panier dans la session
-        $session->set('cart', $cart);
-        
-        // Retourner le nombre de produits différents (pas la quantité totale)
-        $cartCount = count($cart);
+        // Retourner le nombre de produits différents
+        $cartCount = $cartService->getCount();
         
         return $this->json([
             'success' => true,
@@ -101,14 +75,10 @@ class CartController extends AbstractController
     
     #[Route('/', name: 'app_cart_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(SessionInterface $session): Response
+    public function index(CartService $cartService): Response
     {
-        $cart = $session->get('cart', []);
-        $total = 0;
-        
-        foreach ($cart as $item) {
-            $total += $item['product']->getPrix() * $item['quantity'];
-        }
+        $cart = $cartService->getCart();
+        $total = $cartService->getTotal();
         
         return $this->render('cart/index.html.twig', [
             'cart' => $cart,
@@ -118,22 +88,17 @@ class CartController extends AbstractController
     
     #[Route('/remove/{id}', name: 'app_cart_remove', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function remove(int $id, SessionInterface $session): Response
+    public function remove(int $id, CartService $cartService): Response
     {
-        $cart = $session->get('cart', []);
-        
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            $session->set('cart', $cart);
-            $this->addFlash('success', 'Produit retiré du panier.');
-        }
+        $cartService->removeProduct($id);
+        $this->addFlash('success', 'Produit retiré du panier.');
         
         return $this->redirectToRoute('app_cart_index');
     }
     
     #[Route('/update/{id}', name: 'app_cart_update', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function update(int $id, Request $request, SessionInterface $session): Response
+    public function update(int $id, Request $request, CartService $cartService): Response
     {
         $quantity = (int) $request->request->get('quantity', 1);
         
@@ -142,22 +107,17 @@ class CartController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
         
-        $cart = $session->get('cart', []);
-        
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] = $quantity;
-            $session->set('cart', $cart);
-            $this->addFlash('success', 'Quantité mise à jour.');
-        }
+        $cartService->updateQuantity($id, $quantity);
+        $this->addFlash('success', 'Quantité mise à jour.');
         
         return $this->redirectToRoute('app_cart_index');
     }
     
     #[Route('/clear', name: 'app_cart_clear')]
     #[IsGranted('ROLE_USER')]
-    public function clear(SessionInterface $session): Response
+    public function clear(CartService $cartService): Response
     {
-        $session->remove('cart');
+        $cartService->clear();
         $this->addFlash('success', 'Panier vidé.');
         
         return $this->redirectToRoute('app_cart_index');
@@ -165,19 +125,15 @@ class CartController extends AbstractController
 
     #[Route('/checkout', name: 'app_cart_checkout')]
     #[IsGranted('ROLE_USER')]
-    public function checkout(SessionInterface $session): Response
+    public function checkout(CartService $cartService): Response
     {
-        $cart = $session->get('cart', []);
-        
-        if (empty($cart)) {
+        if ($cartService->isEmpty()) {
             $this->addFlash('error', 'Votre panier est vide.');
             return $this->redirectToRoute('app_cart_index');
         }
         
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['product']->getPrix() * $item['quantity'];
-        }
+        $cart = $cartService->getCart();
+        $total = $cartService->getTotal();
         
         return $this->render('cart/checkout.html.twig', [
             'cart' => $cart,
@@ -186,26 +142,24 @@ class CartController extends AbstractController
     }
 
     #[Route('/count', name: 'app_cart_count', methods: ['GET'])]
-    public function count(SessionInterface $session): Response
+    public function count(CartService $cartService): Response
     {
-        $cart = $session->get('cart', []);
-        
-        // Retourne le nombre de produits différents (pas la quantité totale)
-        $count = count($cart);
+        // Retourne le nombre de produits différents
+        $count = $cartService->getCount();
         
         return $this->json(['count' => $count]);
     }
 
     #[Route('/place-order', name: 'app_cart_place_order', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function placeOrder(Request $request, SessionInterface $session, EntityManagerInterface $em, ProductRepository $productRepository): Response
+    public function placeOrder(Request $request, CartService $cartService, EntityManagerInterface $em): Response
     {
-        $cart = $session->get('cart', []);
-        
-        if (empty($cart)) {
+        if ($cartService->isEmpty()) {
             $this->addFlash('error', 'Votre panier est vide.');
             return $this->redirectToRoute('app_cart_index');
         }
+        
+        $cart = $cartService->getCart();
         
         // Vérifier le token CSRF
         $token = $request->request->get('_token');
@@ -228,12 +182,7 @@ class CartController extends AbstractController
         // Créer les OrderItems
         $total = 0;
         foreach ($cart as $productId => $item) {
-            // Récupérer le produit depuis la base de données (pas depuis la session)
-            $product = $productRepository->find($productId);
-            
-            if (!$product) {
-                continue; // Ignorer les produits qui n'existent plus
-            }
+            $product = $item['product'];
             
             $orderItem = new OrderItem();
             $orderItem->setProduct($product);
@@ -252,7 +201,7 @@ class CartController extends AbstractController
         $em->flush();
         
         // Vider le panier
-        $session->remove('cart');
+        $cartService->clear();
         
         $this->addFlash('success', sprintf('Votre commande #%s a été enregistrée avec succès !', $order->getNumeroCommande()));
         

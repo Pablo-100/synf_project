@@ -121,4 +121,120 @@ class ProfileController extends AbstractController
             'orders' => $orders,
         ]);
     }
+
+    #[Route('/statistics', name: 'app_profile_statistics')]
+    public function statistics(): Response
+    {
+        return $this->render('profile/statistics.html.twig');
+    }
+
+    #[Route('/statistics/api/orders', name: 'app_profile_statistics_orders', methods: ['GET'])]
+    public function getOrdersStatistics(OrderRepository $orderRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $data = $orderRepository->getOrdersByUser($user->getId());
+        
+        $labels = [];
+        $counts = [];
+        $totals = [];
+        
+        foreach ($data as $item) {
+            $monthNames = [
+                1 => 'Jan', 2 => 'Fév', 3 => 'Mar', 4 => 'Avr',
+                5 => 'Mai', 6 => 'Juin', 7 => 'Juil', 8 => 'Août',
+                9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Déc'
+            ];
+            $labels[] = $monthNames[$item['month']] . ' ' . $item['year'];
+            $counts[] = (int) $item['count'];
+            $totals[] = (float) $item['total'];
+        }
+        
+        return $this->json([
+            'labels' => $labels,
+            'counts' => $counts,
+            'totals' => $totals,
+        ]);
+    }
+
+    #[Route('/statistics/api/reservations', name: 'app_profile_statistics_reservations', methods: ['GET'])]
+    public function getReservationsStatistics(ReservationRepository $reservationRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $data = $reservationRepository->getReservationsByUser($user->getId());
+        
+        $labels = [];
+        $counts = [];
+        
+        foreach ($data as $item) {
+            $monthNames = [
+                1 => 'Jan', 2 => 'Fév', 3 => 'Mar', 4 => 'Avr',
+                5 => 'Mai', 6 => 'Juin', 7 => 'Juil', 8 => 'Août',
+                9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Déc'
+            ];
+            $labels[] = $monthNames[$item['month']] . ' ' . $item['year'];
+            $counts[] = (int) $item['count'];
+        }
+        
+        return $this->json([
+            'labels' => $labels,
+            'counts' => $counts,
+        ]);
+    }
+
+    #[Route('/api/orders-by-status', name: 'app_profile_orders_by_status', methods: ['GET'])]
+    public function getOrdersByStatus(OrderRepository $orderRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $orders = $orderRepository->findBy(['user' => $user]);
+        
+        $statusCounts = [
+            'en_attente' => 0,
+            'validee' => 0,
+            'en_preparation' => 0,
+            'livree' => 0,
+            'annulee' => 0,
+        ];
+        
+        foreach ($orders as $order) {
+            $status = $order->getStatut();
+            if (isset($statusCounts[$status])) {
+                $statusCounts[$status]++;
+            }
+        }
+        
+        return $this->json([
+            'labels' => ['En attente', 'Validée', 'En préparation', 'Livrée', 'Annulée'],
+            'data' => array_values($statusCounts),
+        ]);
+    }
+
+    #[Route('/api/reservations-by-status', name: 'app_profile_reservations_by_status', methods: ['GET'])]
+    public function getReservationsByStatus(ReservationRepository $reservationRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $reservations = $reservationRepository->findBy(['user' => $user]);
+        
+        $statusCounts = [
+            'en_attente' => 0,
+            'confirmee' => 0,
+            'annulee' => 0,
+            'terminee' => 0,
+        ];
+        
+        foreach ($reservations as $reservation) {
+            $status = $reservation->getStatut();
+            if (isset($statusCounts[$status])) {
+                $statusCounts[$status]++;
+            }
+        }
+        
+        return $this->json([
+            'labels' => ['En attente', 'Confirmée', 'Annulée', 'Terminée'],
+            'data' => array_values($statusCounts),
+        ]);
+    }
 }

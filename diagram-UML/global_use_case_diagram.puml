@@ -1,0 +1,68 @@
+@startuml GlobalUseCaseDiagram
+
+left to right direction
+
+actor "Visiteur" as Visitor
+actor "Utilisateur\nInscrit" as User
+actor "Administrateur" as Admin
+
+rectangle "Système FreshMarket" {
+  ' Authentification
+  usecase "S'inscrire" as UC1
+  usecase "Se connecter" as UC2
+  usecase "Connexion Google" as UC2a
+  usecase "Connexion Facebook" as UC2b
+  usecase "Consulter les produits" as UC3
+  usecase "Rechercher des produits" as UC4
+  
+  ' Gestion Utilisateur
+  usecase "Gérer le profil" as UC5
+  usecase "Modifier avatar" as UC5a
+  usecase "Gérer le panier" as UC6
+  usecase "Passer commande" as UC7
+  usecase "Voir historique commandes" as UC8
+  usecase "Réserver une table" as UC9
+  usecase "Gérer mes réservations" as UC10
+  
+  ' Administration
+  usecase "Gérer les utilisateurs" as UC11
+  usecase "Gérer les produits" as UC12
+  usecase "Gérer les commandes" as UC13
+  usecase "Gérer les réservations" as UC14
+  usecase "Voir les statistiques" as UC15
+}
+
+' Relations Visiteur
+Visitor --> UC1
+Visitor --> UC2
+Visitor --> UC2a
+Visitor --> UC2b
+Visitor --> UC3
+Visitor --> UC4
+Visitor --> UC9 : (invité)
+
+' Relations OAuth2
+UC2 ..> UC2a : <<extend>>
+UC2 ..> UC2b : <<extend>>
+
+' Relations Utilisateur
+User --> UC5
+UC5 ..> UC5a : <<include>>
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+User --> UC10
+
+' Relations Administrateur
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+
+' Héritage des acteurs
+Visitor <|-- User
+User <|-- Admin
+
+@enduml

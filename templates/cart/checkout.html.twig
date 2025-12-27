@@ -3,113 +3,518 @@
 {% block title %}Passer la commande{% endblock %}
 
 {% block body %}
-<div class="container py-4">
-    <h1 class="mb-4">
-        <i class="bi bi-credit-card"></i> Finaliser ma commande
-    </h1>
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Articles commandés</h5>
+<div class="checkout-page-premium">
+    <div class="container py-5">
+        <!-- Header Premium -->
+        <div class="page-header-checkout mb-5">
+            <div class="header-content-checkout">
+                <div class="header-icon-checkout">
+                    <i class="bi bi-credit-card-fill"></i>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Produit</th>
-                                    <th>Prix unitaire</th>
-                                    <th>Quantité</th>
-                                    <th class="text-end">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for id, item in cart %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ item.product.nom }}</strong>
-                                            <br>
-                                            <small class="text-muted">{{ item.product.categorie }}</small>
-                                        </td>
-                                        <td>{{ item.product.prix|number_format(2, ',', ' ') }} €</td>
-                                        <td>{{ item.quantity }}</td>
-                                        <td class="text-end">
-                                            <strong>{{ (item.product.prix * item.quantity)|number_format(2, ',', ' ') }} €</strong>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Adresse de livraison</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="{{ path('app_cart_place_order') }}" id="orderForm">
-                        <input type="hidden" name="_token" value="{{ csrf_token('place-order') }}">
-                        
-                        <div class="mb-3">
-                            <label for="adresse_livraison" class="form-label">Adresse complète</label>
-                            <textarea 
-                                class="form-control" 
-                                id="adresse_livraison" 
-                                name="adresse_livraison" 
-                                rows="3" 
-                                placeholder="Numéro, rue, code postal, ville"
-                                required></textarea>
-                            <small class="text-muted">
-                                <i class="bi bi-info-circle"></i> Cette adresse sera utilisée pour la livraison de votre commande.
-                            </small>
-                        </div>
-                    </form>
+                <div>
+                    <h1 class="checkout-title">Finaliser ma commande</h1>
+                    <p class="checkout-subtitle">
+                        <i class="bi bi-shield-check me-2"></i>Paiement sécurisé
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-truck me-2"></i>Livraison gratuite
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card shadow">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Récapitulatif</h5>
+        <div class="row g-4">
+            <!-- Left Column: Order Details & Address -->
+            <div class="col-lg-8">
+                <!-- Items Card -->
+                <div class="checkout-card mb-4">
+                    <div class="checkout-card-header">
+                        <i class="bi bi-bag-check-fill me-2"></i>
+                        Articles commandés
+                    </div>
+                    <div class="checkout-card-body">
+                        <div class="items-table-premium">
+                            <div class="items-table-header">
+                                <div class="header-col">Produit</div>
+                                <div class="header-col text-center">Prix unitaire</div>
+                                <div class="header-col text-center">Quantité</div>
+                                <div class="header-col text-end">Total</div>
+                            </div>
+                            <div class="items-table-body">
+                                {% for id, item in cart %}
+                                    <div class="item-row-checkout">
+                                        <div class="item-info">
+                                            <div class="item-name">{{ item.product.nom }}</div>
+                                            <div class="item-category">
+                                                <i class="bi bi-tag-fill me-1"></i>{{ item.product.categorie }}
+                                            </div>
+                                        </div>
+                                        <div class="item-price">{{ item.product.prix|number_format(2, ',', ' ') }} €</div>
+                                        <div class="item-quantity">
+                                            <span class="quantity-badge">{{ item.quantity }}</span>
+                                        </div>
+                                        <div class="item-total">{{ (item.product.prix * item.quantity)|number_format(2, ',', ' ') }} €</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Sous-total :</span>
-                        <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+
+                <!-- Address Card -->
+                <div class="checkout-card">
+                    <div class="checkout-card-header">
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        Adresse de livraison
                     </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span>Livraison :</span>
-                        <strong class="text-success">Gratuite</strong>
+                    <div class="checkout-card-body">
+                        <form method="post" action="{{ path('app_cart_place_order') }}" id="orderForm">
+                            <input type="hidden" name="_token" value="{{ csrf_token('place-order') }}">
+                            
+                            <div class="form-group-checkout">
+                                <label for="adresse_livraison" class="form-label-checkout">
+                                    <i class="bi bi-house-fill me-2"></i>Adresse complète
+                                </label>
+                                <textarea 
+                                    class="form-control-checkout" 
+                                    id="adresse_livraison" 
+                                    name="adresse_livraison" 
+                                    rows="4" 
+                                    placeholder="Numéro, rue, code postal, ville..."
+                                    required></textarea>
+                                <div class="form-hint-checkout">
+                                    <i class="bi bi-info-circle me-2"></i>Cette adresse sera utilisée pour la livraison de votre commande
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-4">
-                        <h5>Total :</h5>
-                        <h5 class="text-primary">{{ total|number_format(2, ',', ' ') }} €</h5>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" form="orderForm" class="btn btn-primary btn-lg">
-                            <i class="bi bi-credit-card"></i> Passer la commande
-                        </button>
-                        <a href="{{ path('app_cart_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Retour au panier
-                        </a>
-                    </div>
-                    
-                    <div class="alert alert-info mt-3 mb-0">
-                        <small>
-                            <i class="bi bi-shield-check"></i> Paiement sécurisé<br>
-                            <i class="bi bi-truck"></i> Livraison gratuite
-                        </small>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary -->
+            <div class="col-lg-4">
+                <div class="summary-card-sticky">
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <i class="bi bi-receipt me-2"></i>
+                            Récapitulatif
+                        </div>
+                        <div class="summary-body">
+                            <div class="summary-row">
+                                <span>Sous-total</span>
+                                <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Livraison</span>
+                                <strong class="text-success">
+                                    <i class="bi bi-truck me-1"></i>Gratuite
+                                </strong>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-total-row">
+                                <span>Total à payer</span>
+                                <div class="total-amount">{{ total|number_format(2, ',', ' ') }} €</div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-actions">
+                            <button type="submit" form="orderForm" class="btn btn-checkout-primary">
+                                <i class="bi bi-credit-card-fill me-2"></i>Passer la commande
+                            </button>
+                            <a href="{{ path('app_cart_index') }}" class="btn btn-checkout-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Retour au panier
+                            </a>
+                        </div>
+                        
+                        <div class="summary-badges">
+                            <div class="badge-item">
+                                <i class="bi bi-shield-check-fill"></i>
+                                <span>Paiement sécurisé</span>
+                            </div>
+                            <div class="badge-item">
+                                <i class="bi bi-truck"></i>
+                                <span>Livraison rapide</span>
+                            </div>
+                            <div class="badge-item">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <span>Retour gratuit</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .checkout-page-premium {
+            background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(147,197,253,0.03) 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .page-header-checkout {
+            background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(147,197,253,0.08));
+            padding: 2rem;
+            border-radius: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .header-content-checkout {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-icon-checkout {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(59,130,246,0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .checkout-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .checkout-subtitle {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Cards */
+        .checkout-card {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .checkout-card-header {
+            padding: 1.5rem 2rem;
+            background: var(--background-alt);
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .checkout-card-header i {
+            color: var(--primary-color);
+        }
+
+        .checkout-card-body {
+            padding: 2rem;
+        }
+
+        /* Items Table */
+        .items-table-premium {
+            width: 100%;
+        }
+
+        .items-table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--background-alt);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .header-col {
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .items-table-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .item-row-checkout {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--background-alt);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .item-row-checkout:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.1);
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .item-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .item-category {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .item-price, .item-total {
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .item-total {
+            text-align: right;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .quantity-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        /* Form */
+        .form-group-checkout {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label-checkout {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .form-label-checkout i {
+            color: var(--primary-color);
+        }
+
+        .form-control-checkout {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .form-control-checkout:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+        }
+
+        .form-hint-checkout {
+            margin-top: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Summary Card */
+        .summary-card-sticky {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .summary-card {
+            background: var(--surface);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .summary-header {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .summary-body {
+            padding: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+        }
+
+        .summary-row strong {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .summary-divider {
+            height: 2px;
+            background: var(--border-color);
+            margin: 1rem 0;
+        }
+
+        .summary-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .summary-total-row span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        /* Actions */
+        .summary-actions {
+            padding: 0 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-checkout-primary {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #60a5fa);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-checkout-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(59,130,246,0.4);
+        }
+
+        .btn-checkout-secondary {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .btn-checkout-secondary:hover {
+            background: var(--background-alt);
+            border-color: var(--text-secondary);
+            transform: translateX(-5px);
+        }
+
+        /* Badges */
+        .summary-badges {
+            padding: 1.5rem 2rem 2rem;
+            background: var(--background-alt);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .badge-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .badge-item i {
+            color: var(--success);
+            font-size: 1.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .summary-card-sticky {
+                position: static;
+            }
+            
+            .items-table-header {
+                display: none;
+            }
+            
+            .item-row-checkout {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .item-price, .item-total {
+                text-align: left;
+            }
+            
+            .checkout-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 {% endblock %}

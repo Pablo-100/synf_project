@@ -1,0 +1,1 @@
+ALTER TABLE user MODIFY avatar VARCHAR(1024);

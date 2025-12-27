@@ -1,0 +1,72 @@
+@startuml AdminUseCase_Diagram
+
+left to right direction
+
+actor "Administrateur" as Admin
+
+rectangle "Panneau d'Administration" {
+  rectangle "Gestion Utilisateurs" {
+    (Lister utilisateurs) as ListUsers
+    (Modifier utilisateur) as EditUser
+    (Désactiver compte) as DisableUser
+    (Voir statistiques utilisateurs) as UserStats
+  }
+  
+  rectangle "Gestion Produits" {
+    (Ajouter produit) as AddProduct
+    (Upload image produit) as UploadImage <<include>>
+    (Modifier produit) as EditProduct
+    (Activer/Désactiver produit) as ToggleProduct
+    (Supprimer produit) as DeleteProduct
+    (Gérer stocks) as ManageStock
+    (Définir catégories) as SetCategory
+    (Voir statistiques ventes) as ProductSales
+  }
+  
+  rectangle "Gestion Commandes" {
+    (Voir toutes commandes) as ViewAllOrders
+    (Modifier statut commande) as UpdateOrderStatus
+    (Annuler commande) as AdminCancelOrder
+    (Voir statistiques ventes) as SalesStats
+  }
+  
+  rectangle "Gestion Réservations" {
+    (Voir toutes réservations) as ViewAllReservations
+    (Filtrer par statut) as FilterStatus
+    (Filtrer par date) as FilterDate
+    (Voir détails client) as ViewClientDetails
+    (Confirmer réservation) as AdminConfirmReservation
+    (Annuler réservation) as AdminCancelReservation
+    (Contacter client) as ContactClient
+    (Voir planning journalier) as DailySchedule
+  }
+}
+
+' --- Relations entre acteur et cas d'utilisation ---
+Admin --> ListUsers
+Admin --> AddProduct
+Admin --> ViewAllOrders
+Admin --> ViewAllReservations
+
+' --- Relations include/extend ---
+AddProduct .> UploadImage : <<include>>
+
+' --- Relations internes (logique d'enchaînement) ---
+ListUsers --> EditUser : permet
+EditUser --> DisableUser : puis
+DisableUser --> UserStats : et
+
+AddProduct --> EditProduct : ensuite
+EditProduct --> DeleteProduct : puis
+DeleteProduct --> ManageStock : puis
+ManageStock --> ProductSales : enfin
+
+ViewAllOrders --> UpdateOrderStatus : puis
+UpdateOrderStatus --> AdminCancelOrder : ou
+AdminCancelOrder --> SalesStats : et
+
+ViewAllReservations --> AdminConfirmReservation : puis
+AdminConfirmReservation --> AdminCancelReservation : ou
+AdminCancelReservation --> DailySchedule : et
+
+@enduml

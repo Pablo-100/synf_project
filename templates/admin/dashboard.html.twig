@@ -35,7 +35,7 @@
 
     <!-- Statistiques Cards Premium -->
     <div class="row g-4 mb-5">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-md-4">
             <div class="stat-card stat-card-primary">
                 <div class="stat-card-icon">
                     <i class="bi bi-people-fill"></i>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-md-4">
             <div class="stat-card stat-card-success">
                 <div class="stat-card-icon">
                     <i class="bi bi-box-seam-fill"></i>
@@ -66,51 +66,65 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-info">
+        <div class="col-md-4">
+            <div class="stat-card stat-card-info" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                 <div class="stat-card-icon">
-                    <i class="bi bi-cart-check-fill"></i>
+                    <i class="bi bi-cash-stack"></i>
                 </div>
                 <div class="stat-card-content">
-                    <div class="stat-label">Commandes</div>
-                    <div class="stat-value">{{ stats.total_orders }}</div>
-                    <div class="stat-progress">
-                        <div class="stat-progress-bar" style="width: 70%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card stat-card-warning">
-                <div class="stat-card-icon">
-                    <i class="bi bi-calendar-event-fill"></i>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-label">Réservations</div>
-                    <div class="stat-value">{{ stats.total_reservations }}</div>
-                    <div class="stat-detail">
-                        <i class="bi bi-clock-history me-1"></i>
-                        {{ stats.pending_reservations }} en attente
+                    <div class="stat-label" style="color: white;">Revenu Total</div>
+                    <div class="stat-value" style="color: white;">{{ stats.total_revenue|number_format(0, ',', ' ') }} €</div>
+                    <div class="stat-detail" style="color: rgba(255,255,255,0.9);">
+                        <i class="bi bi-graph-up-arrow me-1"></i>
+                        Performance globale
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Revenu Total Premium -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="revenue-card">
-                <div class="revenue-icon">
-                    <i class="bi bi-cash-stack"></i>
+    <!-- Graphiques des Statuts -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart-fill me-2 text-info"></i>
+                        Commandes par Statut
+                    </h5>
                 </div>
-                <div class="revenue-content">
-                    <h3 class="revenue-label">Revenu Total</h3>
-                    <h1 class="revenue-value">{{ stats.total_revenue|number_format(2, ',', ' ') }} €</h1>
-                    <div class="revenue-trend">
-                        <i class="bi bi-graph-up-arrow me-2"></i>
-                        <span>Performance globale</span>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h3 class="mb-0">{{ stats.total_orders }}</h3>
+                        <small class="text-muted">Commandes totales</small>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 280px;">
+                        <canvas id="ordersStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart-fill me-2 text-warning"></i>
+                        Réservations par Statut
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h3 class="mb-0">{{ stats.total_reservations }}</h3>
+                        <small class="text-muted">Réservations totales</small>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-clock me-1"></i>{{ stats.pending_reservations }} en attente
+                        </span>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 280px;">
+                        <canvas id="reservationsStatusChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -225,7 +239,7 @@
                                     <i class="bi bi-calendar-event"></i>
                                 </div>
                                 <div class="activity-item-content">
-                                    <div class="activity-item-title">{{ reservation.user.fullName }}</div>
+                                    <div class="activity-item-title">{{ reservation.user ? reservation.user.fullName : 'Utilisateur supprimé' }}</div>
                                     <div class="activity-item-subtitle">{{ reservation.nombrePersonnes }} personne(s)</div>
                                 </div>
                                 <div class="activity-item-meta">
@@ -761,6 +775,157 @@
                 text-align: center;
             }
         }
+
+        .chart-container {
+            padding: 10px;
+        }
+
+        .card {
+            border-radius: 15px;
+        }
+
+        .card-header {
+            border-top-left-radius: 15px !important;
+            border-top-right-radius: 15px !important;
+        }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuration commune pour les graphiques
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Graphique des Commandes par Statut (Donut)
+            fetch('{{ path('app_admin_statistics_orders_status') }}')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('ordersStatusChart').getContext('2d');
+                    
+                    // Vérifier s'il y a des commandes
+                    const totalOrders = data.data.reduce((a, b) => a + b, 0);
+                    if (totalOrders === 0) {
+                        ctx.canvas.parentElement.innerHTML = '<p class="text-center text-muted p-4">Aucune commande</p>';
+                        return;
+                    }
+                    
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                backgroundColor: [
+                                    '#fbbf24', // En attente - yellow
+                                    '#3b82f6', // Validée - blue
+                                    '#8b5cf6', // En préparation - purple
+                                    '#10b981', // Livrée - green
+                                    '#ef4444'  // Annulée - red
+                                ],
+                                borderWidth: 3,
+                                borderColor: '#fff',
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            cutout: '65%',
+                            plugins: {
+                                ...commonOptions.plugins,
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = ((value / total) * 100).toFixed(1);
+                                            return label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading orders status:', error);
+                });
+
+            // Graphique des Réservations par Statut (Donut)
+            fetch('{{ path('app_admin_statistics_reservations_status') }}')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Admin Reservations data:', data);
+                    const ctx = document.getElementById('reservationsStatusChart');
+                    
+                    if (!ctx) {
+                        console.error('Canvas reservationsStatusChart not found');
+                        return;
+                    }
+                    
+                    // Vérifier s'il y a des réservations
+                    const totalReservations = data.data.reduce((a, b) => a + b, 0);
+                    if (totalReservations === 0) {
+                        ctx.parentElement.innerHTML = '<p class="text-center text-muted p-4">Aucune réservation</p>';
+                        return;
+                    }
+                    
+                    new Chart(ctx.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                backgroundColor: [
+                                    '#fbbf24', // En attente - yellow
+                                    '#10b981', // Confirmée - green
+                                    '#ef4444', // Annulée - red
+                                    '#3b82f6'  // Terminée - blue
+                                ],
+                                borderWidth: 3,
+                                borderColor: '#fff',
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            cutout: '65%',
+                            plugins: {
+                                ...commonOptions.plugins,
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = ((value / total) * 100).toFixed(1);
+                                            return label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading reservations status:', error);
+                });
+        });
+    </script>
 {% endblock %}
 {% endblock %}

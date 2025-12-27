@@ -1,0 +1,63 @@
+@startuml ShoppingUseCase
+
+left to right direction
+
+actor "Client" as Client
+
+rectangle "Processus d'Achat" {
+  usecase "Parcourir le catalogue" as Browse
+  usecase "Rechercher produits" as Search
+  usecase "Filtrer par catégorie" as Filter
+  usecase "Voir détails produit" as ViewDetails
+  
+  usecase "Ajouter au panier" as AddToCart
+  usecase "Vérifier stock" as CheckStock <<include>>
+  usecase "Modifier quantité" as UpdateQuantity
+  usecase "Supprimer du panier" as RemoveFromCart
+  usecase "Vider le panier" as ClearCart
+  
+  usecase "Passer commande" as Checkout
+  usecase "Saisir adresse livraison" as SelectAddress
+  usecase "Ajouter commentaire" as AddOrderComment
+  usecase "Valider commande" as ConfirmOrder
+  usecase "Générer numéro commande" as GenerateOrderNumber <<include>>
+  
+  usecase "Voir mes commandes" as ViewHistory
+  usecase "Voir détails commande" as ViewOrderDetails
+  usecase "Annuler commande" as CancelOrder
+}
+
+' Relations et flux
+Client --> Browse
+Client --> Search
+Client --> Filter
+Browse --> ViewDetails
+ViewDetails --> AddToCart
+AddToCart ..> CheckStock : include
+
+Client --> UpdateQuantity
+Client --> RemoveFromCart
+Client --> ClearCart
+
+Client --> Checkout
+Checkout ..> SelectAddress : include
+Checkout ..> AddOrderComment : extend
+Checkout --> ConfirmOrder
+ConfirmOrder ..> GenerateOrderNumber : include
+
+Client --> ViewHistory
+ViewHistory --> ViewOrderDetails
+Client --> CancelOrder
+
+note right of AddToCart
+  Utilise session PHP pour
+  stocker le panier temporairement
+end note
+
+note right of ConfirmOrder
+  Crée Order + OrderItems
+  Décrémente le stock des produits
+  Statut initial: "en_attente"
+end note
+
+@enduml

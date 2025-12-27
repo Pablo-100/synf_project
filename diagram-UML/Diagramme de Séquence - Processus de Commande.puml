@@ -1,0 +1,63 @@
+@startuml ReservationSequence
+
+title Diagramme de Séquence - Processus de Réservation
+
+actor "Client/Invité" as Client
+participant "Browser" as UI
+participant "HomeController" as Controller
+participant "ReservationType" as Form
+participant "Reservation" as Entity
+participant "EntityManager" as EM
+participant "Validator" as Validator
+database "MySQL" as DB
+
+== Affichage du formulaire ==
+Client -> UI: Accède à /contact
+UI -> Controller: GET /contact
+Controller -> Form: createForm(ReservationType)
+Form --> Controller: formulaire créé
+Controller --> UI: render contact.html.twig
+UI --> Client: Affiche formulaire de réservation
+
+== Soumission de la réservation ==
+Client -> UI: Remplit et soumet formulaire\n(nom, prénom, tél, email,\ndate, heure, nb personnes)
+UI -> Controller: POST /contact
+Controller -> Form: handleRequest(request)
+Form -> Validator: validate(data)
+
+alt Validation échouée
+    Validator --> Form: erreurs de validation
+    Form --> Controller: isValid() = false
+    Controller --> UI: render avec erreurs
+    UI --> Client: Affiche erreurs
+else Validation réussie
+    Validator --> Form: données valides
+    Form --> Controller: isValid() = true
+    
+    Controller -> Entity: new Reservation()
+    Controller -> Form: getData()
+    Form --> Controller: données du formulaire
+    
+    alt Utilisateur connecté
+        Controller -> Entity: setUser(getUser())
+    end
+    
+    Controller -> Entity: setStatut('en_attente')
+    Controller -> EM: persist(reservation)
+    Controller -> EM: flush()
+    EM -> DB: INSERT INTO reservation\n(nom, prenom, telephone, email,\ndate_reservation, heure_reservation,\nnombre_personnes, statut, user_id)
+    DB --> EM: réservation enregistrée
+    EM --> Controller: OK
+    
+    Controller -> Controller: addFlash('success',\n'Réservation enregistrée!')
+    
+    alt Utilisateur connecté
+        Controller --> UI: redirect /profile/reservations
+        UI --> Client: Page "Mes Réservations"
+    else Invité
+        Controller --> UI: redirect /contact
+        UI --> Client: Page contact avec message succès
+    end
+end
+
+@enduml
