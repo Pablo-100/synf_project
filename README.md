@@ -355,14 +355,18 @@ Ce script s'occupe de :
 📧 [mustaphaamintbini@gmail.com](mailto:mustaphaamintbini@gmail.com)
 🔗 [LinkedIn](https://www.linkedin.com/in/mustapha-amin-tbini)
 
-**Développé par Pablo-100**
+**Rayen Ben MOHRA**
+📍 Tunis, Tunisie
+📧 [rayendali1919@gmail.com](mailto:rayendali1919@gmail.com)
+
+**Développé par Pablo-100 & Rayen**
 
 ---
 
 ## 🪪 Licence
 
 Ce projet est sous licence **MIT**.
-© 2025 — Mustapha Amine TBINI
+© 2025 — Mustapha Amine TBINI & Rayen Ben MOHRA
 
 ---
 
