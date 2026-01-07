@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Protection XSS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #ef4444;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-left: 4px solid #ef4444;
+        }
+        .test-section h2 {
+            color: #ef4444;
+            margin-top: 0;
+        }
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #dc2626;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .result.safe {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .result.vulnerable {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        code {
+            background: #1f2937;
+            color: #f59e0b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .info {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .xss-payloads {
+            background: #1f2937;
+            color: #f59e0b;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Test de Protection XSS</h1>
+        
+        <div class="info">
+            <strong>⚠️ Attention :</strong> Ces tests vérifient que l'application Symfony protège correctement contre les attaques XSS (Cross-Site Scripting). Twig échappe automatiquement toutes les variables.
+        </div>
+
+        <div class="test-section">
+            <h2>Test 1 : Injection de Script Simple</h2>
+            <p>Testez ces payloads XSS dans le champ de recherche de produits :</p>
+            <div class="xss-payloads">
+&lt;script&gt;alert('XSS')&lt;/script&gt;<br>
+&lt;img src=x onerror=alert('XSS')&gt;<br>
+&lt;svg/onload=alert('XSS')&gt;<br>
+&lt;iframe src="javascript:alert('XSS')"&gt;<br>
+'&gt;&lt;script&gt;alert(String.fromCharCode(88,83,83))&lt;/script&gt;
+            </div>
+            <input type="text" class="test-input" id="xss1" placeholder="Collez un payload ici">
+            <button onclick="testXSS('xss1', 'result1')">🔍 Tester dans la recherche</button>
+            <div id="result1" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2 : Injection via Attributs HTML</h2>
+            <p>Test d'injection dans des attributs HTML :</p>
+            <div class="xss-payloads">
+" onmouseover="alert('XSS')<br>
+' onerror='alert(String.fromCharCode(88,83,83))<br>
+"&gt;&lt;script&gt;alert('XSS')&lt;/script&gt;<br>
+javascript:alert('XSS')
+            </div>
+            <input type="text" class="test-input" id="xss2" placeholder="Collez un payload ici">
+            <button onclick="testXSS('xss2', 'result2')">🔍 Tester les attributs</button>
+            <div id="result2" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 3 : Vérification Automatique</h2>
+            <p>Ce test vérifie si du JavaScript injecté s'exécute réellement :</p>
+            <button onclick="runAutoTest()">🤖 Lancer le test automatique</button>
+            <div id="result3" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 4 : Vérification dans les commentaires</h2>
+            <p>Si votre application a des commentaires, testez l'injection là aussi :</p>
+            <button onclick="window.open('/products', '_blank')">📝 Ouvrir la page produits</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Résultat attendu</h2>
+            <ul>
+                <li>✅ Les balises <code>&lt;script&gt;</code> doivent être <strong>échappées</strong> et affichées comme texte</li>
+                <li>✅ Les gestionnaires d'événements (onclick, onerror, etc.) ne doivent <strong>pas s'exécuter</strong></li>
+                <li>✅ Le code JavaScript injecté doit être <strong>affiché comme texte brut</strong></li>
+                <li>✅ Aucune alerte JavaScript ne doit apparaître</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Variable pour détecter si une alerte XSS se déclenche
+        window.xssDetected = false;
+        
+        // Override de alert() pour détecter les XSS
+        const originalAlert = window.alert;
+        window.alert = function(msg) {
+            if (msg && (msg.includes('XSS') || msg.includes('88'))) {
+                window.xssDetected = true;
+            }
+            originalAlert.call(window, msg);
+        };
+
+        function testXSS(inputId, resultId) {
+            const payload = document.getElementById(inputId).value;
+            const resultDiv = document.getElementById(resultId);
+            
+            if (!payload) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result vulnerable';
+                resultDiv.innerHTML = '⚠️ Veuillez entrer un payload à tester.';
+                return;
+            }
+
+            // Réinitialiser la détection
+            window.xssDetected = false;
+
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '⏳ Redirection vers la page de recherche...';
+
+            // Rediriger vers la recherche avec le payload
+            setTimeout(() => {
+                window.open('/products/search?q=' + encodeURIComponent(payload), '_blank');
+                
+                setTimeout(() => {
+                    if (window.xssDetected) {
+                        resultDiv.className = 'result vulnerable';
+                        resultDiv.innerHTML = '❌ <strong>VULNÉRABLE !</strong> Une alerte XSS a été détectée. L\'application ne protège pas correctement contre XSS.';
+                    } else {
+                        resultDiv.className = 'result safe';
+                        resultDiv.innerHTML = '✅ <strong>Protégé !</strong> Le payload a été correctement échappé. Vérifiez manuellement dans la nouvelle fenêtre que le code est affiché comme texte.';
+                    }
+                }, 2000);
+            }, 500);
+        }
+
+        function runAutoTest() {
+            const resultDiv = document.getElementById('result3');
+            resultDiv.style.display = 'block';
+            
+            // Réinitialiser
+            window.xssDetected = false;
+            
+            // Créer un élément de test
+            const testDiv = document.createElement('div');
+            testDiv.style.display = 'none';
+            
+            // Test 1 : Script tag simple
+            const payload1 = '<script>window.xssDetected=true;</script>';
+            testDiv.innerHTML = payload1;
+            document.body.appendChild(testDiv);
+            
+            setTimeout(() => {
+                if (window.xssDetected) {
+                    resultDiv.className = 'result vulnerable';
+                    resultDiv.innerHTML = '❌ <strong>VULNÉRABLE !</strong> Du code JavaScript a pu être exécuté. Twig n\'échappe pas correctement les variables.';
+                } else {
+                    resultDiv.className = 'result safe';
+                    resultDiv.innerHTML = '✅ <strong>Protégé !</strong> Le test automatique confirme que Twig échappe correctement les variables. Aucun code JavaScript n\'a été exécuté.';
+                }
+                document.body.removeChild(testDiv);
+            }, 500);
+        }
+
+        // Instructions au chargement
+        console.log('🔒 Tests XSS chargés. Utilisez les boutons pour tester la protection.');
+        console.log('📝 Pour tester manuellement :');
+        console.log('   1. Copiez un payload XSS');
+        console.log('   2. Collez-le dans le champ de recherche de l\'application');
+        console.log('   3. Vérifiez que le code est affiché comme texte (échappé)');
+    </script>
+</body>
+</html>

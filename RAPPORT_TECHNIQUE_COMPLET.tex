@@ -1,0 +1,1376 @@
+\documentclass[a4paper,12pt,twoside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Configuration des marges
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm,
+    headheight=15pt
+}
+
+% Configuration des headers/footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\leftmark}}
+\fancyhead[RE]{\nouppercase{Rapport Technique - Synf Project}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Configuration des liens hypertextes
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    filecolor=magenta,      
+    urlcolor=blue!60!black,
+    citecolor=green!50!black,
+    pdftitle={Rapport Technique Complet - Synf Project E-commerce Symfony 7},
+    pdfauthor={Equipe de Developpement},
+    pdfsubject={Documentation Technique Complete},
+    pdfkeywords={Symfony, PHP, E-commerce, Doctrine, OAuth, Securite}
+}
+
+% Couleurs personnalisees
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.95}
+\definecolor{symfonycolor}{RGB}{0, 0, 0}
+\definecolor{phpcolor}{RGB}{119, 123, 180}
+\definecolor{doctrinecolor}{RGB}{252, 108, 38}
+\definecolor{twigcolor}{RGB}{186, 205, 34}
+
+% Configuration pour le code source PHP
+\lstdefinestyle{phpstyle}{
+    language=PHP,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{phpcolor}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{codegray},
+    morekeywords={class, function, public, private, protected, static, return, new, use, namespace, extends, implements, readonly, array, Collection, self, mixed},
+    emph={Entity, Repository, Controller, Service, Form},
+    emphstyle=\color{doctrinecolor}\bfseries
+}
+
+% Configuration pour YAML
+\lstdefinestyle{yamlstyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{codegray},
+    keywordstyle=\color{blue!70!black}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple}
+}
+
+% Configuration pour Twig
+\lstdefinestyle{twigstyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{codegray},
+    keywordstyle=\color{twigcolor}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    morekeywords={block, endblock, extends, if, endif, for, endfor, include}
+}
+
+\lstset{style=phpstyle}
+
+% TikZ libraries
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds,shadows,calc,decorations.pathreplacing}
+
+% Custom commands
+\newcommand{\code}[1]{\texttt{\textcolor{codepurple}{#1}}}
+\newcommand{\entity}[1]{\texttt{\textcolor{doctrinecolor}{\bfseries #1}}}
+\newcommand{\controller}[1]{\texttt{\textcolor{blue!70!black}{\bfseries #1}}}
+\newcommand{\service}[1]{\texttt{\textcolor{codegreen}{\bfseries #1}}}
+
+\begin{document}
+
+% ============================================================================
+%                           PAGE DE GARDE
+% ============================================================================
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \begin{tikzpicture}
+            \node[draw=blue!60!black, line width=3pt, rounded corners=15pt, inner sep=20pt, fill=blue!5] {
+                \begin{minipage}{0.8\textwidth}
+                    \centering
+                    \Huge\bfseries\textcolor{blue!70!black}{Rapport Technique Detaille}
+                    
+                    \vspace{0.5cm}
+                    \Large\textcolor{gray}{Projet FreshMarket E-commerce}
+                \end{minipage}
+            };
+        \end{tikzpicture}
+        
+        \vspace{1.5cm}
+        
+        \begin{tikzpicture}
+            \node[circle, draw=blue!60!black, line width=2pt, minimum size=3cm, fill=blue!10] (logo) {};
+            \node at (logo) {\Huge $\blacksquare$};
+        \end{tikzpicture}
+        
+        \vspace{1.5cm}
+        
+        \Large
+        \begin{tabular}{rl}
+            \textbf{Framework :} & Symfony 7.3 \\
+            \textbf{Langage :} & PHP 8.x \\
+            \textbf{Base de Donnees :} & MySQL / MariaDB \\
+            \textbf{ORM :} & Doctrine 3.x \\
+            \textbf{Template :} & Twig 3.x \\
+        \end{tabular}
+        
+        \vfill
+        
+        \begin{tikzpicture}
+            \node[draw=gray, rounded corners=5pt, inner sep=15pt, fill=gray!5] {
+                \begin{minipage}{0.6\textwidth}
+                    \centering
+                    \large
+                    \textbf{Auteur :} Equipe de Developpement\\[0.3cm]
+                    \textbf{Version :} 1.0\\[0.3cm]
+                    \textbf{Date :} \today
+                \end{minipage}
+            };
+        \end{tikzpicture}
+        
+    \end{center}
+\end{titlepage}
+
+% ============================================================================
+%                           TABLE DES MATIERES
+% ============================================================================
+\tableofcontents
+\newpage
+
+% ============================================================================
+%                           CHAPITRE 1 : INTRODUCTION
+% ============================================================================
+\chapter{Introduction Generale}
+
+\section{Presentation du Projet}
+
+Le projet \textbf{FreshMarket} (aussi connu sous le nom de code \texttt{synf\_project}) est une application web complete de type \textbf{e-commerce} et \textbf{systeme de reservation} developpee avec le framework \textbf{Symfony 7.3}. Cette plateforme permet aux utilisateurs de :
+
+\begin{itemize}[leftmargin=2cm]
+    \item S'inscrire et gerer leur profil utilisateur
+    \item Se connecter via OAuth (Google, Facebook)
+    \item Consulter un catalogue de produits avec gestion du stock
+    \item Ajouter des produits au panier et passer des commandes
+    \item Effectuer des reservations de services
+    \item Consulter des statistiques personnalisees
+\end{itemize}
+
+\section{Objectif de ce Rapport}
+
+Ce document technique a pour objectif de fournir une \textbf{documentation exhaustive} permettant a tout developpeur de comprendre \textbf{100\% du projet techniquement}. Chaque fichier, chaque fonction, chaque relation est expliquee en detail avec des exemples de code commentes.
+
+\section{Technologies Utilisees - Vue d'Ensemble}
+
+\begin{table}[H]
+\centering
+\caption{Stack Technologique Complete}
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\textbf{Categorie} & \textbf{Technologie} & \textbf{Version} \\
+\hline
+\hline
+Framework & Symfony & 7.3 \\
+\hline
+Langage & PHP & 8.x \\
+\hline
+ORM & Doctrine (DBAL + ORM) & 3.x \\
+\hline
+Template Engine & Twig & 3.x \\
+\hline
+Authentification & Symfony Security + OAuth2 & N/A \\
+\hline
+OAuth Library & knpuniversity/oauth2-client-bundle & 2.19 \\
+\hline
+Frontend JS & Stimulus (Symfony UX) & 2.30 \\
+\hline
+SPA Enhancement & Symfony UX Turbo & 2.30 \\
+\hline
+CSS Framework & Bootstrap 5 & 5.3 \\
+\hline
+Validation & Symfony Validator & 7.3 \\
+\hline
+Mailing & Symfony Mailer & 7.4 \\
+\hline
+Asset Management & Symfony AssetMapper & 7.3 \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ============================================================================
+%                           CHAPITRE 2 : ARCHITECTURE
+% ============================================================================
+\chapter{Architecture du Projet}
+
+\section{Structure MVC de Symfony}
+
+Symfony impose une architecture \textbf{MVC} (Model-View-Controller) stricte. Le projet respecte cette separation :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm,
+    box/.style={rectangle, draw=blue!60!black, line width=1.5pt, rounded corners=8pt, minimum width=4cm, minimum height=1.2cm, text centered, fill=blue!10, font=\bfseries},
+    arrow/.style={-{Stealth[length=3mm]}, thick, blue!60!black}
+]
+    % Nodes
+    \node[box] (browser) {Navigateur (Client)};
+    \node[box, below=of browser] (controller) {Controller};
+    \node[box, left=3cm of controller] (model) {Model (Entity)};
+    \node[box, right=3cm of controller] (view) {View (Twig)};
+    \node[box, below=of model] (repository) {Repository};
+    \node[box, below=of repository] (database) {Base de Donnees};
+    
+    % Arrows
+    \draw[arrow] (browser) -- node[right] {HTTP Request} (controller);
+    \draw[arrow] (controller) -- node[above] {Donnees} (model);
+    \draw[arrow] (model) -- (repository);
+    \draw[arrow] (repository) -- node[left] {SQL} (database);
+    \draw[arrow] (database) -- (repository);
+    \draw[arrow] (repository) -- (model);
+    \draw[arrow] (model) -- (controller);
+    \draw[arrow] (controller) -- node[above] {Variables} (view);
+    \draw[arrow] (view) -- (browser);
+    
+\end{tikzpicture}
+\caption{Flux MVC dans Symfony}
+\end{figure}
+
+\section{Arborescence des Fichiers}
+
+\begin{lstlisting}[style=yamlstyle, caption={Structure du projet}]
+synf_project/
+|-- src/
+|   |-- Controller/        # Logique HTTP (routes)
+|   |   |-- CartController.php
+|   |   |-- HomeController.php
+|   |   |-- ProductController.php
+|   |   |-- ProfileController.php
+|   |   |-- SecurityController.php
+|   |   |-- GoogleOAuthController.php
+|   |   |-- FacebookOAuthController.php
+|   |   |-- Admin/         # Controleurs administration
+|   |-- Entity/            # Modeles Doctrine (tables BDD)
+|   |   |-- User.php
+|   |   |-- Product.php
+|   |   |-- Order.php
+|   |   |-- OrderItem.php
+|   |   |-- Reservation.php
+|   |-- Repository/        # Requetes SQL personnalisees
+|   |-- Service/           # Logique metier reutilisable
+|   |   |-- CartService.php
+|   |   |-- FileUploader.php
+|   |-- Form/              # Formulaires Symfony
+|   |-- Security/          # Authenticators OAuth
+|   |-- EventSubscriber/   # Listeners d'evenements
+|-- templates/             # Fichiers Twig (Vue)
+|-- config/                # Configuration YAML
+|-- public/                # Point d'entree web
+|-- vendor/                # Dependances Composer
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 3 : ENTITES DOCTRINE (MODELE)
+% ============================================================================
+\chapter{Entites Doctrine - Le Modele de Donnees}
+
+\section{Vue d'Ensemble des Entites}
+
+Le modele de donnees est compose de 5 entites principales interconnectees :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    entity/.style={
+        rectangle, draw=orange!80!black, line width=2pt, 
+        rounded corners=5pt, minimum width=3.5cm, minimum height=1cm,
+        fill=orange!10, font=\bfseries\ttfamily
+    },
+    relation/.style={-{Stealth}, thick, gray}
+]
+    \node[entity] (user) at (0,0) {User};
+    \node[entity] (order) at (-4,-3) {Order};
+    \node[entity] (reservation) at (4,-3) {Reservation};
+    \node[entity] (orderitem) at (-4,-6) {OrderItem};
+    \node[entity] (product) at (0,-6) {Product};
+    
+    \draw[relation] (user) -- node[left, font=\small] {1..*} (order);
+    \draw[relation] (user) -- node[right, font=\small] {1..*} (reservation);
+    \draw[relation] (order) -- node[left, font=\small] {1..*} (orderitem);
+    \draw[relation] (orderitem) -- node[above, font=\small] {*.1} (product);
+\end{tikzpicture}
+\caption{Diagramme des Relations entre Entites}
+\end{figure}
+
+\section{Entite \texttt{Product} - Etude de Cas Detaillee}
+
+L'entite \entity{Product} represente un article du catalogue. Voici une analyse \textbf{ligne par ligne} de son code source :
+
+\subsection{Declaration et Attributs ORM}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Declaration}]
+<?php
+
+namespace App\Entity;
+
+use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
+class Product
+{
+\end{lstlisting}
+
+\textbf{Explications :}
+\begin{itemize}
+    \item \textbf{Ligne 3-10 :} Imports des classes necessaires. \code{ORM} contient les annotations Doctrine, \code{Assert} les contraintes de validation.
+    \item \textbf{Ligne 12 :} L'attribut PHP 8 \code{\#[ORM\textbackslash Entity]} indique a Doctrine que cette classe est une entite persistee en base. Le parametre \code{repositoryClass} lie cette entite a son Repository personnalise.
+\end{itemize}
+
+\subsection{Proprietes et Colonnes}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Proprietes}]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    private ?string $nom = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire')]
+    #[Assert\Positive(message: 'Le prix doit etre positif')]
+    private ?string $prix = null;
+
+    #[ORM\Column]
+    private ?int $stock = 0;
+
+    #[ORM\Column]
+    private ?bool $disponible = true;
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Mapping des Proprietes vers la Base de Donnees}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Propriete PHP} & \textbf{Type SQL} & \textbf{Description} \\
+\hline
+\hline
+\code{\$id} & INT AUTO\_INCREMENT & Cle primaire generee automatiquement \\
+\hline
+\code{\$nom} & VARCHAR(255) & Nom du produit, ne peut pas etre vide \\
+\hline
+\code{\$prix} & DECIMAL(10,2) & Prix en euros avec 2 decimales \\
+\hline
+\code{\$stock} & INT & Quantite disponible en stock \\
+\hline
+\code{\$disponible} & TINYINT(1) & Booleen indiquant si le produit est actif \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Relations avec OrderItem}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Relation OneToMany}]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class)]
+    private Collection $orderItems;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->orderItems = new ArrayCollection();
+    }
+\end{lstlisting}
+
+\textbf{Explication de la relation :}
+\begin{itemize}
+    \item \code{OneToMany} : Un produit peut apparaitre dans plusieurs lignes de commande.
+    \item \code{mappedBy: 'product'} : La cle etrangere est definie du cote \entity{OrderItem} dans sa propriete \code{\$product}.
+    \item \code{ArrayCollection} : Collection Doctrine optimisee pour le lazy loading.
+\end{itemize}
+
+\subsection{Getters et Setters - Pattern Fluent}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Methodes Fluent}]
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+        return $this;  // Pattern Fluent Interface
+    }
+\end{lstlisting}
+
+Le pattern \textbf{Fluent Interface} permet d'enchainer les appels :
+\begin{lstlisting}[style=phpstyle]
+$product = (new Product())
+    ->setNom('Pommes Bio')
+    ->setPrix('2.99')
+    ->setStock(100)
+    ->setDisponible(true);
+\end{lstlisting}
+
+\section{Entite \texttt{User} - Authentification}
+
+L'entite \entity{User} implemente les interfaces de securite Symfony :
+
+\begin{lstlisting}[style=phpstyle, caption={User.php - Interfaces de Securite}]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $facebookId = null;
+\end{lstlisting}
+
+\textbf{Points cles :}
+\begin{description}
+    \item[\code{UserInterface}] Requiert les methodes \code{getUserIdentifier()}, \code{getRoles()}, \code{eraseCredentials()}.
+    \item[\code{PasswordAuthenticatedUserInterface}] Requiert \code{getPassword()}.
+    \item[\code{googleId} / \code{facebookId}] Permettent l'association OAuth sans doublon.
+\end{description}
+
+\section{Diagramme de Classes UML Complet}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.8, transform shape,
+    classbox/.style={
+        rectangle, draw=black, line width=1pt,
+        minimum width=4.5cm, minimum height=3cm,
+        fill=blue!5, font=\small\ttfamily,
+        align=center
+    },
+    arrow/.style={-{Stealth}, thick}
+]
+
+    % User Class
+    \node[classbox] (User) at (0,0) {
+        \textbf{User}\\[3pt]
+        \rule{4cm}{0.4pt}\\
+        - id : int\\
+        - email : string\\
+        - password : string\\
+        - roles : array\\
+        - googleId : string\\
+        - facebookId : string\\
+        \rule{4cm}{0.4pt}\\
+        + getRoles()\\
+        + getFullName()
+    };
+
+    % Product Class
+    \node[classbox] (Product) at (8,0) {
+        \textbf{Product}\\[3pt]
+        \rule{4cm}{0.4pt}\\
+        - id : int\\
+        - nom : string\\
+        - prix : decimal\\
+        - stock : int\\
+        - disponible : bool\\
+        \rule{4cm}{0.4pt}\\
+        + getNom()\\
+        + getPrix()
+    };
+
+    % Order Class
+    \node[classbox] (Order) at (0,-6) {
+        \textbf{Order}\\[3pt]
+        \rule{4cm}{0.4pt}\\
+        - id : int\\
+        - numeroCommande : string\\
+        - montantTotal : decimal\\
+        - statut : string\\
+        \rule{4cm}{0.4pt}\\
+        + calculateTotal()\\
+        + getStatutLabel()
+    };
+
+    % OrderItem Class
+    \node[classbox] (OrderItem) at (8,-6) {
+        \textbf{OrderItem}\\[3pt]
+        \rule{4cm}{0.4pt}\\
+        - id : int\\
+        - quantite : int\\
+        - prixUnitaire : decimal\\
+        \rule{4cm}{0.4pt}\\
+        + getTotal()
+    };
+
+    % Reservation Class
+    \node[classbox] (Reservation) at (4,-11) {
+        \textbf{Reservation}\\[3pt]
+        \rule{4cm}{0.4pt}\\
+        - id : int\\
+        - dateReservation : date\\
+        - nombrePersonnes : int\\
+        - statut : string\\
+        \rule{4cm}{0.4pt}\\
+        + getStatutLabel()
+    };
+
+    % Relations
+    \draw[arrow] (Order) -- node[left] {user} (User);
+    \draw[arrow] (Reservation) -- node[right] {user} (User);
+    \draw[arrow] (OrderItem) -- node[above] {commande} (Order);
+    \draw[arrow] (OrderItem) -- node[right] {product} (Product);
+
+\end{tikzpicture}
+\caption{Diagramme de Classes UML Complet}
+\end{figure}
+
+% ============================================================================
+%                    CHAPITRE 4 : CONTROLEURS
+% ============================================================================
+\chapter{Controleurs - La Logique HTTP}
+
+\section{Role des Controleurs dans Symfony}
+
+Un controleur est une classe PHP dont les methodes (appelees \textbf{actions}) repondent aux requetes HTTP. Chaque action :
+\begin{enumerate}
+    \item Recoit un objet \code{Request}
+    \item Traite la logique metier (souvent via des Services)
+    \item Retourne un objet \code{Response} (HTML, JSON, redirection)
+\end{enumerate}
+
+\section{\texttt{CartController} - Gestion du Panier}
+
+Le \controller{CartController} gere toutes les operations du panier d'achat.
+
+\subsection{Structure et Attributs de Classe}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController.php - Declaration}]
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Product;
+use App\Entity\Order;
+use App\Entity\OrderItem;
+use App\Repository\ProductRepository;
+use App\Service\CartService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/cart')]
+class CartController extends AbstractController
+{
+\end{lstlisting}
+
+\textbf{Explications :}
+\begin{itemize}
+    \item \code{\#[Route('/cart')]} : Prefixe de route applique a toutes les actions de ce controleur.
+    \item \code{AbstractController} : Classe parente fournissant des helpers (\code{render()}, \code{redirectToRoute()}, \code{json()}).
+\end{itemize}
+
+\subsection{Action \texttt{add()} - Ajout au Panier}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController::add()}]
+#[Route('/add/{id}', name: 'app_cart_add', requirements: ['id' => '\d+'])]
+#[IsGranted('ROLE_USER')]
+public function add(int $id, ProductRepository $productRepository, 
+                    CartService $cartService): Response
+{
+    $product = $productRepository->find($id);
+    
+    if (!$product) {
+        $this->addFlash('error', 'Produit introuvable.');
+        return $this->redirectToRoute('app_product_index');
+    }
+    
+    if ($product->getStock() <= 0) {
+        $this->addFlash('error', 'Ce produit est en rupture de stock.');
+        return $this->redirectToRoute('app_product_show', ['id' => $id]);
+    }
+    
+    // Ajouter le produit au panier (stockage optimise: ID seulement)
+    $cartService->addProduct($id);
+    
+    $this->addFlash('success', 'Produit ajoute au panier avec succes !');
+    
+    return $this->redirectToRoute('app_product_show', ['id' => $id]);
+}
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Analyse de l'action \texttt{add()}}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Element} & \textbf{Explication} \\
+\hline
+\hline
+\code{requirements: ['id' => '\textbackslash d+']} & Validation regex : l'ID doit etre numerique \\
+\hline
+\code{\#[IsGranted('ROLE\_USER')]} & Seuls les utilisateurs connectes accedent a cette route \\
+\hline
+\code{ProductRepository \$productRepository} & Injection automatique de dependance (autowiring) \\
+\hline
+\code{addFlash()} & Message flash stocke en session, affiche une seule fois \\
+\hline
+\code{redirectToRoute()} & Redirection HTTP 302 vers une route nommee \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Action \texttt{placeOrder()} - Validation de Commande}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController::placeOrder()}]
+#[Route('/place-order', name: 'app_cart_place_order', methods: ['POST'])]
+#[IsGranted('ROLE_USER')]
+public function placeOrder(Request $request, CartService $cartService, 
+                           EntityManagerInterface $em): Response
+{
+    // Verification du token CSRF
+    $token = $request->request->get('_token');
+    if (!$this->isCsrfTokenValid('place-order', $token)) {
+        $this->addFlash('error', 'Erreur de securite. Veuillez reessayer.');
+        return $this->redirectToRoute('app_cart_checkout');
+    }
+    
+    // Creer la commande
+    $order = new Order();
+    $order->setUser($this->getUser());
+    $order->setStatut('en_attente');
+    
+    // Creer les OrderItems
+    $total = 0;
+    foreach ($cartService->getCart() as $productId => $item) {
+        $product = $item['product'];
+        
+        $orderItem = new OrderItem();
+        $orderItem->setProduct($product);
+        $orderItem->setQuantite($item['quantity']);
+        $orderItem->setPrixUnitaire($product->getPrix());
+        
+        $order->addOrderItem($orderItem);
+        
+        $total += $product->getPrix() * $item['quantity'];
+    }
+    
+    $order->setMontantTotal((string)$total);
+    
+    // Persister (cascade sur OrderItems)
+    $em->persist($order);
+    $em->flush();
+    
+    // Vider le panier
+    $cartService->clear();
+    
+    return $this->redirectToRoute('app_profile_orders');
+}
+\end{lstlisting}
+
+\section{Diagramme de Sequence - Processus de Commande}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    actor/.style={rectangle, draw=black, minimum width=2cm, minimum height=0.8cm, fill=blue!10},
+    lifeline/.style={dashed, gray},
+    message/.style={-{Stealth}, thick},
+    returnmsg/.style={-{Stealth}, dashed, thick}
+]
+    % Actors
+    \node[actor] (user) at (0,0) {Utilisateur};
+    \node[actor] (ctrl) at (4,0) {CartController};
+    \node[actor] (srv) at (8,0) {CartService};
+    \node[actor] (db) at (12,0) {Database};
+    
+    % Lifelines
+    \draw[lifeline] (user.south) -- ++(0,-10);
+    \draw[lifeline] (ctrl.south) -- ++(0,-10);
+    \draw[lifeline] (srv.south) -- ++(0,-10);
+    \draw[lifeline] (db.south) -- ++(0,-10);
+    
+    % Messages
+    \draw[message] (0,-1) -- node[above, font=\scriptsize] {1. POST /place-order} (4,-1);
+    \draw[message] (4,-2) -- node[above, font=\scriptsize] {2. isEmpty()} (8,-2);
+    \draw[returnmsg] (8,-2.5) -- node[above, font=\scriptsize] {false} (4,-2.5);
+    \draw[message] (4,-3.5) -- node[above, font=\scriptsize] {3. getCart()} (8,-3.5);
+    \draw[returnmsg] (8,-4) -- node[above, font=\scriptsize] {array} (4,-4);
+    \draw[message] (4,-5) -- node[above, font=\scriptsize] {4. persist(Order)} (12,-5);
+    \draw[message] (4,-6) -- node[above, font=\scriptsize] {5. flush()} (12,-6);
+    \draw[returnmsg] (12,-6.5) -- node[above, font=\scriptsize] {OK} (4,-6.5);
+    \draw[message] (4,-7.5) -- node[above, font=\scriptsize] {6. clear()} (8,-7.5);
+    \draw[returnmsg] (4,-9) -- node[above, font=\scriptsize] {7. Redirect /profile/orders} (0,-9);
+    
+\end{tikzpicture}
+\caption{Diagramme de Sequence - Validation de Commande}
+\end{figure}
+
+% ============================================================================
+%                    CHAPITRE 5 : SERVICES
+% ============================================================================
+\chapter{Services - La Logique Metier}
+
+\section{Architecture des Services}
+
+Les \textbf{Services} dans Symfony sont des classes PHP reutilisables contenant la logique metier. Ils sont automatiquement injectes grace a l'\textbf{autowiring}.
+
+\section{\texttt{CartService} - Gestion du Panier en Cookie}
+
+Le \service{CartService} gere le panier cote client via des cookies encodes en Base64.
+
+\begin{lstlisting}[style=phpstyle, caption={CartService.php - Proprietes}]
+<?php
+
+namespace App\Service;
+
+use App\Repository\ProductRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Cookie;
+
+class CartService
+{
+    private const CART_COOKIE_NAME = 'freshmarket_cart_token';
+    private const COOKIE_LIFETIME = 60 * 60 * 24 * 30; // 30 jours
+    
+    private array $cart = [];
+
+    public function __construct(
+        private RequestStack $requestStack,
+        private ProductRepository $productRepository
+    ) {
+        $this->loadCartFromCookie();
+    }
+\end{lstlisting}
+
+\subsection{Methodes Detaillees}
+
+\begin{table}[H]
+\centering
+\caption{Methodes du CartService}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Methode} & \textbf{Retour} & \textbf{Description} \\
+\hline
+\hline
+\code{addProduct(\$id, \$qty)} & bool & Ajoute un produit au panier \\
+\hline
+\code{removeProduct(\$id)} & void & Supprime un produit du panier \\
+\hline
+\code{updateQuantity(\$id, \$qty)} & void & Met a jour la quantite \\
+\hline
+\code{getCart()} & array & Retourne le panier avec objets Product \\
+\hline
+\code{getRawCart()} & array & Retourne le panier brut (IDs) \\
+\hline
+\code{getTotal()} & float & Calcule le montant total \\
+\hline
+\code{getCount()} & int & Nombre de produits differents \\
+\hline
+\code{isEmpty()} & bool & Verifie si le panier est vide \\
+\hline
+\code{clear()} & void & Vide le panier \\
+\hline
+\code{createCookie()} & Cookie & Genere le cookie a envoyer \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{lstlisting}[style=phpstyle, caption={CartService.php - Methode getCart()}]
+public function getCart(): array
+{
+    $cartWithProducts = [];
+    foreach ($this->cart as $productId => $quantity) {
+        $product = $this->productRepository->find($productId);
+        
+        if ($product && $product->getStock() > 0) {
+            $cartWithProducts[$productId] = [
+                'product' => $product,
+                'quantity' => $quantity
+            ];
+        } else {
+            // Produit inexistant ou rupture : on le retire
+            $this->removeProduct($productId);
+        }
+    }
+    
+    return $cartWithProducts;
+}
+\end{lstlisting}
+
+\textbf{Avantages de cette architecture :}
+\begin{itemize}
+    \item Le panier persiste 30 jours meme sans connexion.
+    \item Les donnees en cookie sont legeres (uniquement IDs).
+    \item La reconstruction est faite a la demande (lazy loading).
+\end{itemize}
+
+% ============================================================================
+%                    CHAPITRE 6 : SECURITE
+% ============================================================================
+\chapter{Securite - Protection de l'Application}
+
+\section{Configuration du Pare-feu Symfony}
+
+Le fichier \texttt{config/packages/security.yaml} definit toute la strategie de securite :
+
+\begin{lstlisting}[style=yamlstyle, caption={security.yaml}]
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto  # bcrypt ou argon2 selon le serveur
+    
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email  # Identifiant de connexion
+    
+    firewalls:
+        main:
+            lazy: true
+            provider: app_user_provider
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+                - App\Security\FacebookAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                username_parameter: email
+                password_parameter: password
+            logout:
+                path: app_logout
+                target: app_home
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800  # 7 jours
+    
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/cart, roles: ROLE_USER }
+\end{lstlisting}
+
+\section{OAuth 2.0 - Authentification Sociale}
+
+\subsection{GoogleAuthenticator - Flux Complet}
+
+\begin{lstlisting}[style=phpstyle, caption={GoogleAuthenticator.php - authenticate()}]
+public function authenticate(Request $request): Passport
+{
+    $client = $this->clientRegistry->getClient('google');
+    $accessToken = $this->fetchAccessToken($client);
+    
+    /** @var GoogleUser $googleUser */
+    $googleUser = $client->fetchUserFromToken($accessToken);
+
+    return new SelfValidatingPassport(
+        new UserBadge($googleUser->getEmail(), function () use ($googleUser) {
+            return $this->getOrCreateUser($googleUser);
+        }),
+        [new RememberMeBadge()]
+    );
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=phpstyle, caption={GoogleAuthenticator.php - getOrCreateUser()}]
+private function getOrCreateUser(GoogleUser $googleUser): User
+{
+    $googleId = $googleUser->getId();
+    $email = $googleUser->getEmail();
+
+    // 1. Chercher par Google ID
+    $existingUser = $this->userRepository->findOneBy(['googleId' => $googleId]);
+    if ($existingUser instanceof User) {
+        return $existingUser;
+    }
+
+    // 2. Chercher par email (lier compte existant)
+    $userByEmail = $this->userRepository->findOneBy(['email' => $email]);
+    if ($userByEmail instanceof User) {
+        $userByEmail->setGoogleId($googleId);
+        $this->entityManager->flush();
+        return $userByEmail;
+    }
+
+    // 3. Creer un nouvel utilisateur
+    $user = new User();
+    $user->setEmail($email);
+    $user->setGoogleId($googleId);
+    $user->setPrenom($googleUser->getFirstName() ?: 'Utilisateur');
+    $user->setNom($googleUser->getLastName() ?: 'Google');
+    
+    // Mot de passe aleatoire (non utilisable directement)
+    $randomPassword = bin2hex(random_bytes(16));
+    $user->setPassword($this->passwordHasher->hashPassword($user, $randomPassword));
+
+    $this->entityManager->persist($user);
+    $this->entityManager->flush();
+
+    return $user;
+}
+\end{lstlisting}
+
+\section{Headers de Securite HTTP}
+
+Le \code{SecurityHeadersSubscriber} injecte des headers de protection :
+
+\begin{lstlisting}[style=phpstyle, caption={SecurityHeadersSubscriber.php}]
+public function onKernelResponse(ResponseEvent $event): void
+{
+    $response = $event->getResponse();
+    $headers = $response->headers;
+
+    // Protection XSS
+    $headers->set('X-XSS-Protection', '1; mode=block');
+
+    // Protection Clickjacking
+    $headers->set('X-Frame-Options', 'DENY');
+
+    // Protection MIME Sniffing
+    $headers->set('X-Content-Type-Options', 'nosniff');
+
+    // Referrer Policy
+    $headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+    // Content Security Policy
+    $csp = implode('; ', [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+        "img-src 'self' data: https:",
+        "frame-ancestors 'none'",
+    ]);
+    $headers->set('Content-Security-Policy', $csp);
+}
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Headers de Securite et leurs Protections}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Header} & \textbf{Protection Fournie} \\
+\hline
+\hline
+\code{X-XSS-Protection} & Active le filtre XSS du navigateur \\
+\hline
+\code{X-Frame-Options: DENY} & Empeche l'inclusion dans une iframe (Clickjacking) \\
+\hline
+\code{X-Content-Type-Options} & Empeche le MIME sniffing \\
+\hline
+\code{Content-Security-Policy} & Controle les sources de scripts/styles autorisees \\
+\hline
+\code{Referrer-Policy} & Limite les informations envoyees a des sites tiers \\
+\hline
+\code{Strict-Transport-Security} & Force HTTPS (production uniquement) \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Protection CSRF}
+
+Symfony active la protection CSRF par defaut sur les formulaires :
+
+\begin{lstlisting}[style=twigstyle, caption={Template Twig avec CSRF}]
+<form method="post" action="{{ path('app_cart_place_order') }}">
+    <input type="hidden" name="_token" 
+           value="{{ csrf_token('place-order') }}">
+    <!-- ... champs du formulaire ... -->
+    <button type="submit">Valider la commande</button>
+</form>
+\end{lstlisting}
+
+\begin{lstlisting}[style=phpstyle, caption={Validation CSRF cote controleur}]
+$token = $request->request->get('_token');
+if (!$this->isCsrfTokenValid('place-order', $token)) {
+    throw new AccessDeniedException('Token CSRF invalide');
+}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 7 : REPOSITORIES
+% ============================================================================
+\chapter{Repositories - Les Requetes Personnalisees}
+
+\section{Role des Repositories}
+
+Les \textbf{Repositories} encapsulent les requetes SQL complexes. Ils heritent de \code{ServiceEntityRepository} fourni par Doctrine.
+
+\section{\texttt{ProductRepository} - Exemple Complet}
+
+\begin{lstlisting}[style=phpstyle, caption={ProductRepository.php}]
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+class ProductRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Product::class);
+    }
+
+    /**
+     * Trouve tous les produits disponibles et en stock
+     */
+    public function findAvailable(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.disponible = :disponible')
+            ->andWhere('p.stock > 0')
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Recherche par categorie
+     */
+    public function findByCategory(string $category): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.categorie = :category')
+            ->andWhere('p.disponible = :disponible')
+            ->setParameter('category', $category)
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Recherche textuelle dans nom et description
+     */
+    public function searchProducts(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.nom LIKE :query OR p.description LIKE :query')
+            ->andWhere('p.disponible = :disponible')
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}
+\end{lstlisting}
+
+\textbf{Avantages du QueryBuilder :}
+\begin{itemize}
+    \item Requetes securisees (preparation automatique des parametres).
+    \item Code lisible et maintenable.
+    \item Generation SQL optimisee par Doctrine.
+\end{itemize}
+
+% ============================================================================
+%                    CHAPITRE 8 : FORMULAIRES
+% ============================================================================
+\chapter{Formulaires Symfony}
+
+\section{Architecture des Formulaires}
+
+Symfony utilise le pattern \textbf{Form Type} pour definir des formulaires reutilisables.
+
+\section{\texttt{RegistrationFormType} - Inscription}
+
+\begin{lstlisting}[style=phpstyle, caption={RegistrationFormType.php}]
+<?php
+
+namespace App\Form;
+
+use App\Entity\User;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+class RegistrationFormType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'votre@email.com'
+                ]
+            ])
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => 'Prenom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('agreeTerms', CheckboxType::class, [
+                'label' => 'J\'accepte les conditions',
+                'mapped' => false,  // Non lie a l'entite
+                'constraints' => [
+                    new IsTrue([
+                        'message' => 'Vous devez accepter les conditions.',
+                    ]),
+                ],
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'constraints' => [
+                        new NotBlank(['message' => 'Mot de passe requis']),
+                        new Length([
+                            'min' => 6,
+                            'minMessage' => 'Minimum 6 caracteres',
+                        ]),
+                    ],
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer le mot de passe',
+                ],
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
+    }
+}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 9 : TEMPLATES TWIG
+% ============================================================================
+\chapter{Templates Twig - La Vue}
+
+\section{Heritage de Templates}
+
+Twig utilise un systeme d'\textbf{heritage} avec \code{extends} et \code{block}.
+
+\begin{lstlisting}[style=twigstyle, caption={base.html.twig - Structure}]
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bienvenue{% endblock %} - FreshMarket</title>
+    
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/..." rel="stylesheet">
+        <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+    {% include 'partials/_navbar.html.twig' %}
+    
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    
+    {% include 'partials/_footer.html.twig' %}
+    
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/..."></script>
+    {% endblock %}
+</body>
+</html>
+\end{lstlisting}
+
+\section{Variables et Filtres}
+
+\begin{lstlisting}[style=twigstyle, caption={Affichage de donnees}]
+{# Variables #}
+{{ product.nom }}
+{{ product.prix|number_format(2, ',', ' ') }} EUR
+
+{# Conditions #}
+{% if product.stock > 0 %}
+    <span class="badge bg-success">En stock</span>
+{% else %}
+    <span class="badge bg-danger">Rupture</span>
+{% endif %}
+
+{# Boucles #}
+{% for item in cart %}
+    <tr>
+        <td>{{ item.product.nom }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.prix * item.quantity }} EUR</td>
+    </tr>
+{% else %}
+    <tr><td colspan="3">Panier vide</td></tr>
+{% endfor %}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 10 : DEPLOIEMENT
+% ============================================================================
+\chapter{Deploiement et Configuration}
+
+\section{Fichiers de Configuration}
+
+\begin{table}[H]
+\centering
+\caption{Fichiers d'Environnement}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Fichier} & \textbf{Usage} \\
+\hline
+\hline
+\code{.env} & Variables par defaut (versionnees) \\
+\hline
+\code{.env.local} & Variables locales (non versionnees) \\
+\hline
+\code{.env.prod} & Variables de production \\
+\hline
+\code{.env.test} & Variables pour les tests \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Docker}
+
+\begin{lstlisting}[style=yamlstyle, caption={docker-compose.yml}]
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - database
+
+  database:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: freshmarket
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+\end{lstlisting}
+
+% ============================================================================
+%                           CONCLUSION
+% ============================================================================
+\chapter{Conclusion}
+
+Ce rapport technique a presente en detail l'architecture et l'implementation du projet \textbf{FreshMarket}, une application e-commerce complete developpee avec Symfony 7.3. 
+
+\section{Recapitulatif des Points Cles}
+
+\begin{itemize}
+    \item \textbf{Architecture MVC} : Separation stricte entre Entites, Controleurs et Templates.
+    \item \textbf{Doctrine ORM} : Mapping objet-relationnel avec validation integree.
+    \item \textbf{Securite Multicouche} : OAuth, CSRF, Headers HTTP, Hashage bcrypt/argon2.
+    \item \textbf{Services Reutilisables} : CartService encapsulant la logique metier.
+    \item \textbf{Frontend Moderne} : Stimulus/Turbo pour une experience SPA legere.
+\end{itemize}
+
+\section{Points d'Amelioration Suggeres}
+
+\begin{enumerate}
+    \item Implementer la decrementation automatique du stock lors d'une commande.
+    \item Ajouter un systeme de paiement (Stripe, PayPal).
+    \item Mettre en place des tests unitaires et fonctionnels avec PHPUnit.
+    \item Configurer un pipeline CI/CD (GitHub Actions, GitLab CI).
+\end{enumerate}
+
+\appendix
+\chapter{Glossaire}
+
+\begin{description}
+    \item[ORM] Object-Relational Mapping - Technique de correspondance entre objets et tables.
+    \item[CSRF] Cross-Site Request Forgery - Attaque forcant un utilisateur a executer des actions.
+    \item[XSS] Cross-Site Scripting - Injection de scripts malveillants.
+    \item[OAuth] Protocole d'autorisation permettant l'authentification via des tiers.
+    \item[Autowiring] Injection automatique de dependances par Symfony.
+\end{description}
+
+\end{document}

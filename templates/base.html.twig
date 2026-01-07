@@ -690,13 +690,14 @@
             }
 
             .navbar-toggler {
-                display: none; /* Masquer par défaut */
+                display: none; /* Masquer par défaut sur desktop */
                 border: none;
                 padding: 0.5rem;
                 background: transparent;
             }
 
             .navbar-toggler-premium {
+                display: none; /* Masquer par défaut sur desktop */
                 border: 2px solid var(--border-color);
                 padding: 0.5rem;
                 width: 45px;
@@ -728,6 +729,7 @@
                 position: absolute;
                 left: 50%;
                 transform: translateX(-50%);
+                pointer-events: none; /* Permet au clic de passer au bouton parent */
             }
 
             .navbar-toggler-premium span:nth-child(1) { 
@@ -1057,7 +1059,9 @@
             @media (max-width: 991px) {
                 .navbar-toggler,
                 .navbar-toggler-premium {
-                    display: inline-block; /* Afficher le burger button sur mobile */
+                    display: flex !important; /* Afficher le burger button sur mobile */
+                    align-items: center;
+                    justify-content: center;
                 }
                 
                 .navbar-collapse {
@@ -1470,6 +1474,21 @@
                         toggleSidebar();
                     }
                 });
+
+                // Fallback for navbar toggler (burger menu)
+                const navbarToggler = document.querySelector('.navbar-toggler-premium');
+                const navbarCollapse = document.getElementById('navbarNav');
+                if (navbarToggler && navbarCollapse) {
+                    navbarToggler.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Toggle Bootstrap collapse
+                        const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: true });
+                        // Update aria-expanded attribute
+                        const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true';
+                        navbarToggler.setAttribute('aria-expanded', !isExpanded);
+                    });
+                }
             });
 
             // Navbar scroll effect

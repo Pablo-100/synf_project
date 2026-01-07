@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Protection CSRF</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-left: 4px solid #3b82f6;
+        }
+        .test-section h2 {
+            color: #3b82f6;
+            margin-top: 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button.danger {
+            background: #ef4444;
+        }
+        button.danger:hover {
+            background: #dc2626;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .result.error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        code {
+            background: #1f2937;
+            color: #f59e0b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Test de Protection CSRF</h1>
+        
+        <div class="info">
+            <strong>ℹ️ Information :</strong> Ces tests vérifient que l'application Symfony protège correctement contre les attaques CSRF (Cross-Site Request Forgery).
+        </div>
+
+        <div class="test-section">
+            <h2>Test 1 : Soumission sans token CSRF</h2>
+            <p>Ce test tente de soumettre un formulaire sans inclure le token CSRF. <strong>Il devrait échouer.</strong></p>
+            <button onclick="testWithoutCSRF()">🚫 Tester sans CSRF Token</button>
+            <div id="result1" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2 : Soumission avec token CSRF invalide</h2>
+            <p>Ce test tente de soumettre un formulaire avec un faux token CSRF. <strong>Il devrait échouer.</strong></p>
+            <button onclick="testWithInvalidCSRF()" class="danger">⚠️ Tester avec CSRF Token invalide</button>
+            <div id="result2" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 3 : Vérification des formulaires</h2>
+            <p>Ouvrez la page d'inscription ou de connexion et vérifiez la présence du champ caché <code>_csrf_token</code>.</p>
+            <button onclick="window.open('/register', '_blank')">📝 Ouvrir la page d'inscription</button>
+            <button onclick="window.open('/login', '_blank')">🔐 Ouvrir la page de connexion</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Résultat attendu</h2>
+            <ul>
+                <li>✅ Les requêtes sans token CSRF doivent être <strong>rejetées</strong></li>
+                <li>✅ Les requêtes avec token invalide doivent être <strong>rejetées</strong></li>
+                <li>✅ Tous les formulaires doivent contenir un champ <code>_csrf_token</code></li>
+                <li>✅ Le message d'erreur doit indiquer "Invalid CSRF token"</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testWithoutCSRF() {
+            const resultDiv = document.getElementById('result1');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '⏳ Test en cours...';
+
+            // Tentative de POST sans CSRF token
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'registration_form[email]=test@test.com&registration_form[password]=test123'
+            })
+            .then(response => {
+                if (response.status === 403 || response.status === 400) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '✅ <strong>Succès !</strong> La requête sans CSRF token a été correctement rejetée (Status: ' + response.status + ')';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '❌ <strong>Échec !</strong> La requête a été acceptée (Status: ' + response.status + '). La protection CSRF pourrait ne pas fonctionner correctement.';
+                }
+            })
+            .catch(error => {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '⚠️ Erreur lors du test : ' + error.message;
+            });
+        }
+
+        function testWithInvalidCSRF() {
+            const resultDiv = document.getElementById('result2');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '⏳ Test en cours...';
+
+            // Tentative de POST avec un faux CSRF token
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'registration_form[email]=test@test.com&registration_form[password]=test123&_csrf_token=FAKE_TOKEN_12345'
+            })
+            .then(response => {
+                if (response.status === 403 || response.status === 400) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '✅ <strong>Succès !</strong> La requête avec CSRF token invalide a été correctement rejetée (Status: ' + response.status + ')';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '❌ <strong>Échec !</strong> La requête a été acceptée (Status: ' + response.status + '). La protection CSRF pourrait ne pas fonctionner correctement.';
+                }
+            })
+            .catch(error => {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '⚠️ Erreur lors du test : ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>

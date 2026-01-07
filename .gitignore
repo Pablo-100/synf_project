@@ -32,6 +32,10 @@
 *~
 .DS_Store
 ###< IDE ###
+<<<<<<< HEAD
+
 client_secret_*.json
 googlenote.txt
-.env
+=======
+.env 
+>>>>>>> 11290562921f780194b9467f7b63b9363a709173

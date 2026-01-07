@@ -48,4 +48,11 @@ Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-php -S localhost:8000 -t public
+# Use PHP 8.2+ from specified installation
+$phpPath = "C:\xampp-old\php\windowsXamppPhp\php.exe"
+
+# Check PHP version
+$phpVersion = & $phpPath -v 2>&1 | Select-Object -First 1
+Write-Host "Using: $phpVersion" -ForegroundColor Magenta
+
+& $phpPath -S localhost:8000 -t public

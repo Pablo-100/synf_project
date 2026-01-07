@@ -1,0 +1,2351 @@
+\documentclass[a4paper,12pt,twoside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tocloft}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fontawesome5}
+
+% Configuration des marges
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm,
+    headheight=15pt
+}
+
+% Configuration des headers/footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\leftmark}}
+\fancyhead[RE]{\nouppercase{Rapport Technique - Synf Project}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Configuration des liens hypertextes
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    filecolor=magenta,      
+    urlcolor=blue!60!black,
+    citecolor=green!50!black,
+    pdftitle={Rapport Technique Complet - Synf Project E-commerce Symfony 7},
+    pdfauthor={Équipe de Développement},
+    pdfsubject={Documentation Technique Complète},
+    pdfkeywords={Symfony, PHP, E-commerce, Doctrine, OAuth, Sécurité}
+}
+
+% Couleurs personnalisées
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.95}
+\definecolor{symfonycolor}{RGB}{0, 0, 0}
+\definecolor{phpcolor}{RGB}{119, 123, 180}
+\definecolor{doctrinecolor}{RGB}{252, 108, 38}
+\definecolor{twigcolor}{RGB}{186, 205, 34}
+
+% Configuration pour le code source PHP
+\lstdefinestyle{phpstyle}{
+    language=PHP,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{phpcolor}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{codegray},
+    morekeywords={class, function, public, private, protected, static, return, new, use, namespace, extends, implements, readonly, ?int, ?string, ?bool, array, Collection, self, mixed},
+    emph={Entity, Repository, Controller, Service, Form},
+    emphstyle=\color{doctrinecolor}\bfseries
+}
+
+% Configuration pour YAML
+\lstdefinestyle{yamlstyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{codegray},
+    keywordstyle=\color{blue!70!black}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple}
+}
+
+% Configuration pour Twig
+\lstdefinestyle{twigstyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{codegray},
+    keywordstyle=\color{twigcolor}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    morekeywords={block, endblock, extends, if, endif, for, endfor, include}
+}
+
+\lstset{style=phpstyle}
+
+% TikZ libraries
+\usetikzlibrary{shapes,arrows.meta,positioning,fit,backgrounds,shadows.blur,calc,decorations.pathreplacing}
+
+% Custom commands
+\newcommand{\code}[1]{\texttt{\textcolor{codepurple}{#1}}}
+\newcommand{\entity}[1]{\texttt{\textcolor{doctrinecolor}{\bfseries #1}}}
+\newcommand{\controller}[1]{\texttt{\textcolor{blue!70!black}{\bfseries #1}}}
+\newcommand{\service}[1]{\texttt{\textcolor{codegreen}{\bfseries #1}}}
+
+\begin{document}
+
+% ============================================================================
+%                           PAGE DE GARDE
+% ============================================================================
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \begin{tikzpicture}
+            \node[draw=blue!70!black, line width=3pt, rounded corners=15pt, inner sep=20pt, fill=blue!10, drop shadow] {
+                \begin{minipage}{0.8\textwidth}
+                    \centering
+                    \Huge\bfseries\textcolor{blue!70!black}{Rapport Technique Détaillé}
+                    
+                    \vspace{0.5cm}
+                    \Large\textcolor{gray!70}{Projet FreshMarket E-commerce}
+                \end{minipage}
+            };
+        \end{tikzpicture}
+        
+        \vspace{1.5cm}
+        
+        \begin{tikzpicture}
+            % Logo stylisé
+            \node[circle, draw=blue!70!black, line width=3pt, minimum size=3.5cm, fill=blue!15, drop shadow] (logo) {};
+            \node at (logo) {\Huge\textcolor{blue!60!black}{\faShoppingCart}};
+        \end{tikzpicture}
+        
+        \vspace{1.5cm}
+        
+        \Large
+        \begin{tabular}{rl}
+            \textbf{Framework :} & Symfony 7.3 \\
+            \textbf{Langage :} & PHP 8.x \\
+            \textbf{Base de Données :} & MySQL / MariaDB \\
+            \textbf{ORM :} & Doctrine 3.x \\
+            \textbf{Template :} & Twig 3.x \\
+        \end{tabular}
+        
+        \vfill
+        
+        \begin{tikzpicture}
+            \node[draw=gray!70, line width=2pt, rounded corners=8pt, inner sep=15pt, fill=gray!10, drop shadow] {
+                \begin{minipage}{0.6\textwidth}
+                    \centering
+                    \large
+                    \textbf{Auteur :} Équipe de Développement\\[0.3cm]
+                    \textbf{Version :} 1.0\\[0.3cm]
+                    \textbf{Date :} \today
+                \end{minipage}
+            };
+        \end{tikzpicture}
+        
+    \end{center}
+\end{titlepage}
+
+% ============================================================================
+%                           TABLE DES MATIÈRES
+% ============================================================================
+\tableofcontents
+\newpage
+
+% ============================================================================
+%                           CHAPITRE 1 : INTRODUCTION
+% ============================================================================
+\chapter{Introduction Générale}
+
+\section{Présentation du Projet}
+
+Le projet \textbf{FreshMarket} (aussi connu sous le nom de code \texttt{synf\_project}) est une application web complète de type \textbf{e-commerce} et \textbf{système de réservation} développée avec le framework \textbf{Symfony 7.3}. Cette plateforme permet aux utilisateurs de :
+
+\begin{itemize}[leftmargin=2cm]
+    \item[\faUserPlus] S'inscrire et gérer leur profil utilisateur
+    \item[\faGoogle] Se connecter via OAuth (Google, Facebook)
+    \item[\faShoppingBasket] Consulter un catalogue de produits avec gestion du stock
+    \item[\faShoppingCart] Ajouter des produits au panier et passer des commandes
+    \item[\faCalendarCheck] Effectuer des réservations de services
+    \item[\faChartBar] Consulter des statistiques personnalisées
+\end{itemize}
+
+\section{Objectif de ce Rapport}
+
+Ce document technique a pour objectif de fournir une \textbf{documentation exhaustive} permettant à tout développeur de comprendre \textbf{100\% du projet techniquement}. Chaque fichier, chaque fonction, chaque relation est expliquée en détail avec des exemples de code commentés.
+
+\section{Technologies Utilisées - Vue d'Ensemble}
+
+\begin{table}[H]
+\centering
+\caption{Stack Technologique Complète}
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\textbf{Catégorie} & \textbf{Technologie} & \textbf{Version} \\
+\hline
+\hline
+Framework & Symfony & 7.3 \\
+\hline
+Langage & PHP & 8.x \\
+\hline
+ORM & Doctrine (DBAL + ORM) & 3.x \\
+\hline
+Template Engine & Twig & 3.x \\
+\hline
+Authentification & Symfony Security + OAuth2 & N/A \\
+\hline
+OAuth Library & knpuniversity/oauth2-client-bundle & 2.19 \\
+\hline
+Frontend JS & Stimulus (Symfony UX) & 2.30 \\
+\hline
+SPA Enhancement & Symfony UX Turbo & 2.30 \\
+\hline
+CSS Framework & Bootstrap 5 & 5.3 \\
+\hline
+Validation & Symfony Validator & 7.3 \\
+\hline
+Mailing & Symfony Mailer & 7.4 \\
+\hline
+Asset Management & Symfony AssetMapper & 7.3 \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ============================================================================
+%                    CHAPITRE 2 : MÉTHODOLOGIE AGILE SCRUM
+% ============================================================================
+\chapter{Méthodologie Agile Scrum}
+
+\section{Présentation de la Méthodologie}
+
+Le développement du projet \textbf{FreshMarket} a été réalisé en suivant la méthodologie \textbf{Agile Scrum}. Cette approche itérative et incrémentale permet une adaptation continue aux besoins du projet et une livraison régulière de fonctionnalités opérationnelles.
+
+\subsection{Les Principes Scrum Appliqués}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm,
+    box/.style={rectangle, draw=blue!70!black, line width=2pt, rounded corners=8pt, minimum width=3.5cm, minimum height=1.5cm, align=center, fill=blue!15, drop shadow, font=\bfseries\small},
+    arrow/.style={-{Stealth[length=3mm]}, line width=1.5pt, blue!60!black},
+    cycle/.style={-{Stealth[length=3mm]}, line width=1.5pt, orange!70!black, bend right=30}
+]
+    % Product Backlog
+    \node[box, fill=green!25] (backlog) at (0,0) {Product\\Backlog};
+    
+    % Sprint Planning
+    \node[box, fill=yellow!30] (planning) at (4,0) {Sprint\\Planning};
+    
+    % Sprint Backlog
+    \node[box, fill=orange!25] (sprint) at (8,0) {Sprint\\Backlog};
+    
+    % Daily Scrum
+    \node[box, fill=red!25] (daily) at (12,0) {Daily\\Scrum};
+    
+    % Sprint (2 semaines)
+    \node[box, fill=purple!25, minimum width=4.5cm] (iteration) at (10,-3.5) {Sprint\\(2 jours)};
+    
+    % Increment
+    \node[box, fill=blue!35] (increment) at (4,-3.5) {Incrément\\Livrable};
+    
+    % Review & Retro
+    \node[box, fill=cyan!25, minimum width=4cm] (review) at (0,-3.5) {Sprint Review\\+ Rétrospective};
+    
+    % Arrows
+    \draw[arrow] (backlog) -- (planning);
+    \draw[arrow] (planning) -- (sprint);
+    \draw[arrow] (sprint) -- (daily);
+    \draw[arrow] (daily) to[out=-90, in=0] (iteration);
+    \draw[arrow] (iteration) -- (increment);
+    \draw[arrow] (increment) -- (review);
+    \draw[cycle] (review) to[bend right=35] (backlog);
+    
+\end{tikzpicture}
+\caption{Cycle Scrum Appliqué au Projet FreshMarket}
+\end{figure}
+
+\begin{description}
+    \item[\faUsers\ Équipe Scrum :] Développeur(s) full-stack, Scrum Master, Product Owner
+    \item[\faCalendarAlt\ Sprints :] Itérations de 2 jours avec objectifs définis
+    \item[\faClipboardList\ Product Backlog :] Liste priorisée des User Stories
+    \item[\faChartLine\ Vélocité :] Estimation en Story Points pour mesurer la productivité
+\end{description}
+
+\section{Planification des Sprints}
+
+Le projet a été organisé en \textbf{2 sprints} successifs, permettant une livraison progressive des fonctionnalités :
+
+\begin{table}[H]
+\centering
+\caption{Organisation des Sprints}
+\begin{tabularx}{\textwidth}{|l|c|c|X|c|}
+\hline
+\textbf{Sprint} & \textbf{Début} & \textbf{Fin} & \textbf{Objectif} & \textbf{Vélocité} \\
+\hline
+\hline
+Sprint 1 & 23/12/2025 & 24/12/2025 & MVP : liste produits, panier, authentification de base, sécurité & 27 pts \\
+\hline
+Sprint 2 & 25/12/2025 & 26/12/2025 & Checkout, admin commandes, CI/tests, dashboard, OAuth & 28 pts \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Sprint 1 : MVP (Minimum Viable Product)}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    story/.style={rectangle, draw=green!70!black, line width=2pt, rounded corners=8pt, minimum width=4cm, minimum height=1cm, fill=green!20, font=\small\bfseries, drop shadow},
+    done/.style={rectangle, draw=blue!70!black, line width=2.5pt, rounded corners=8pt, minimum width=4cm, minimum height=1cm, fill=blue!25, font=\small\bfseries, drop shadow}
+]
+    % Timeline
+    \draw[thick, gray] (0,0) -- (12,0);
+    \foreach \x in {0,3,6,9,12} {
+        \draw[thick, gray] (\x,-0.1) -- (\x,0.1);
+    }
+    \node[below] at (0,-0.2) {\scriptsize 23/12};
+    \node[below] at (6,-0.2) {\scriptsize 23/12};
+    \node[below] at (12,-0.2) {\scriptsize 24/12};
+    
+    % Stories
+    \node[done] at (2,1) {US-01 : Liste Produits (3 pts)};
+    \node[done] at (2,2) {US-02 : Détail Produit (2 pts)};
+    \node[done] at (6,1) {US-04 : Gestion Panier (5 pts)};
+    \node[done] at (6,2) {US-07 : Auth \& Rôles (5 pts)};
+    \node[done] at (10,1) {US-12 : Sécurité (3 pts)};
+    \node[done] at (10,2) {US-13 : Déploiement (3 pts)};
+    \node[done] at (6,3) {US-09 : Profil (3 pts)};
+    \node[done] at (10,3) {US-03 : Recherche (3 pts)};
+    
+\end{tikzpicture}
+\caption{Timeline du Sprint 1}
+\end{figure}
+
+\subsection{Sprint 2 : Fonctionnalités Avancées}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    story/.style={rectangle, draw=orange!70!black, line width=2pt, rounded corners=8pt, minimum width=4cm, minimum height=1cm, fill=orange!20, font=\small\bfseries, drop shadow},
+    done/.style={rectangle, draw=purple!70!black, line width=2.5pt, rounded corners=8pt, minimum width=4cm, minimum height=1cm, fill=purple!25, font=\small\bfseries, drop shadow}
+]
+    % Timeline
+    \draw[thick, gray] (0,0) -- (12,0);
+    \foreach \x in {0,4,8,12} {
+        \draw[thick, gray] (\x,-0.1) -- (\x,0.1);
+    }
+    \node[below] at (0,-0.2) {\scriptsize 25/12};
+    \node[below] at (6,-0.2) {\scriptsize 25/12};
+    \node[below] at (12,-0.2) {\scriptsize 26/12};
+    
+    % Stories
+    \node[done] at (2,1) {US-05 : Checkout (8 pts)};
+    \node[done] at (6,1) {US-06 : Admin Commandes (5 pts)};
+    \node[done] at (10,1) {US-08 : OAuth (5 pts)};
+    \node[done] at (6,2) {US-10 : Dashboard Stats (5 pts)};
+    \node[done] at (10,2) {US-11 : Tests \& CI (5 pts)};
+    
+\end{tikzpicture}
+\caption{Timeline du Sprint 2}
+\end{figure}
+
+\section{Product Backlog - User Stories}
+
+Le Product Backlog contient l'ensemble des \textbf{User Stories} du projet, priorisées et estimées en Story Points :
+
+\begin{table}[H]
+\centering
+\caption{Product Backlog Complet}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|c|c|l|l|}
+\hline
+\textbf{ID} & \textbf{Titre} & \textbf{Points} & \textbf{Priorité} & \textbf{Sprint} & \textbf{Labels} \\
+\hline
+\hline
+US-01 & Affichage liste produits & 3 & Haute & Sprint 1 & product, ui \\
+\hline
+US-02 & Page détail produit & 2 & Haute & Sprint 1 & product, ui \\
+\hline
+US-03 & Recherche et filtrage & 3 & Moyenne & Sprint 1 & product, search \\
+\hline
+US-04 & Gestion panier & 5 & Haute & Sprint 1 & cart \\
+\hline
+US-05 & Checkout / Création commande & 8 & Haute & Sprint 2 & checkout, order \\
+\hline
+US-06 & Gestion commandes (admin) & 5 & Haute & Sprint 2 & admin, orders \\
+\hline
+US-07 & Authentification \& rôles & 5 & Haute & Sprint 1 & security, auth \\
+\hline
+US-08 & Login OAuth (Google/Facebook) & 5 & Moyenne & Sprint 2 & auth, oauth \\
+\hline
+US-09 & Gestion profil utilisateur & 3 & Moyenne & Sprint 1 & profile, ui \\
+\hline
+US-10 & Dashboard statistiques (admin) & 5 & Moyenne & Sprint 2 & admin, stats \\
+\hline
+US-11 & Tests automatiques \& CI & 5 & Haute & Sprint 2 & ci, test \\
+\hline
+US-12 & Sécurité / hardening & 3 & Haute & Sprint 1 & security \\
+\hline
+US-13 & Déploiement \& documentation & 3 & Moyenne & Sprint 1 & devops, deploy \\
+\hline
+\multicolumn{2}{|r|}{\textbf{Total Story Points}} & \textbf{55} & & & \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\section{Détail des User Stories Principales}
+
+\subsection{US-04 : Gestion Panier (5 points)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Description} & En tant qu'utilisateur, je veux ajouter/supprimer/modifier la quantité des produits dans le panier. \\
+\hline
+\textbf{Critères d'acceptation} & 
+\begin{minipage}[t]{\linewidth}
+\vspace{2pt}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Persistance du panier (session/cookie)
+    \item Calcul automatique du total
+    \item Notifications UI après chaque action
+    \item Validation du stock disponible
+\end{itemize}
+\vspace{2pt}
+\end{minipage} \\
+\hline
+\textbf{Implémentation} & \code{CartService.php}, \code{CartController.php} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{US-05 : Checkout / Création Commande (8 points)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Description} & En tant qu'utilisateur, je veux finaliser ma commande et recevoir une confirmation par e-mail. \\
+\hline
+\textbf{Critères d'acceptation} & 
+\begin{minipage}[t]{\linewidth}
+\vspace{2pt}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Formulaire d'adresse de livraison
+    \item Création des entités Order + OrderItem
+    \item Envoi d'email de confirmation
+    \item Tests end-to-end fonctionnels
+\end{itemize}
+\vspace{2pt}
+\end{minipage} \\
+\hline
+\textbf{Implémentation} & \code{Order.php}, \code{OrderItem.php}, \code{CartController::placeOrder()} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{US-08 : Login OAuth Google/Facebook (5 points)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Description} & En tant qu'utilisateur, je veux me connecter via Google ou Facebook. \\
+\hline
+\textbf{Critères d'acceptation} & 
+\begin{minipage}[t]{\linewidth}
+\vspace{2pt}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Boutons OAuth sur la page de connexion
+    \item Mapping automatique d'un compte existant (par email)
+    \item Création de compte si nouveau
+    \item Tests du flux OAuth complet
+\end{itemize}
+\vspace{2pt}
+\end{minipage} \\
+\hline
+\textbf{Implémentation} & \code{GoogleAuthenticator.php}, \code{FacebookAuthenticator.php} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Burndown Chart}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.5]
+    % Axes
+    \draw[thick, ->, line width=1.5pt] (0,0) -- (5,0) node[right, font=\bfseries] {Jours};
+    \draw[thick, ->, line width=1.5pt] (0,0) -- (0,7) node[above, font=\bfseries] {Story Points};
+    
+    % Grid
+    \foreach \y in {1,...,6} {
+        \draw[gray!30, thin] (0,\y) -- (4,\y);
+        \node[left, font=\small\bfseries] at (-0.2,\y) {\pgfmathparse{int(\y*10)}\pgfmathresult};
+    }
+    \foreach \x in {0,...,4} {
+        \draw[gray!20, thin] (\x,0) -- (\x,6);
+    }
+    
+    % Sprint 1 (jours 1-2)
+    \node[below, font=\small\bfseries, text=green!70!black] at (0,-0.3) {J1};
+    \node[below, font=\small\bfseries, text=green!70!black] at (1,-0.6) {Sprint 1};
+    \node[below, font=\small\bfseries, text=green!70!black] at (2,-0.3) {J2};
+    
+    % Sprint 2 (jours 3-4)
+    \node[below, font=\small\bfseries, text=orange!70!black] at (2.5,-0.3) {J3};
+    \node[below, font=\small\bfseries, text=orange!70!black] at (3,-0.6) {Sprint 2};
+    \node[below, font=\small\bfseries, text=orange!70!black] at (4,-0.3) {J4};
+    
+    % Ligne idéale
+    \draw[dashed, blue!60, line width=2pt] (0,5.5) -- (2,2.8) -- (4,0);
+    
+    % Ligne réelle Sprint 1
+    \draw[line width=2.5pt, green!70!black] (0,5.5) -- (1,4) -- (2,2.8);
+    
+    % Ligne réelle Sprint 2
+    \draw[line width=2.5pt, orange!70!black] (2,2.8) -- (3,1.5) -- (4,0);
+    
+    % Légende avec encadrement
+    \node[draw, rounded corners, fill=white, inner sep=5pt] at (3,6.3) {
+        \begin{tabular}{ll}
+            \textcolor{blue!60}{\rule{1cm}{2pt}} & \small Idéal \\
+            \textcolor{green!70!black}{\rule{1cm}{2.5pt}} & \small Sprint 1 (J1-J2) \\
+            \textcolor{orange!70!black}{\rule{1cm}{2.5pt}} & \small Sprint 2 (J3-J4)
+        \end{tabular}
+    };
+    
+    % Points Sprint 1
+    \foreach \x/\y in {0/5.5, 1/4, 2/2.8} {
+        \fill[green!70!black] (\x,\y) circle (3pt);
+    }
+    % Points Sprint 2
+    \foreach \x/\y in {2/2.8, 3/1.5, 4/0} {
+        \fill[orange!70!black] (\x,\y) circle (3pt);
+    }
+    
+\end{tikzpicture}
+\caption{Burndown Chart du Projet FreshMarket}
+\end{figure}
+
+\section{Vérification et Validation - Captures d'Écran}
+
+Cette section présente les captures d'écran du projet démontrant l'implémentation des différentes User Stories avec leurs descriptions détaillées.
+
+\subsection{Captures IceScrum - Gestion Agile}
+
+\subsubsection{Product Backlog IceScrum}
+
+\textbf{Description :} Le Product Backlog dans IceScrum contient toutes les User Stories du projet, avec leur priorisation, leurs Story Points et leur assignation aux sprints.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Product Backlog dans IceScrum]}\\
+\texttt{screenshots/icescrum\_backlog.png}
+\vspace{3cm}
+}}
+\caption{Product Backlog IceScrum - Vue d'ensemble des User Stories}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/icescrum_backlog.png}
+
+\subsubsection{Sprint Board IceScrum}
+
+\textbf{Description :} Le Sprint Board affiche les tâches en cours, complétées et à faire pour le sprint actif.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Sprint Board dans IceScrum]}\\
+\texttt{screenshots/icescrum\_sprint\_board.png}
+\vspace{3cm}
+}}
+\caption{Sprint Board IceScrum - Suivi des tâches}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/icescrum_sprint_board.png}
+
+\subsubsection{Burndown Chart IceScrum}
+
+\textbf{Description :} Le Burndown Chart visualise la progression du sprint avec le travail restant par jour.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Burndown Chart dans IceScrum]}\\
+\texttt{screenshots/icescrum\_burndown.png}
+\vspace{3cm}
+}}
+\caption{Burndown Chart IceScrum - Vélocité du sprint}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/icescrum_burndown.png}
+
+\subsection{US-01 : Affichage Liste Produits}
+
+\textbf{Description :} Cette User Story implémente la page d'accueil avec l'affichage de tous les produits disponibles. Les fonctionnalités incluent :
+\begin{itemize}
+    \item Affichage en grille responsive (Bootstrap)
+    \item Pagination des résultats
+    \item Informations produit : nom, prix, stock, disponibilité
+    \item Bouton "Ajouter au panier" sur chaque carte produit
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Route : \texttt{/} et \texttt{/products}
+    \item Controller : \texttt{HomeController::index()}
+    \item Template : \texttt{home/index.html.twig}
+    \item Repository : \texttt{ProductRepository::findAllAvailable()}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page d'accueil avec liste des produits en grille]}\\
+\texttt{screenshots/us01\_home\_products.png}
+\vspace{3cm}
+}}
+\caption{US-01 - Page d'Accueil avec Liste des Produits Disponibles}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us01_home_products.png}
+
+\subsection{US-02 : Page Détail Produit}
+
+\textbf{Description :} Page détaillée affichant toutes les informations d'un produit spécifique avec possibilité d'ajout au panier.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Affichage détaillé : nom, description complète, prix, stock disponible
+    \item Sélection de quantité avec validation du stock
+    \item Bouton "Ajouter au panier" avec feedback visuel
+    \item Indicateur de disponibilité (En stock / Rupture)
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Route : \texttt{/products/\{id\}}
+    \item Controller : \texttt{ProductController::show()}
+    \item Template : \texttt{product/show.html.twig}
+    \item Validation du stock avant ajout au panier
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page détail d'un produit avec informations complètes]}\\
+\texttt{screenshots/us02\_product\_detail.png}
+\vspace{3cm}
+}}
+\caption{US-02 - Page Détail Produit avec Bouton Ajouter au Panier}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us02_product_detail.png}
+
+\subsection{US-03 : Recherche et Filtrage}
+
+\textbf{Description :} Système de recherche et de filtrage permettant aux utilisateurs de trouver rapidement des produits.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Barre de recherche avec autocomplétion
+    \item Filtres par catégorie de produits
+    \item Filtre par plage de prix (min/max)
+    \item Tri par prix (croissant/décroissant), nom, nouveautés
+    \item Résultats paginés avec compteur
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Route : \texttt{/products/search}
+    \item Controller : \texttt{ProductController::search()}
+    \item Repository : Requêtes DQL personnalisées avec QueryBuilder
+    \item Template : \texttt{product/search.html.twig}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Interface de recherche avec filtres actifs]}\\
+\texttt{screenshots/us03\_search\_filters.png}
+\vspace{3cm}
+}}
+\caption{US-03 - Recherche et Filtrage des Produits}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us03_search_filters.png}
+
+\subsection{US-04 : Gestion du Panier}
+
+\textbf{Description :} Système complet de gestion du panier d'achat avec persistance et calculs automatiques.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Ajout de produits au panier avec sélection de quantité
+    \item Modification des quantités directement dans le panier
+    \item Suppression d'articles
+    \item Calcul automatique du total (avec TVA si applicable)
+    \item Persistance du panier (session pour anonymes, DB pour utilisateurs connectés)
+    \item Vérification du stock en temps réel
+    \item Notifications visuelles (toasts) pour chaque action
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Service : \texttt{CartService.php} (logique métier réutilisable)
+    \item Controller : \texttt{CartController::index()}, \texttt{add()}, \texttt{remove()}, \texttt{update()}
+    \item Template : \texttt{cart/index.html.twig}
+    \item Stockage : SessionInterface pour les paniers temporaires
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page panier avec produits et contrôles de quantité]}\\
+\texttt{screenshots/us04\_cart\_management.png}
+\vspace{3cm}
+}}
+\caption{US-04 - Page Panier avec Gestion des Quantités et Calcul du Total}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us04_cart_management.png}
+
+\subsection{US-05 : Checkout et Création Commande}
+
+\textbf{Description :} Processus complet de finalisation de commande avec validation et confirmation.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Formulaire d'adresse de livraison avec validation
+    \item Récapitulatif de la commande avant validation
+    \item Création des entités Order et OrderItem
+    \item Mise à jour automatique du stock
+    \item Envoi d'email de confirmation
+    \item Numéro de commande unique généré
+    \item Historique des commandes accessible dans le profil
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controller : \texttt{CartController::placeOrder()}
+    \item Entities : \texttt{Order.php}, \texttt{OrderItem.php}
+    \item Service : \texttt{Symfony Mailer} pour l'envoi d'emails
+    \item Template : \texttt{cart/checkout.html.twig}, \texttt{emails/order\_confirmation.html.twig}
+    \item Transaction DB pour garantir la cohérence
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page de checkout avec formulaire d'adresse]}\\
+\texttt{screenshots/us05\_checkout\_form.png}
+\vspace{3cm}
+}}
+\caption{US-05 - Page Checkout avec Formulaire de Livraison}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us05_checkout_form.png}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Email de confirmation de commande]}\\
+\texttt{screenshots/us05\_order\_email.png}
+\vspace{3cm}
+}}
+\caption{US-05 - Email de Confirmation de Commande}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us05_order_email.png}
+
+\subsection{US-06 : Gestion des Commandes (Admin)}
+
+\textbf{Description :} Interface d'administration pour gérer toutes les commandes des clients.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Liste de toutes les commandes avec pagination
+    \item Filtres par statut (pending, processing, completed, cancelled)
+    \item Modification du statut des commandes
+    \item Détails complets de chaque commande
+    \item Protection CSRF sur toutes les actions
+    \item Logs des modifications de statut
+    \item Export des commandes (CSV/Excel)
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controller : \texttt{Admin/OrderController::index()}, \texttt{show()}, \texttt{updateStatus()}
+    \item Template : \texttt{admin/order/index.html.twig}, \texttt{show.html.twig}
+    \item Security : \texttt{@IsGranted("ROLE\_ADMIN")}
+    \item Repository : Requêtes personnalisées pour statistiques
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Interface admin de gestion des commandes]}\\
+\texttt{screenshots/us06\_admin\_orders.png}
+\vspace{3cm}
+}}
+\caption{US-06 - Interface Administrateur de Gestion des Commandes}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us06_admin_orders.png}
+
+\subsection{US-07 : Authentification et Rôles}
+
+\textbf{Description :} Système d'authentification complet avec gestion des rôles utilisateur.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Inscription avec validation de formulaire
+    \item Hashage sécurisé des mots de passe (bcrypt)
+    \item Connexion avec "Remember me"
+    \item Déconnexion sécurisée
+    \item Système de rôles : ROLE\_USER, ROLE\_ADMIN
+    \item Restriction d'accès par rôle
+    \item Protection contre les attaques brute force
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controller : \texttt{SecurityController::login()}, \texttt{RegistrationController::register()}
+    \item Entity : \texttt{User.php} (implements UserInterface)
+    \item Config : \texttt{security.yaml} avec firewalls
+    \item Templates : \texttt{security/login.html.twig}, \texttt{registration/register.html.twig}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page de connexion]}\\
+\texttt{screenshots/us07\_login\_page.png}
+\vspace{3cm}
+}}
+\caption{US-07 - Page de Connexion}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us07_login_page.png}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page d'inscription]}\\
+\texttt{screenshots/us07\_register\_page.png}
+\vspace{3cm}
+}}
+\caption{US-07 - Page d'Inscription avec Validation}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us07_register_page.png}
+
+\subsection{US-08 : Login OAuth (Google/Facebook)}
+
+\textbf{Description :} Intégration de l'authentification OAuth 2.0 avec Google et Facebook.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Boutons de connexion Google et Facebook
+    \item Flux OAuth 2.0 complet
+    \item Création automatique de compte si première connexion
+    \item Mapping avec comptes existants (par email)
+    \item Stockage sécurisé des identifiants OAuth
+    \item Tests du flux complet
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controllers : \texttt{GoogleOAuthController.php}, \texttt{FacebookOAuthController.php}
+    \item Security : \texttt{GoogleAuthenticator.php}, \texttt{FacebookAuthenticator.php}
+    \item Bundle : \texttt{knpuniversity/oauth2-client-bundle}
+    \item Config : Credentials dans \texttt{.env.local}
+    \item Entity User : Champs \texttt{googleId}, \texttt{facebookId}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Boutons OAuth sur la page de connexion]}\\
+\texttt{screenshots/us08\_oauth\_buttons.png}
+\vspace{3cm}
+}}
+\caption{US-08 - Boutons de Connexion OAuth Google et Facebook}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us08_oauth_buttons.png}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Flux OAuth Google en action]}\\
+\texttt{screenshots/us08\_google\_oauth\_flow.png}
+\vspace{3cm}
+}}
+\caption{US-08 - Flux d'Authentification OAuth Google}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us08_google_oauth_flow.png}
+
+\subsection{US-09 : Gestion Profil Utilisateur}
+
+\textbf{Description :} Interface permettant aux utilisateurs de gérer leurs informations personnelles.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Modification du nom et prénom
+    \item Changement d'email avec vérification
+    \item Upload d'avatar (formats : jpg, png ; taille max : 2MB)
+    \item Modification du mot de passe
+    \item Historique des commandes
+    \item Suppression de compte
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controller : \texttt{ProfileController::edit()}, \texttt{uploadAvatar()}
+    \item Service : \texttt{FileUploader.php} pour gestion des uploads
+    \item Template : \texttt{profile/edit.html.twig}
+    \item Validation : Contraintes Symfony (NotBlank, Email, File)
+    \item Tests : Tests unitaires pour FileUploader
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Page de profil utilisateur]}\\
+\texttt{screenshots/us09\_profile\_page.png}
+\vspace{3cm}
+}}
+\caption{US-09 - Page de Profil Utilisateur avec Upload Avatar}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us09_profile_page.png}
+
+\subsection{US-10 : Dashboard Statistiques (Admin)}
+
+\textbf{Description :} Dashboard administrateur avec statistiques et KPIs du site e-commerce.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Widget chiffre d'affaires total
+    \item Graphique évolution CA par mois
+    \item Top 10 produits les plus vendus
+    \item Liste des commandes récentes
+    \item Nombre total d'utilisateurs
+    \item Taux de conversion
+    \item Graphiques interactifs (Chart.js)
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Controller : \texttt{Admin/DashboardController::index()}
+    \item Repository : Méthodes \texttt{getTotalRevenue()}, \texttt{getTopProducts()}
+    \item Template : \texttt{admin/dashboard/index.html.twig}
+    \item Security : \texttt{@IsGranted("ROLE\_ADMIN")}
+    \item JS : Chart.js pour visualisations
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Dashboard administrateur avec statistiques]}\\
+\texttt{screenshots/us10\_admin\_dashboard.png}
+\vspace{3cm}
+}}
+\caption{US-10 - Dashboard Administrateur avec Statistiques Complètes}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us10_admin_dashboard.png}
+
+\subsection{US-11 : Tests Automatiques et CI}
+
+\textbf{Description :} Mise en place de tests automatisés et d'intégration continue.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Tests unitaires (PHPUnit)
+    \item Tests fonctionnels (WebTestCase)
+    \item Coverage des fonctionnalités critiques
+    \item Pipeline CI (GitHub Actions ou similaire)
+    \item Tests automatiques à chaque push
+    \item Badge de build dans README
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item Framework : PHPUnit (inclus dans Symfony)
+    \item Tests : Dossier \texttt{tests/}
+    \item Config : \texttt{phpunit.xml.dist}
+    \item CI : Fichier \texttt{.github/workflows/ci.yml}
+    \item Coverage : PHPUnit avec XDebug
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Résultats des tests PHPUnit]}\\
+\texttt{screenshots/us11\_phpunit\_tests.png}
+\vspace{3cm}
+}}
+\caption{US-11 - Résultats des Tests Automatiques PHPUnit}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us11_phpunit_tests.png}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Pipeline CI GitHub Actions]}\\
+\texttt{screenshots/us11\_ci\_pipeline.png}
+\vspace{3cm}
+}}
+\caption{US-11 - Pipeline d'Intégration Continue}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us11_ci_pipeline.png}
+
+\subsection{US-12 : Sécurité / Hardening}
+
+\textbf{Description :} Implémentation des mesures de sécurité pour protéger l'application.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Protection CSRF sur tous les formulaires
+    \item Protection XSS (échappement Twig)
+    \item Headers de sécurité HTTP (CSP, X-Frame-Options, etc.)
+    \item Rate limiting sur les endpoints sensibles
+    \item Validation stricte des entrées utilisateur
+    \item Tests de sécurité automatisés
+\end{itemize}
+
+\textbf{Implémentation technique :}
+\begin{itemize}
+    \item CSRF : Tokens Symfony intégrés
+    \item XSS : Auto-escaping Twig
+    \item Headers : Configuration dans \texttt{config/packages/framework.yaml}
+    \item Tests : Scripts \texttt{test\_xss.bat}, \texttt{test\_csrf.html}
+    \item EventSubscriber : \texttt{SecurityHeadersSubscriber.php}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Headers de sécurité HTTP]}\\
+\texttt{screenshots/us12\_security\_headers.png}
+\vspace{3cm}
+}}
+\caption{US-12 - Vérification des Headers de Sécurité HTTP}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us12_security_headers.png}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Test de protection CSRF]}\\
+\texttt{screenshots/us12\_csrf\_protection.png}
+\vspace{3cm}
+}}
+\caption{US-12 - Test de Protection CSRF}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us12_csrf_protection.png}
+
+\subsection{US-13 : Déploiement et Documentation}
+
+\textbf{Description :} Scripts et documentation pour le déploiement de l'application.
+
+\textbf{Livrables :}
+\begin{itemize}
+    \item Docker Compose fonctionnel
+    \item Documentation de déploiement (DEPLOYMENT.md)
+    \item Scripts de setup automatisés
+    \item Guide de configuration des variables d'environnement
+    \item Checklist de vérification post-déploiement
+    \item Documentation API
+\end{itemize}
+
+\textbf{Fichiers :}
+\begin{itemize}
+    \item \texttt{docker-compose.yml}
+    \item \texttt{Dockerfile}
+    \item \texttt{DEPLOYMENT.md}
+    \item \texttt{setup\_prod.ps1}
+    \item \texttt{.env.example}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.9\textwidth}{
+\centering
+\vspace{3cm}
+\textit{[Capture d'écran : Application déployée avec Docker]}\\
+\texttt{screenshots/us13\_docker\_deployment.png}
+\vspace{3cm}
+}}
+\caption{US-13 - Application Déployée avec Docker Compose}
+\end{figure}
+
+% Pour ajouter la capture : \includegraphics[width=0.9\textwidth]{screenshots/us13_docker_deployment.png}
+
+\section{Outils de Gestion de Projet}
+
+Le projet a été géré avec les outils suivants :
+
+\begin{table}[H]
+\centering
+\caption{Outils Agile Utilisés}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Outil} & \textbf{Usage} \\
+\hline
+\hline
+\textbf{IceScrum} & Gestion du Product Backlog, planification des Sprints \\
+\hline
+\textbf{Git / GitHub} & Versioning du code, branches par feature \\
+\hline
+\textbf{Composer} & Gestion des dépendances PHP \\
+\hline
+\textbf{Symfony CLI} & Développement et débogage local \\
+\hline
+\textbf{PHPUnit} & Tests automatisés (unitaires et fonctionnels) \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ============================================================================
+%                    CHAPITRE 3 : ARCHITECTURE DU PROJET
+% ============================================================================
+\chapter{Architecture du Projet}
+
+\section{Structure MVC de Symfony}
+
+Symfony impose une architecture \textbf{MVC} (Model-View-Controller) stricte. Le projet respecte cette séparation :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm,
+    box/.style={rectangle, draw=blue!70!black, line width=2pt, rounded corners=10pt, minimum width=4.5cm, minimum height=1.5cm, align=center, fill=blue!15, drop shadow, font=\bfseries\large},
+    arrow/.style={-{Stealth[length=3mm]}, line width=1.5pt, blue!60!black},
+    label/.style={font=\small, text=black!70}
+]
+    % Nodes
+    \node[box, fill=cyan!20] (browser) {Navigateur\\(Client)};
+    \node[box, below=of browser, fill=green!20] (controller) {Controller};
+    \node[box, left=3.5cm of controller, fill=orange!20] (model) {Model\\(Entity)};
+    \node[box, right=3.5cm of controller, fill=purple!20] (view) {View\\(Twig)};
+    \node[box, below=of model, fill=yellow!25] (repository) {Repository};
+    \node[box, below=of repository, fill=red!20] (database) {Base de\\Données};
+    
+    % Arrows
+    \draw[arrow] (browser) -- node[right, label] {HTTP Request} (controller);
+    \draw[arrow] (controller) -- node[above, label] {Fetch Data} (model);
+    \draw[arrow] (model) -- node[right, label] {Query} (repository);
+    \draw[arrow] (repository) -- node[right, label] {SQL} (database);
+    \draw[arrow, dashed] (database) -- node[left, label] {Results} (repository);
+    \draw[arrow, dashed] (repository) -- node[left, label] {Entity} (model);
+    \draw[arrow, dashed] (model) -- node[below, label] {Data} (controller);
+    \draw[arrow] (controller) -- node[above, label] {Variables} (view);
+    \draw[arrow, dashed] (view) -- node[left, label] {HTML Response} (browser);
+    
+\end{tikzpicture}
+\caption{Flux MVC dans Symfony}
+\end{figure}
+
+\section{Arborescence des Fichiers}
+
+\begin{lstlisting}[style=yamlstyle, caption={Structure du projet}]
+synf_project/
+|-- src/
+|   |-- Controller/        # Logique HTTP (routes)
+|   |   |-- CartController.php
+|   |   |-- HomeController.php
+|   |   |-- ProductController.php
+|   |   |-- ProfileController.php
+|   |   |-- SecurityController.php
+|   |   |-- GoogleOAuthController.php
+|   |   |-- FacebookOAuthController.php
+|   |   |-- Admin/         # Controleurs administration
+|   |-- Entity/            # Modeles Doctrine (tables BDD)
+|   |   |-- User.php
+|   |   |-- Product.php
+|   |   |-- Order.php
+|   |   |-- OrderItem.php
+|   |   |-- Reservation.php
+|   |-- Repository/        # Requetes SQL personnalisees
+|   |-- Service/           # Logique metier reutilisable
+|   |   |-- CartService.php
+|   |   |-- FileUploader.php
+|   |-- Form/              # Formulaires Symfony
+|   |-- Security/          # Authenticators OAuth
+|   |-- EventSubscriber/   # Listeners d'evenements
+|-- templates/             # Fichiers Twig (Vue)
+|-- config/                # Configuration YAML
+|-- public/                # Point d'entree web
+|-- vendor/                # Dependances Composer
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 3 : ENTITÉS DOCTRINE (MODÈLE)
+% ============================================================================
+\chapter{Entités Doctrine - Le Modèle de Données}
+
+\section{Vue d'Ensemble des Entités}
+
+Le modèle de données est composé de 5 entités principales interconnectées :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    entity/.style={
+        rectangle, draw=doctrinecolor, line width=2.5pt, 
+        rounded corners=10pt, minimum width=4.5cm, minimum height=1.5cm,
+        fill=orange!20, font=\bfseries\ttfamily\Large, drop shadow, align=center
+    },
+    relation/.style={-{Stealth[length=3mm]}, line width=1.5pt, gray!70!black},
+    label/.style={font=\small\bfseries, text=doctrinecolor}
+]
+    \node[entity] (user) at (0,0) {User};
+    \node[entity] (order) at (-5,-3.5) {Order};
+    \node[entity] (reservation) at (5,-3.5) {Reservation};
+    \node[entity] (orderitem) at (-5,-7) {OrderItem};
+    \node[entity] (product) at (0,-7) {Product};
+    
+    % Relations avec labels améliorés
+    \draw[relation] (user) -- node[left, label] {1} node[left, label, below=2mm] {*} (order);
+    \draw[relation] (user) -- node[right, label] {1} node[right, label, below=2mm] {*} (reservation);
+    \draw[relation] (order) -- node[left, label] {1} node[left, label, below=2mm] {*} (orderitem);
+    \draw[relation] (orderitem) -- node[above, label] {*} node[below, label, xshift=-5mm] {1} (product);
+\end{tikzpicture}
+\caption{Diagramme des Relations entre Entités}
+\end{figure}
+
+\section{Entité \texttt{Product} - Étude de Cas Détaillée}
+
+L'entité \entity{Product} représente un article du catalogue. Voici une analyse \textbf{ligne par ligne} de son code source :
+
+\subsection{Déclaration et Attributs ORM}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Déclaration}]
+<?php
+
+namespace App\Entity;
+
+use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
+class Product
+{
+\end{lstlisting}
+
+\textbf{Explications :}
+\begin{itemize}
+    \item \textbf{Ligne 3-10 :} Imports des classes nécessaires. \code{ORM} contient les annotations Doctrine, \code{Assert} les contraintes de validation.
+    \item \textbf{Ligne 12 :} L'attribut PHP 8 \code{\#[ORM\textbackslash Entity]} indique à Doctrine que cette classe est une entité persistée en base. Le paramètre \code{repositoryClass} lie cette entité à son Repository personnalisé.
+\end{itemize}
+
+\subsection{Propriétés et Colonnes}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Propriétés}]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    private ?string $nom = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire')]
+    #[Assert\Positive(message: 'Le prix doit etre positif')]
+    private ?string $prix = null;
+
+    #[ORM\Column]
+    private ?int $stock = 0;
+
+    #[ORM\Column]
+    private ?bool $disponible = true;
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Mapping des Propriétés vers la Base de Données}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Propriété PHP} & \textbf{Type SQL} & \textbf{Description} \\
+\hline
+\hline
+\code{\$id} & INT AUTO\_INCREMENT & Clé primaire générée automatiquement \\
+\hline
+\code{\$nom} & VARCHAR(255) & Nom du produit, ne peut pas être vide \\
+\hline
+\code{\$prix} & DECIMAL(10,2) & Prix en euros avec 2 décimales \\
+\hline
+\code{\$stock} & INT & Quantité disponible en stock \\
+\hline
+\code{\$disponible} & TINYINT(1) & Booléen indiquant si le produit est actif \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Relations avec OrderItem}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Relation OneToMany}]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class)]
+    private Collection $orderItems;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->orderItems = new ArrayCollection();
+    }
+\end{lstlisting}
+
+\textbf{Explication de la relation :}
+\begin{itemize}
+    \item \code{OneToMany} : Un produit peut apparaître dans plusieurs lignes de commande.
+    \item \code{mappedBy: 'product'} : La clé étrangère est définie du côté \entity{OrderItem} dans sa propriété \code{\$product}.
+    \item \code{ArrayCollection} : Collection Doctrine optimisée pour le lazy loading.
+\end{itemize}
+
+\subsection{Getters et Setters - Pattern Fluent}
+
+\begin{lstlisting}[style=phpstyle, caption={Product.php - Méthodes Fluent}]
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+        return $this;  // Pattern Fluent Interface
+    }
+\end{lstlisting}
+
+Le pattern \textbf{Fluent Interface} permet d'enchaîner les appels :
+\begin{lstlisting}[style=phpstyle]
+$product = (new Product())
+    ->setNom('Pommes Bio')
+    ->setPrix('2.99')
+    ->setStock(100)
+    ->setDisponible(true);
+\end{lstlisting}
+
+\section{Entité \texttt{User} - Authentification}
+
+L'entité \entity{User} implémente les interfaces de sécurité Symfony :
+
+\begin{lstlisting}[style=phpstyle, caption={User.php - Interfaces de Sécurité}]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $facebookId = null;
+\end{lstlisting}
+
+\textbf{Points clés :}
+\begin{description}
+    \item[\code{UserInterface}] Requiert les méthodes \code{getUserIdentifier()}, \code{getRoles()}, \code{eraseCredentials()}.
+    \item[\code{PasswordAuthenticatedUserInterface}] Requiert \code{getPassword()}.
+    \item[\code{googleId} / \code{facebookId}] Permettent l'association OAuth sans doublon.
+\end{description}
+
+\section{Diagramme de Classes UML Complet (TikZ)}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    umlclass/.style={
+        rectangle split, rectangle split parts=3,
+        draw=blue!70!black, line width=1.5pt,
+        rounded corners=5pt,
+        minimum width=5cm,
+        fill=blue!10,
+        font=\small\ttfamily,
+        drop shadow
+    },
+    umlarrow/.style={-{Triangle[open, length=3mm]}, line width=1.5pt},
+    umlcomp/.style={-{Diamond[fill=black, length=3mm]}, line width=1.5pt}
+]
+
+    % User Class
+    \node[umlclass] (User) at (0,0) {
+        \textbf{User}
+        \nodepart{second}
+        - id : int\\
+        - email : string\\
+        - password : string\\
+        - roles : array\\
+        - nom : string\\
+        - prenom : string\\
+        - googleId : string\\
+        - facebookId : string\\
+        - avatar : string
+        \nodepart{third}
+        + getFullName() : string\\
+        + getRoles() : array\\
+        + getUserIdentifier() : string
+    };
+
+    % Product Class
+    \node[umlclass] (Product) at (8,0) {
+        \textbf{Product}
+        \nodepart{second}
+        - id : int\\
+        - nom : string\\
+        - prix : decimal\\
+        - stock : int\\
+        - categorie : string\\
+        - disponible : bool\\
+        - image : string
+        \nodepart{third}
+        + getNom() : string\\
+        + getPrix() : string\\
+        + getStock() : int
+    };
+
+    % Order Class
+    \node[umlclass] (Order) at (0,-8) {
+        \textbf{Order}
+        \nodepart{second}
+        - id : int\\
+        - numeroCommande : string\\
+        - montantTotal : decimal\\
+        - statut : string\\
+        - adresseLivraison : text\\
+        - createdAt : datetime
+        \nodepart{third}
+        + calculateTotal() : void\\
+        + getStatutLabel() : string\\
+        + getOrderItems() : Collection
+    };
+
+    % OrderItem Class
+    \node[umlclass] (OrderItem) at (8,-8) {
+        \textbf{OrderItem}
+        \nodepart{second}
+        - id : int\\
+        - quantite : int\\
+        - prixUnitaire : decimal
+        \nodepart{third}
+        + getTotal() : float\\
+        + getProduct() : Product\\
+        + getCommande() : Order
+    };
+
+    % Reservation Class
+    \node[umlclass] (Reservation) at (16,0) {
+        \textbf{Reservation}
+        \nodepart{second}
+        - id : int\\
+        - dateReservation : date\\
+        - heureReservation : time\\
+        - nombrePersonnes : int\\
+        - statut : string\\
+        - commentaire : text
+        \nodepart{third}
+        + getStatutLabel() : string\\
+        + getUser() : User
+    };
+
+    % Relations
+    \draw[umlarrow] (Order.north) -- ++(0,1) -| node[pos=0.25, above] {*..1} (User.south);
+    \draw[umlarrow] (Reservation.west) -- node[above] {*..1} (User.east);
+    \draw[umlcomp] (Order.east) -- node[above] {1..*} (OrderItem.west);
+    \draw[umlarrow] (OrderItem.north) -- ++(0,1) -| node[pos=0.25, above] {*..1} (Product.south);
+
+\end{tikzpicture}
+}
+\caption{Diagramme de Classes UML Complet}
+\end{figure}
+
+% ============================================================================
+%                    CHAPITRE 4 : CONTRÔLEURS
+% ============================================================================
+\chapter{Contrôleurs - La Logique HTTP}
+
+\section{Rôle des Contrôleurs dans Symfony}
+
+Un contrôleur est une classe PHP dont les méthodes (appelées \textbf{actions}) répondent aux requêtes HTTP. Chaque action :
+\begin{enumerate}
+    \item Reçoit un objet \code{Request}
+    \item Traite la logique métier (souvent via des Services)
+    \item Retourne un objet \code{Response} (HTML, JSON, redirection)
+\end{enumerate}
+
+\section{\texttt{CartController} - Gestion du Panier}
+
+Le \controller{CartController} gère toutes les opérations du panier d'achat.
+
+\subsection{Structure et Attributs de Classe}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController.php - Déclaration}]
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Product;
+use App\Entity\Order;
+use App\Entity\OrderItem;
+use App\Repository\ProductRepository;
+use App\Service\CartService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/cart')]
+class CartController extends AbstractController
+{
+\end{lstlisting}
+
+\textbf{Explications :}
+\begin{itemize}
+    \item \code{\#[Route('/cart')]} : Préfixe de route appliqué à toutes les actions de ce contrôleur.
+    \item \code{AbstractController} : Classe parente fournissant des helpers (\code{render()}, \code{redirectToRoute()}, \code{json()}).
+\end{itemize}
+
+\subsection{Action \texttt{add()} - Ajout au Panier}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController::add()}]
+#[Route('/add/{id}', name: 'app_cart_add', requirements: ['id' => '\d+'])]
+#[IsGranted('ROLE_USER')]
+public function add(int $id, ProductRepository $productRepository, 
+                    CartService $cartService): Response
+{
+    $product = $productRepository->find($id);
+    
+    if (!$product) {
+        $this->addFlash('error', 'Produit introuvable.');
+        return $this->redirectToRoute('app_product_index');
+    }
+    
+    if ($product->getStock() <= 0) {
+        $this->addFlash('error', 'Ce produit est en rupture de stock.');
+        return $this->redirectToRoute('app_product_show', ['id' => $id]);
+    }
+    
+    // Ajouter le produit au panier (stockage optimise: ID seulement)
+    $cartService->addProduct($id);
+    
+    $this->addFlash('success', 'Produit ajoute au panier avec succes !');
+    
+    return $this->redirectToRoute('app_product_show', ['id' => $id]);
+}
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Analyse de l'action \texttt{add()}}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Élément} & \textbf{Explication} \\
+\hline
+\hline
+\code{requirements: ['id' => '\textbackslash d+']} & Validation regex : l'ID doit être numérique \\
+\hline
+\code{\#[IsGranted('ROLE\_USER')]} & Seuls les utilisateurs connectés accèdent à cette route \\
+\hline
+\code{ProductRepository \$productRepository} & Injection automatique de dépendance (autowiring) \\
+\hline
+\code{addFlash()} & Message flash stocké en session, affiché une seule fois \\
+\hline
+\code{redirectToRoute()} & Redirection HTTP 302 vers une route nommée \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Action \texttt{placeOrder()} - Validation de Commande}
+
+\begin{lstlisting}[style=phpstyle, caption={CartController::placeOrder()}]
+#[Route('/place-order', name: 'app_cart_place_order', methods: ['POST'])]
+#[IsGranted('ROLE_USER')]
+public function placeOrder(Request $request, CartService $cartService, 
+                           EntityManagerInterface $em): Response
+{
+    // Verification du token CSRF
+    $token = $request->request->get('_token');
+    if (!$this->isCsrfTokenValid('place-order', $token)) {
+        $this->addFlash('error', 'Erreur de securite. Veuillez reessayer.');
+        return $this->redirectToRoute('app_cart_checkout');
+    }
+    
+    // Creer la commande
+    $order = new Order();
+    $order->setUser($this->getUser());
+    $order->setStatut('en_attente');
+    
+    // Creer les OrderItems
+    $total = 0;
+    foreach ($cartService->getCart() as $productId => $item) {
+        $product = $item['product'];
+        
+        $orderItem = new OrderItem();
+        $orderItem->setProduct($product);
+        $orderItem->setQuantite($item['quantity']);
+        $orderItem->setPrixUnitaire($product->getPrix());
+        
+        $order->addOrderItem($orderItem);
+        
+        $total += $product->getPrix() * $item['quantity'];
+    }
+    
+    $order->setMontantTotal((string)$total);
+    
+    // Persister (cascade sur OrderItems)
+    $em->persist($order);
+    $em->flush();
+    
+    // Vider le panier
+    $cartService->clear();
+    
+    return $this->redirectToRoute('app_profile_orders');
+}
+\end{lstlisting}
+
+\section{Diagramme de Séquence - Processus de Commande}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    actor/.style={rectangle, draw=blue!70!black, line width=1.5pt, rounded corners=5pt, minimum width=2.5cm, minimum height=1cm, fill=blue!15, font=\bfseries\small, drop shadow},
+    lifeline/.style={dashed, gray!60, line width=1pt},
+    message/.style={-{Stealth[length=3mm]}, line width=1.5pt, blue!70!black},
+    returnmsg/.style={-{Stealth[length=3mm]}, dashed, line width=1.5pt, green!70!black}
+]
+    % Actors
+    \node[actor] (user) at (0,0) {Utilisateur};
+    \node[actor] (ctrl) at (4,0) {CartController};
+    \node[actor] (srv) at (8,0) {CartService};
+    \node[actor] (db) at (12,0) {Database};
+    
+    % Lifelines
+    \draw[lifeline] (user.south) -- ++(0,-10);
+    \draw[lifeline] (ctrl.south) -- ++(0,-10);
+    \draw[lifeline] (srv.south) -- ++(0,-10);
+    \draw[lifeline] (db.south) -- ++(0,-10);
+    
+    % Messages
+    \draw[message] (0,-1) -- node[above, font=\scriptsize] {1. POST /place-order} (4,-1);
+    \draw[message] (4,-2) -- node[above, font=\scriptsize] {2. isEmpty()} (8,-2);
+    \draw[returnmsg] (8,-2.5) -- node[above, font=\scriptsize] {false} (4,-2.5);
+    \draw[message] (4,-3.5) -- node[above, font=\scriptsize] {3. getCart()} (8,-3.5);
+    \draw[returnmsg] (8,-4) -- node[above, font=\scriptsize] {array} (4,-4);
+    \draw[message] (4,-5) -- node[above, font=\scriptsize] {4. persist(Order)} (12,-5);
+    \draw[message] (4,-6) -- node[above, font=\scriptsize] {5. flush()} (12,-6);
+    \draw[returnmsg] (12,-6.5) -- node[above, font=\scriptsize] {OK} (4,-6.5);
+    \draw[message] (4,-7.5) -- node[above, font=\scriptsize] {6. clear()} (8,-7.5);
+    \draw[returnmsg] (4,-9) -- node[above, font=\scriptsize] {7. Redirect /profile/orders} (0,-9);
+    
+\end{tikzpicture}
+\caption{Diagramme de Séquence - Validation de Commande}
+\end{figure}
+
+% ============================================================================
+%                    CHAPITRE 5 : SERVICES
+% ============================================================================
+\chapter{Services - La Logique Métier}
+
+\section{Architecture des Services}
+
+Les \textbf{Services} dans Symfony sont des classes PHP réutilisables contenant la logique métier. Ils sont automatiquement injectés grâce à l'\textbf{autowiring}.
+
+\section{\texttt{CartService} - Gestion du Panier en Cookie}
+
+Le \service{CartService} gère le panier côté client via des cookies encodés en Base64.
+
+\begin{lstlisting}[style=phpstyle, caption={CartService.php - Propriétés}]
+<?php
+
+namespace App\Service;
+
+use App\Repository\ProductRepository;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Cookie;
+
+class CartService
+{
+    private const CART_COOKIE_NAME = 'freshmarket_cart_token';
+    private const COOKIE_LIFETIME = 60 * 60 * 24 * 30; // 30 jours
+    
+    private array $cart = [];
+
+    public function __construct(
+        private RequestStack $requestStack,
+        private ProductRepository $productRepository
+    ) {
+        $this->loadCartFromCookie();
+    }
+\end{lstlisting}
+
+\subsection{Méthodes Détaillées}
+
+\begin{table}[H]
+\centering
+\caption{Méthodes du CartService}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Retour} & \textbf{Description} \\
+\hline
+\hline
+\code{addProduct(\$id, \$qty)} & bool & Ajoute un produit au panier \\
+\hline
+\code{removeProduct(\$id)} & void & Supprime un produit du panier \\
+\hline
+\code{updateQuantity(\$id, \$qty)} & void & Met à jour la quantité \\
+\hline
+\code{getCart()} & array & Retourne le panier avec objets Product \\
+\hline
+\code{getRawCart()} & array & Retourne le panier brut (IDs) \\
+\hline
+\code{getTotal()} & float & Calcule le montant total \\
+\hline
+\code{getCount()} & int & Nombre de produits différents \\
+\hline
+\code{isEmpty()} & bool & Vérifie si le panier est vide \\
+\hline
+\code{clear()} & void & Vide le panier \\
+\hline
+\code{createCookie()} & Cookie & Génère le cookie à envoyer \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{lstlisting}[style=phpstyle, caption={CartService.php - Méthode getCart()}]
+public function getCart(): array
+{
+    $cartWithProducts = [];
+    foreach ($this->cart as $productId => $quantity) {
+        $product = $this->productRepository->find($productId);
+        
+        if ($product && $product->getStock() > 0) {
+            $cartWithProducts[$productId] = [
+                'product' => $product,
+                'quantity' => $quantity
+            ];
+        } else {
+            // Produit inexistant ou rupture : on le retire
+            $this->removeProduct($productId);
+        }
+    }
+    
+    return $cartWithProducts;
+}
+\end{lstlisting}
+
+\textbf{Avantages de cette architecture :}
+\begin{itemize}
+    \item Le panier persiste 30 jours même sans connexion.
+    \item Les données en cookie sont légères (uniquement IDs).
+    \item La reconstruction est faite à la demande (lazy loading).
+\end{itemize}
+
+% ============================================================================
+%                    CHAPITRE 6 : SÉCURITÉ
+% ============================================================================
+\chapter{Sécurité - Protection de l'Application}
+
+\section{Configuration du Pare-feu Symfony}
+
+Le fichier \texttt{config/packages/security.yaml} définit toute la stratégie de sécurité :
+
+\begin{lstlisting}[style=yamlstyle, caption={security.yaml}]
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto  # bcrypt ou argon2 selon le serveur
+    
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email  # Identifiant de connexion
+    
+    firewalls:
+        main:
+            lazy: true
+            provider: app_user_provider
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+                - App\Security\FacebookAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                username_parameter: email
+                password_parameter: password
+            logout:
+                path: app_logout
+                target: app_home
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800  # 7 jours
+    
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/cart, roles: ROLE_USER }
+\end{lstlisting}
+
+\section{OAuth 2.0 - Authentification Sociale}
+
+\subsection{GoogleAuthenticator - Flux Complet}
+
+\begin{lstlisting}[style=phpstyle, caption={GoogleAuthenticator.php - authenticate()}]
+public function authenticate(Request $request): Passport
+{
+    $client = $this->clientRegistry->getClient('google');
+    $accessToken = $this->fetchAccessToken($client);
+    
+    /** @var GoogleUser $googleUser */
+    $googleUser = $client->fetchUserFromToken($accessToken);
+
+    return new SelfValidatingPassport(
+        new UserBadge($googleUser->getEmail(), function () use ($googleUser) {
+            return $this->getOrCreateUser($googleUser);
+        }),
+        [new RememberMeBadge()]
+    );
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=phpstyle, caption={GoogleAuthenticator.php - getOrCreateUser()}]
+private function getOrCreateUser(GoogleUser $googleUser): User
+{
+    $googleId = $googleUser->getId();
+    $email = $googleUser->getEmail();
+
+    // 1. Chercher par Google ID
+    $existingUser = $this->userRepository->findOneBy(['googleId' => $googleId]);
+    if ($existingUser instanceof User) {
+        return $existingUser;
+    }
+
+    // 2. Chercher par email (lier compte existant)
+    $userByEmail = $this->userRepository->findOneBy(['email' => $email]);
+    if ($userByEmail instanceof User) {
+        $userByEmail->setGoogleId($googleId);
+        $this->entityManager->flush();
+        return $userByEmail;
+    }
+
+    // 3. Creer un nouvel utilisateur
+    $user = new User();
+    $user->setEmail($email);
+    $user->setGoogleId($googleId);
+    $user->setPrenom($googleUser->getFirstName() ?: 'Utilisateur');
+    $user->setNom($googleUser->getLastName() ?: 'Google');
+    
+    // Mot de passe aleatoire (non utilisable directement)
+    $randomPassword = bin2hex(random_bytes(16));
+    $user->setPassword($this->passwordHasher->hashPassword($user, $randomPassword));
+
+    $this->entityManager->persist($user);
+    $this->entityManager->flush();
+
+    return $user;
+}
+\end{lstlisting}
+
+\section{Headers de Sécurité HTTP}
+
+Le \code{SecurityHeadersSubscriber} injecte des headers de protection :
+
+\begin{lstlisting}[style=phpstyle, caption={SecurityHeadersSubscriber.php}]
+public function onKernelResponse(ResponseEvent $event): void
+{
+    $response = $event->getResponse();
+    $headers = $response->headers;
+
+    // Protection XSS
+    $headers->set('X-XSS-Protection', '1; mode=block');
+
+    // Protection Clickjacking
+    $headers->set('X-Frame-Options', 'DENY');
+
+    // Protection MIME Sniffing
+    $headers->set('X-Content-Type-Options', 'nosniff');
+
+    // Referrer Policy
+    $headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+    // Content Security Policy
+    $csp = implode('; ', [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+        "img-src 'self' data: https:",
+        "frame-ancestors 'none'",
+    ]);
+    $headers->set('Content-Security-Policy', $csp);
+}
+\end{lstlisting}
+
+\begin{table}[H]
+\centering
+\caption{Headers de Sécurité et leurs Protections}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Header} & \textbf{Protection Fournie} \\
+\hline
+\hline
+\code{X-XSS-Protection} & Active le filtre XSS du navigateur \\
+\hline
+\code{X-Frame-Options: DENY} & Empêche l'inclusion dans une iframe (Clickjacking) \\
+\hline
+\code{X-Content-Type-Options} & Empêche le MIME sniffing \\
+\hline
+\code{Content-Security-Policy} & Contrôle les sources de scripts/styles autorisées \\
+\hline
+\code{Referrer-Policy} & Limite les informations envoyées à des sites tiers \\
+\hline
+\code{Strict-Transport-Security} & Force HTTPS (production uniquement) \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Protection CSRF}
+
+Symfony active la protection CSRF par défaut sur les formulaires :
+
+\begin{lstlisting}[style=twigstyle, caption={Template Twig avec CSRF}]
+<form method="post" action="{{ path('app_cart_place_order') }}">
+    <input type="hidden" name="_token" 
+           value="{{ csrf_token('place-order') }}">
+    <!-- ... champs du formulaire ... -->
+    <button type="submit">Valider la commande</button>
+</form>
+\end{lstlisting}
+
+\begin{lstlisting}[style=phpstyle, caption={Validation CSRF côté contrôleur}]
+$token = $request->request->get('_token');
+if (!$this->isCsrfTokenValid('place-order', $token)) {
+    throw new AccessDeniedException('Token CSRF invalide');
+}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 7 : REPOSITORIES
+% ============================================================================
+\chapter{Repositories - Les Requêtes Personnalisées}
+
+\section{Rôle des Repositories}
+
+Les \textbf{Repositories} encapsulent les requêtes SQL complexes. Ils héritent de \code{ServiceEntityRepository} fourni par Doctrine.
+
+\section{\texttt{ProductRepository} - Exemple Complet}
+
+\begin{lstlisting}[style=phpstyle, caption={ProductRepository.php}]
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+class ProductRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Product::class);
+    }
+
+    /**
+     * Trouve tous les produits disponibles et en stock
+     */
+    public function findAvailable(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.disponible = :disponible')
+            ->andWhere('p.stock > 0')
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Recherche par categorie
+     */
+    public function findByCategory(string $category): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.categorie = :category')
+            ->andWhere('p.disponible = :disponible')
+            ->setParameter('category', $category)
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Recherche textuelle dans nom et description
+     */
+    public function searchProducts(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.nom LIKE :query OR p.description LIKE :query')
+            ->andWhere('p.disponible = :disponible')
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('disponible', true)
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}
+\end{lstlisting}
+
+\textbf{Avantages du QueryBuilder :}
+\begin{itemize}
+    \item Requêtes sécurisées (préparation automatique des paramètres).
+    \item Code lisible et maintenable.
+    \item Génération SQL optimisée par Doctrine.
+\end{itemize}
+
+% ============================================================================
+%                    CHAPITRE 8 : FORMULAIRES
+% ============================================================================
+\chapter{Formulaires Symfony}
+
+\section{Architecture des Formulaires}
+
+Symfony utilise le pattern \textbf{Form Type} pour définir des formulaires réutilisables.
+
+\section{\texttt{RegistrationFormType} - Inscription}
+
+\begin{lstlisting}[style=phpstyle, caption={RegistrationFormType.php}]
+<?php
+
+namespace App\Form;
+
+use App\Entity\User;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+class RegistrationFormType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'votre@email.com'
+                ]
+            ])
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => 'Prenom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('agreeTerms', CheckboxType::class, [
+                'label' => 'J\'accepte les conditions',
+                'mapped' => false,  // Non lie a l'entite
+                'constraints' => [
+                    new IsTrue([
+                        'message' => 'Vous devez accepter les conditions.',
+                    ]),
+                ],
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'constraints' => [
+                        new NotBlank(['message' => 'Mot de passe requis']),
+                        new Length([
+                            'min' => 6,
+                            'minMessage' => 'Minimum {{ limit }} caracteres',
+                        ]),
+                    ],
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer le mot de passe',
+                ],
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
+    }
+}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 9 : TEMPLATES TWIG
+% ============================================================================
+\chapter{Templates Twig - La Vue}
+
+\section{Héritage de Templates}
+
+Twig utilise un système d'\textbf{héritage} avec \code{extends} et \code{block}.
+
+\begin{lstlisting}[style=twigstyle, caption={base.html.twig - Structure}]
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bienvenue{% endblock %} - FreshMarket</title>
+    
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ asset('styles/app.css') }}" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+    {% include 'partials/_navbar.html.twig' %}
+    
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    
+    {% include 'partials/_footer.html.twig' %}
+    
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>
+\end{lstlisting}
+
+\section{Variables et Filtres}
+
+\begin{lstlisting}[style=twigstyle, caption={Affichage de données}]
+{# Variables #}
+{{ product.nom }}
+{{ product.prix|number_format(2, ',', ' ') }} EUR
+
+{# Conditions #}
+{% if product.stock > 0 %}
+    <span class="badge bg-success">En stock</span>
+{% else %}
+    <span class="badge bg-danger">Rupture</span>
+{% endif %}
+
+{# Boucles #}
+{% for item in cart %}
+    <tr>
+        <td>{{ item.product.nom }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.prix * item.quantity }} EUR</td>
+    </tr>
+{% else %}
+    <tr><td colspan="3">Panier vide</td></tr>
+{% endfor %}
+\end{lstlisting}
+
+% ============================================================================
+%                    CHAPITRE 10 : DÉPLOIEMENT
+% ============================================================================
+\chapter{Déploiement et Configuration}
+
+\section{Fichiers de Configuration}
+
+\begin{table}[H]
+\centering
+\caption{Fichiers d'Environnement}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Fichier} & \textbf{Usage} \\
+\hline
+\hline
+\code{.env} & Variables par défaut (versionnées) \\
+\hline
+\code{.env.local} & Variables locales (non versionnées) \\
+\hline
+\code{.env.prod} & Variables de production \\
+\hline
+\code{.env.test} & Variables pour les tests \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Docker}
+
+\begin{lstlisting}[style=yamlstyle, caption={docker-compose.yml}]
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - database
+
+  database:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: freshmarket
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+\end{lstlisting}
+
+% ============================================================================
+%                           CONCLUSION
+% ============================================================================
+\chapter{Conclusion}
+
+Ce rapport technique a présenté en détail l'architecture et l'implémentation du projet \textbf{FreshMarket}, une application e-commerce complète développée avec Symfony 7.3. 
+
+\section{Récapitulatif des Points Clés}
+
+\begin{itemize}
+    \item \textbf{Architecture MVC} : Séparation stricte entre Entités, Contrôleurs et Templates.
+    \item \textbf{Doctrine ORM} : Mapping objet-relationnel avec validation intégrée.
+    \item \textbf{Sécurité Multicouche} : OAuth, CSRF, Headers HTTP, Hashage bcrypt/argon2.
+    \item \textbf{Services Réutilisables} : CartService encapsulant la logique métier.
+    \item \textbf{Frontend Moderne} : Stimulus/Turbo pour une expérience SPA légère.
+\end{itemize}
+
+\section{Points d'Amélioration Suggérés}
+
+\begin{enumerate}
+    \item Implémenter la décrémentation automatique du stock lors d'une commande.
+    \item Ajouter un système de paiement (Stripe, PayPal).
+    \item Mettre en place des tests unitaires et fonctionnels avec PHPUnit.
+    \item Configurer un pipeline CI/CD (GitHub Actions, GitLab CI).
+\end{enumerate}
+
+\appendix
+\chapter{Glossaire}
+
+\begin{description}
+    \item[ORM] Object-Relational Mapping - Technique de correspondance entre objets et tables.
+    \item[CSRF] Cross-Site Request Forgery - Attaque forçant un utilisateur à exécuter des actions.
+    \item[XSS] Cross-Site Scripting - Injection de scripts malveillants.
+    \item[OAuth] Protocole d'autorisation permettant l'authentification via des tiers.
+    \item[Autowiring] Injection automatique de dépendances par Symfony.
+\end{description}
+
+\end{document}
+ 

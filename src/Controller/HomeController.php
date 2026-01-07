@@ -14,12 +14,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository): Response
     {
-        $products = $productRepository->findAvailable();
+        $category = $request->query->get('category');
+        
+        if ($category) {
+            $products = $productRepository->findByCategory($category);
+        } else {
+            $products = $productRepository->findAvailable();
+        }
         
         return $this->render('home/index.html.twig', [
             'products' => $products,
+            'currentCategory' => $category,
         ]);
     }
 
