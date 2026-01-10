@@ -365,7 +365,7 @@ Ce script s'occupe de :
 ## 🪪 Licence
 
 Ce projet est sous licence **MIT**.
-© 2025 — Mustapha Amine TBINI & Rayen Ben MOHRA
+© 2025 — Mustapha Amine TBINI 
 
 ---
 
